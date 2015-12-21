@@ -1,0 +1,60 @@
+package com.bountive.resource;
+
+public class ResourceLocation extends ResourceBase {
+
+	private static final char DEFAULT_DELIMITER = '/';
+	
+	private String parentDirectory;
+	private String resourcePath;
+	
+	public ResourceLocation(String resourcePath) {
+		this(PARENT_DIRECTORY, resourcePath, DEFAULT_DELIMITER);
+	}
+	
+	public ResourceLocation(String directory, String path) {
+		parentDirectory = directory;
+		parentDirectory = fixFileSeparator(directory, DEFAULT_DELIMITER);
+		resourcePath = fixFileSeparator(path, DEFAULT_DELIMITER);
+	}
+	
+	public ResourceLocation(String resourcePath, char fileSep) {
+		this(PARENT_DIRECTORY, resourcePath, fileSep);
+	}
+	
+	public ResourceLocation(String directory, String path, char fileSep) {
+		parentDirectory = directory;
+		parentDirectory = fixFileSeparator(directory, fileSep);
+		resourcePath = fixFileSeparator(path, fileSep);
+	}
+	
+	/**
+	 * Takes in a resource file path and replaces forward slashes with the system dependent file separator.
+	 * @param string : The resource path.
+	 * @return : A resource path with system dependent file separators.
+	 */
+	private String fixFileSeparator(String string, char delimiter) {
+		StringBuilder b = new StringBuilder();
+		for (int i = 0; i < string.length(); i++) {
+			char currentChar = string.charAt(i);
+			if (currentChar == delimiter) {
+				b.append(S);
+			}
+			else {
+				b.append(currentChar);
+			}
+		}
+		return b.toString();
+	}
+	
+	public String getParentDir() {
+		return parentDirectory;
+	}
+	
+	public String getResourcePath() {
+		return resourcePath;
+	}
+	
+	public String getFullPath() {
+		return parentDirectory + resourcePath;
+	}
+}
