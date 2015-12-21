@@ -1,2 +1,1 @@
-# BrickBuilder
 Brick Builder!
