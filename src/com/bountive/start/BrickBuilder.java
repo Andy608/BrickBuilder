@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
 import com.bountive.display.Window;
+import com.bountive.init.InitializationHandler;
 import com.bountive.util.ErrorFileLogger;
 
 public final class BrickBuilder {
@@ -35,13 +36,13 @@ public final class BrickBuilder {
 		logger.info("Initializing internal structure. Currently running on LWJGL " + Sys.getVersion() + ".");
 		
 		try {
-			Window.init();
+			InitializationHandler.init();
 			loop();
 		} catch (Exception e) {
 			ErrorFileLogger.logError(Thread.currentThread(), e);
 		} finally {
 			Window.saveSettings();
-			cleanup();
+			InitializationHandler.release();
 			System.exit(0);
 		}
 		System.gc();
@@ -87,10 +88,6 @@ public final class BrickBuilder {
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		GLFW.glfwSwapBuffers(Window.getID());
-	}
-	
-	private void cleanup() {
-		Window.release();
 	}
 	
 	public static BrickBuilder getInstance() {

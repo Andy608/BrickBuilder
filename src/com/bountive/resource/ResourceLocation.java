@@ -2,10 +2,10 @@ package com.bountive.resource;
 
 public class ResourceLocation extends ResourceBase {
 
-	private static final char DEFAULT_DELIMITER = '/';
+	protected static final char DEFAULT_DELIMITER = '/';
 	
 	private String parentDirectory;
-	private String resourcePath;
+	private String resourceName;
 	
 	public ResourceLocation(String resourcePath) {
 		this(PARENT_DIRECTORY, resourcePath, DEFAULT_DELIMITER);
@@ -14,7 +14,7 @@ public class ResourceLocation extends ResourceBase {
 	public ResourceLocation(String directory, String path) {
 		parentDirectory = directory;
 		parentDirectory = fixFileSeparator(directory, DEFAULT_DELIMITER);
-		resourcePath = fixFileSeparator(path, DEFAULT_DELIMITER);
+		resourceName = fixFileSeparator(path, DEFAULT_DELIMITER);
 	}
 	
 	public ResourceLocation(String resourcePath, char fileSep) {
@@ -24,7 +24,7 @@ public class ResourceLocation extends ResourceBase {
 	public ResourceLocation(String directory, String path, char fileSep) {
 		parentDirectory = directory;
 		parentDirectory = fixFileSeparator(directory, fileSep);
-		resourcePath = fixFileSeparator(path, fileSep);
+		resourceName = fixFileSeparator(path, fileSep);
 	}
 	
 	/**
@@ -50,11 +50,11 @@ public class ResourceLocation extends ResourceBase {
 		return parentDirectory;
 	}
 	
-	public String getResourcePath() {
-		return resourcePath;
+	public String getResourceName() {
+		return resourceName;
 	}
 	
 	public String getFullPath() {
-		return parentDirectory + resourcePath;
+		return parentDirectory + resourceName;
 	}
 }
