@@ -12,27 +12,23 @@ import math.Vector2f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWvidmode;
 
-import com.bountive.resource.ResourceLocation;
-import com.bountive.util.ErrorFileLogger;
-import com.bountive.util.Util;
+import com.bountive.setting.util.BooleanSetting;
+import com.bountive.setting.util.Vector2fSetting;
+import com.bountive.util.logger.ErrorFileLogger;
+import com.bountive.util.resource.ResourceLocation;
 
 public class WindowSettings extends SettingsBase {
 
-	private static final ResourceLocation WINDOW_SETTINGS = new ResourceLocation(SETTINGS_DIR.getFullPath(), "/window_settings" + EXTENSION);
+	private static final ResourceLocation WINDOW_SETTINGS = new ResourceLocation(SETTINGS_DIR.getFullPath(), "window_settings" + EXTENSION);
 	
 	public static WindowSettings windowSettings;
 	
-	private Vector2f defaultWindowSize;
-	private Vector2f defaultWindowPosition;
-	private boolean defaultSaveWindowState;
-	private boolean defaultVSync;
-	private boolean defaultFullscreen;
+	private Vector2fSetting windowSize;
+	private Vector2fSetting windowPosition;
 	
-	private Vector2f windowSize;
-	private Vector2f windowPosition;
-	private boolean saveWindowState;
-	private boolean vSync;
-	private boolean fullscreen;
+	private BooleanSetting saveWindowState;
+	private BooleanSetting vSync;
+	private BooleanSetting fullscreen;
 	
 	private WindowSettings() {
 		windowSettings = this;
@@ -50,11 +46,11 @@ public class WindowSettings extends SettingsBase {
 	
 	private void initDefaultSettings() {
 		ByteBuffer display = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
-		defaultWindowSize = new Vector2f(GLFWvidmode.width(display) / 2, GLFWvidmode.height(display) / 2);
-		defaultWindowPosition = new Vector2f((GLFWvidmode.width(display) - defaultWindowSize.x) / 2, (GLFWvidmode.height(display) - defaultWindowSize.y) / 2);
-		defaultSaveWindowState = true;
-		defaultVSync = true;
-		defaultFullscreen = false;
+		windowSize = new Vector2fSetting("window_size", new Vector2f(GLFWvidmode.width(display) / 2, GLFWvidmode.height(display) / 2));
+		windowPosition = new Vector2fSetting("window_position", new Vector2f((GLFWvidmode.width(display) - windowSize.getDefaultVector2f().x) / 2, (GLFWvidmode.height(display) - windowSize.getDefaultVector2f().y) / 2));
+		saveWindowState = new BooleanSetting("save_window_state", true);
+		vSync = new BooleanSetting("vsync", true);
+		fullscreen = new BooleanSetting("fullscreen", false);
 	}
 	
 	@Override
@@ -70,7 +66,7 @@ public class WindowSettings extends SettingsBase {
 					try {
 						String settingAttrib = s.substring(0, s.indexOf('='));
 					
-						if (settingAttrib.equals("windowSize")) {
+						if (settingAttrib.equals(windowSize.getFileName())) {
 							
 							try {
 								int width = Integer.parseInt(s.substring(s.indexOf('=') + 1, s.indexOf(',')));
@@ -78,44 +74,44 @@ public class WindowSettings extends SettingsBase {
 								
 								ByteBuffer primaryMonitor = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
 								if (width == GLFWvidmode.width(primaryMonitor)) {
-									windowSize = new Vector2f(defaultWindowSize);
+									windowSize.resetVector2f();
 								}
 								else {
-									windowSize = getVector2fValue(new Vector2f(width, height), defaultWindowSize);
+									windowSize.setCustomVector2f(getVector2fValue(new Vector2f(width, height), windowSize.getDefaultVector2f()));
 								}
 							} catch (Exception e) {
 								ErrorFileLogger.logWarn(WindowSettings.class, "window_settings.sbs is corrupt! Did you edit this file? Unable to get correct windowSize. Using default value instead.");
-								windowSize = new Vector2f(defaultWindowSize);
+								windowSize.resetVector2f();
 							}
 							continue;
 						}
-						else if (settingAttrib.equals("windowPosition")) {
+						else if (settingAttrib.equals(windowPosition.getFileName())) {
 							
 							try {
 								int xPos = Integer.parseInt(s.substring(s.indexOf('=') + 1, s.indexOf(',')));
 								int yPos = Integer.parseInt(s.substring(s.indexOf(',') + 1));
 								
 								if (xPos == 0) {
-									windowPosition = new Vector2f(defaultWindowPosition);
+									windowPosition.resetVector2f();
 								}
 								else {
-									windowPosition = getVector2fValue(new Vector2f(xPos, yPos), defaultWindowPosition);
+									windowPosition.setCustomVector2f(getVector2fValue(new Vector2f(xPos, yPos), windowPosition.getDefaultVector2f()));
 								}
 							} catch (Exception e) {
 								ErrorFileLogger.logWarn(WindowSettings.class, "window_settings.sbs is corrupt! Did you edit this file? Unable to get correct windowPosition. Using default value instead.");
-								windowPosition = new Vector2f(defaultWindowPosition);
+								windowPosition.resetVector2f();
 							}
 							continue;
 						}
-						else if (settingAttrib.equals("saveWindowState")) {
-							saveWindowState = getBooleanValue(Util.parseBoolean(s.substring(s.indexOf('=') + 1)), defaultSaveWindowState);
+						else if (settingAttrib.equals(saveWindowState.getFileName())) {
+							saveWindowState.setCustomBoolean(getSingleValueFromOption(s, saveWindowState.getDefaultBoolean()));
 						}
-						else if (settingAttrib.equals("vSync")) {
-							vSync = getBooleanValue(Util.parseBoolean(s.substring(s.indexOf('=') + 1)), defaultVSync);
+						else if (settingAttrib.equals(vSync.getFileName())) {
+							vSync.setCustomBoolean(getSingleValueFromOption(s, vSync.getDefaultBoolean()));
 							continue;
 						}
-						else if (settingAttrib.equals("fullscreen")) {
-							fullscreen = getBooleanValue(Util.parseBoolean(s.substring(s.indexOf('=') + 1)), defaultFullscreen);
+						else if (settingAttrib.equals(fullscreen.getFileName())) {
+							fullscreen.setCustomBoolean(getSingleValueFromOption(s, vSync.getDefaultBoolean()));
 							continue;
 						}
 					} catch (Exception e) {
@@ -133,67 +129,83 @@ public class WindowSettings extends SettingsBase {
 		}
 	}
 	
+	private boolean getSingleValueFromOption(String fileOption, boolean defaultValue) {
+		return getBooleanValue(parseBoolean(fileOption.substring(fileOption.indexOf('=') + 1)), defaultValue);
+	}
+	
 	@Override
 	protected void setDefaultSettings() {
-		resetWindow();
-		saveWindowState = defaultSaveWindowState;
-		vSync = defaultVSync;
-		fullscreen = defaultFullscreen;
+		resetWindow(true);
 	}
 	
 	@Override
 	public void storeSettingsInFile() {
-		if (!saveWindowState || !isWindowStateValid()) {
-			resetWindow();
+		
+//		System.out.println(!saveWindowState.getCustomBoolean());
+//		System.out.println(!isWindowStateValid());
+		
+		if (!saveWindowState.getCustomBoolean() || !isWindowStateValid()) {
+			resetWindow(false);
 		}
 		
 		try (PrintStream writer = new PrintStream(WINDOW_SETTINGS.getFullPath(), "UTF-8")) {
-			writer.println("windowSize=" + (int)windowSize.x + "," + (int)windowSize.y);
-			writer.println("windowPosition=" + (int)windowPosition.x + "," + (int)windowPosition.y);
-			writer.println("saveWindowState=" + saveWindowState);
-			writer.println("vSync=" + vSync);
-			writer.println("fullscreen=" + fullscreen);
+			writer.println(windowSize.getFileName() + "=" + (int)windowSize.getCustomVector2f().x + "," + (int)windowSize.getCustomVector2f().y);
+			writer.println(windowPosition.getFileName() + "=" + (int)windowPosition.getCustomVector2f().x + "," + (int)windowPosition.getCustomVector2f().y);
+			writer.println(saveWindowState.getFileName() + "=" + saveWindowState.getCustomBoolean());
+			writer.println(vSync.getFileName() + "=" + vSync.getCustomBoolean());
+			writer.print(fullscreen.getFileName() + "=" + fullscreen.getCustomBoolean());
 		} catch (FileNotFoundException | UnsupportedEncodingException ex) {
 			ErrorFileLogger.logError(Thread.currentThread(), ex);
 		}
 	}
 	
-	private void resetWindow() {
-		windowSize = new Vector2f(defaultWindowSize);
-		windowPosition = new Vector2f(defaultWindowPosition);
+	public static void resetWindow(boolean saveState) {
+		if (saveState) windowSettings.saveWindowState.resetBoolean();
+		windowSettings.windowSize.resetVector2f();
+		windowSettings.windowPosition.resetVector2f();
+		windowSettings.vSync.resetBoolean();
+		windowSettings.fullscreen.resetBoolean();
 	}
 	
-	private boolean isWindowStateValid() {
-		if (windowPosition.x < 0 || windowPosition.y < 0) return false;
-		else if (windowSize.x < 0 || windowSize.y < 0) return false;
+	public static boolean isWindowStateValid() {
+		if (windowSettings.windowPosition.getCustomVector2f().x < 0 || windowSettings.windowPosition.getCustomVector2f().y < 0) return false;
+		else if (windowSettings.windowSize.getCustomVector2f().x < 0 || windowSettings.windowSize.getCustomVector2f().y < 0) return false;
 		return true;
 	}
 	
 	public Vector2f getWindowSize() {
-		return windowSize;
+		return windowSize.getCustomVector2f();
 	}
 	
 	public Vector2f getWindowPosition() {
-		return windowPosition;
+		return windowPosition.getCustomVector2f();
+	}
+	
+	public boolean isSaveWindowState() {
+		return saveWindowState.getCustomBoolean();
 	}
 	
 	public boolean isVSyncEnabled() {
-		return vSync;
+		return vSync.getCustomBoolean();
+	}
+	
+	public void setVSync(boolean b) {
+		vSync.setCustomBoolean(b);
 	}
 	
 	public boolean isFullscreenEnabled() {
-		return fullscreen;
+		return fullscreen.getCustomBoolean();
 	}
 	
 	public void setFullscreen(boolean b) {
-		fullscreen = b;
+		fullscreen.setCustomBoolean(b);
 	}
 	
 	public void updateWindowSize(int x, int y) {
-		windowSize.set(x, y);
+		windowSize.setCustomVector2f(x, y);
 	}
 	
 	public void updateWindowPosition(int x, int y) {
-		windowPosition.set(x, y);
+		windowPosition.setCustomVector2f(x, y);
 	}
 }

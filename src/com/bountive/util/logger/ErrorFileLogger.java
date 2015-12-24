@@ -1,20 +1,22 @@
-package com.bountive.util;
+package com.bountive.util.logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.log4j.Logger;
 
-import com.bountive.resource.ResourceLocation;
 import com.bountive.start.Info;
+import com.bountive.util.resource.ResourceLocation;
 
 public class ErrorFileLogger implements Thread.UncaughtExceptionHandler {
 
 	private static final Logger consoleLogger = Logger.getLogger(ErrorFileLogger.class);
-	private static final ResourceLocation ERROR_LOG_DIR = new ResourceLocation("/log");
+	private static final ResourceLocation ERROR_LOG_DIR = new ResourceLocation(ResourceLocation.APPDATA_DIRECTORY, "/log");
 	private static final String s = System.lineSeparator();
 	
 	@Override
@@ -28,31 +30,8 @@ public class ErrorFileLogger implements Thread.UncaughtExceptionHandler {
 	 * @param t: The thread the error occurred on.
 	 * @param e: The throwable, or actual error itself.
 	 */
-//	public static void logError(Thread t, Throwable e) {
-//		String date = Util.getDate("dd MM yyyy HH mm ss");
-//		String message = s + "---------- Sandbox Error Report ----------" + s + s + date
-//				+ s + s +"Uh oh, I'm going down. Save yourself!" + s + s
-//				+ "Details about the crash is listed below" + s
-//				+ "---------------------------------------" + s + s +
-//				"Crash occured in class: " + t.getName();
-//		
-//		consoleLogger.error(message, e);
-//		new File(ERROR_LOG_DIR.getFullPath()).mkdirs();
-//		
-//		ResourceLocation fileName = new ResourceLocation(ERROR_LOG_DIR.getFullPath(), "/error_report_" + date + ".txt");
-//		
-//		try (PrintStream writer = new PrintStream(fileName.getFullPath(), "UTF-8")) {
-//			writer.println(message + s);
-//			writer.println(e.getClass() + ": " + e.getMessage());
-//			for (int i = 0; i < e.getStackTrace().length; i++) {
-//                writer.println("\t" + e.getStackTrace()[i].toString());
-//            }
-//		} catch (FileNotFoundException | UnsupportedEncodingException ex) {
-//			ex.printStackTrace();
-//		}
-//	}
 	public static void logError(Thread t, Throwable e) {
-		String date = Util.getDate("dd MM yyyy HH mm ss");
+		String date = getDate("dd MM yyyy HH mm ss");
 		String message = s + "---------- " + Info.NAME + " Error Report ----------" + s + s + date
 				+ s + s +"Uh oh, I'm going down. Save yourself!" + s + s
 				+ "Details about the crash is listed below" + s
@@ -83,7 +62,7 @@ public class ErrorFileLogger implements Thread.UncaughtExceptionHandler {
 	}
 	
 	public static void logWarn(Class<?> c, String warningMessage) {
-		String date = Util.getDate("dd MM yyyy HH mm ss");
+		String date = getDate("dd MM yyyy HH mm ss");
 		consoleLogger.warn(warningMessage);
 		
 		new File(ERROR_LOG_DIR.getFullPath()).mkdirs();
@@ -94,5 +73,9 @@ public class ErrorFileLogger implements Thread.UncaughtExceptionHandler {
 		} catch (FileNotFoundException | UnsupportedEncodingException ex) {
 			ex.printStackTrace();
 		}
+	}
+	
+	private static String getDate(String format) {
+		return new SimpleDateFormat(format).format(new Date());
 	}
 }

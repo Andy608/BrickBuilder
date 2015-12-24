@@ -9,15 +9,15 @@ import java.util.List;
 
 import math.Vector2f;
 
-import com.bountive.resource.ResourceLocation;
-import com.bountive.util.Util;
-import com.bountive.util.Util.EnumOS;
+import com.bountive.util.SystemUtil;
+import com.bountive.util.SystemUtil.EnumOS;
+import com.bountive.util.resource.ResourceLocation;
 
 public abstract class SettingsBase {
 
 	protected static final String EXTENSION = ".bbs";
-	protected static final EnumOS os = Util.getOSType();
-	protected static final ResourceLocation SETTINGS_DIR = new ResourceLocation("/settings");
+	protected static final EnumOS os = SystemUtil.getOSType();
+	protected static final ResourceLocation SETTINGS_DIR = new ResourceLocation(ResourceLocation.APPDATA_DIRECTORY, "settings");
 	
 	public abstract void loadSettingsFromFile();
 	protected abstract void setDefaultSettings();
@@ -48,6 +48,14 @@ public abstract class SettingsBase {
 			}
 		}
 		return list.toArray(new String[list.size()]);
+	}
+	
+	protected Boolean parseBoolean(String s) {
+		if (s != null) {
+			if (s.equalsIgnoreCase("true")) return true;
+			else if (s.equalsIgnoreCase("false")) return false;
+		}
+		return null;
 	}
 	
 	protected boolean getBooleanValue(Boolean savedValue, boolean defaultValue) {

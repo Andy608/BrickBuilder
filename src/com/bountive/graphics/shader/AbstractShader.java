@@ -1,4 +1,4 @@
-package com.bountive.shader;
+package com.bountive.graphics.shader;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,17 +6,20 @@ import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
 
 import math.Matrix4f;
+import math.Vector2f;
 import math.Vector3f;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
-import com.bountive.resource.ResourceLocation;
-import com.bountive.util.ErrorFileLogger;
+import com.bountive.util.logger.ErrorFileLogger;
+import com.bountive.util.resource.ResourceLocation;
 
 public abstract class AbstractShader {
 
+	protected static final String RESOURCE_DIRECTORY = "res/graphics/shader";
+	
 	private int shaderProgramID;
 	private int vertexShaderID;
 	private int fragmentShaderID;
@@ -49,7 +52,8 @@ public abstract class AbstractShader {
 		
 		GL20.glCompileShader(vertexShaderID);
 		if (GL20.glGetShaderi(vertexShaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
-			ErrorFileLogger.logError(Thread.currentThread(), new IllegalStateException("Unable to compile vertex shader: " + vertexLocation.getResourceName()));
+			ErrorFileLogger.logError(Thread.currentThread(), new RuntimeException("[Unable to compile vertex shader: " + 
+			vertexLocation.getResourceName() + "] " + GL20.glGetShaderInfoLog(vertexShaderID, GL20.glGetShaderi(vertexShaderID, GL20.GL_INFO_LOG_LENGTH))));
 		}
 		GL20.glAttachShader(shaderProgramID, vertexShaderID);
 	}
@@ -65,7 +69,8 @@ public abstract class AbstractShader {
 		
 		GL20.glCompileShader(fragmentShaderID);
 		if (GL20.glGetShaderi(fragmentShaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
-			ErrorFileLogger.logError(Thread.currentThread(), new IllegalStateException("Unable to compile fragment shader: " + fragmentLocation.getResourceName()));
+			ErrorFileLogger.logError(Thread.currentThread(), new RuntimeException("[Unable to compile fragment shader: " + 
+			fragmentLocation.getResourceName() + "] " + GL20.glGetShaderInfoLog(fragmentShaderID, GL20.glGetShaderi(fragmentShaderID, GL20.GL_INFO_LOG_LENGTH))));
 		}
 		GL20.glAttachShader(shaderProgramID, fragmentShaderID);
 	}
@@ -88,7 +93,7 @@ public abstract class AbstractShader {
 		try (BufferedReader r = new BufferedReader(new InputStreamReader(AbstractShader.class.getClassLoader().getResourceAsStream(loc.getFullPath())))) {
 			String s;
 			while ((s = r.readLine()) != null) {
-				shaderSource.append(s);
+				shaderSource.append(s).append(System.lineSeparator());
 			}
 		} catch (IOException e) {
 			ErrorFileLogger.logError(Thread.currentThread(), e);
@@ -109,8 +114,12 @@ public abstract class AbstractShader {
 		GL20.glUniform1f(location, value);
 	}
 	
-	protected void loadVector(int location, Vector3f vector) {
+	protected void load3DVector(int location, Vector3f vector) {
 		GL20.glUniform3f(location, vector.x, vector.y, vector.z);
+	}
+	
+	protected void load2DVector(int location, Vector2f vector) {
+		GL20.glUniform2f(location, vector.x, vector.y);
 	}
 	
 	protected void loadBoolean(int location, boolean value) {

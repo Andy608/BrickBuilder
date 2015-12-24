@@ -2,7 +2,7 @@ package com.bountive.start;
 
 import org.apache.log4j.PropertyConfigurator;
 
-import com.bountive.util.ErrorFileLogger;
+import com.bountive.util.logger.ErrorFileLogger;
 
 public class Main {
 

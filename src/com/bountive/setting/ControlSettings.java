@@ -8,20 +8,23 @@ import java.io.UnsupportedEncodingException;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.bountive.resource.ResourceLocation;
-import com.bountive.util.ErrorFileLogger;
+import com.bountive.setting.util.SingleKeyControl;
+import com.bountive.util.logger.ErrorFileLogger;
+import com.bountive.util.resource.ResourceLocation;
 
 public class ControlSettings extends SettingsBase {
 
-	private static final ResourceLocation CONTROL_SETTINGS = new ResourceLocation(SETTINGS_DIR.getFullPath(), "/control_settings" + EXTENSION);
+	private static final ResourceLocation CONTROL_SETTINGS = new ResourceLocation(SETTINGS_DIR.getFullPath(), "control_settings" + EXTENSION);
 	
 	public static ControlSettings controlSettings;
 
-	private int defaultShutdownKey;
-	private int defaultFullscreenKey;
+	public static SingleKeyControl shutdownKey;
+	public static SingleKeyControl fullscreenKey;
 	
-	public static int shutdownKey;
-	public static int fullscreenKey;
+	public static SingleKeyControl moveForwardKey;
+	public static SingleKeyControl moveBackwardKey;
+	public static SingleKeyControl moveLeftKey;
+	public static SingleKeyControl moveRightKey;
 	
 	private ControlSettings() {
 		controlSettings = this;
@@ -38,8 +41,13 @@ public class ControlSettings extends SettingsBase {
 	}
 	
 	private void initDefaultSettings() {
-		defaultShutdownKey = GLFW.GLFW_KEY_ESCAPE;
-		defaultFullscreenKey = GLFW.GLFW_KEY_F1;
+		shutdownKey = new SingleKeyControl("shutdown_key", GLFW.GLFW_KEY_ESCAPE);
+		fullscreenKey = new SingleKeyControl("fullscreen_key", GLFW.GLFW_KEY_F1);
+		
+		moveForwardKey = new SingleKeyControl("move_forward_key", GLFW.GLFW_KEY_W);
+		moveBackwardKey = new SingleKeyControl("move_backward_key", GLFW.GLFW_KEY_S);
+		moveLeftKey = new SingleKeyControl("move_left_key", GLFW.GLFW_KEY_A);
+		moveRightKey = new SingleKeyControl("move_right_key", GLFW.GLFW_KEY_D);
 	}
 	
 	@Override
@@ -56,15 +64,24 @@ public class ControlSettings extends SettingsBase {
 					try {
 						String controlAttrib = s.substring(0, s.indexOf('='));
 						
-						if (controlAttrib.equals("shutdownKey")) {
-							int key = Integer.parseInt(s.substring(s.indexOf('=') + 1));
-							shutdownKey = key;
+						if (controlAttrib.equals(shutdownKey.getFileName())) {
+							shutdownKey.setCustomKey(getSingleValueFromOption(s));
 						}
-						else if (controlAttrib.equals("fullscreenKey")) {
-							int key = Integer.parseInt(s.substring(s.indexOf('=') + 1));
-							fullscreenKey = key;
+						else if (controlAttrib.equals(fullscreenKey.getFileName())) {
+							fullscreenKey.setCustomKey(getSingleValueFromOption(s));
 						}
-						
+						else if (controlAttrib.equals(moveForwardKey.getFileName())) {
+							moveForwardKey.setCustomKey(getSingleValueFromOption(s));
+						}
+						else if (controlAttrib.equals(moveBackwardKey.getFileName())) {
+							moveBackwardKey.setCustomKey(getSingleValueFromOption(s));
+						}
+						else if (controlAttrib.equals(moveLeftKey.getFileName())) {
+							moveLeftKey.setCustomKey(getSingleValueFromOption(s));
+						}
+						else if (controlAttrib.equals(moveRightKey.getFileName())) {
+							moveRightKey.setCustomKey(getSingleValueFromOption(s));
+						}
 					} catch (Exception e) {
 						ErrorFileLogger.logWarn(WindowSettings.class, "control_settings.sbs is corrupt! Did you edit this file? Unable to get correct control values. Using default values instead.");
 						setDefaultSettings();
@@ -80,17 +97,29 @@ public class ControlSettings extends SettingsBase {
 		}
 	}
 
+	private int getSingleValueFromOption(String fileOption) {
+		return Integer.parseInt(fileOption.substring(fileOption.indexOf('=') + 1));
+	}
+	
 	@Override
 	public void setDefaultSettings() {
-		shutdownKey = defaultShutdownKey;
-		fullscreenKey = defaultFullscreenKey;
+		shutdownKey.resetKey();
+		fullscreenKey.resetKey();
+		moveForwardKey.resetKey();
+		moveBackwardKey.resetKey();
+		moveLeftKey.resetKey();
+		moveRightKey.resetKey();
 	}
 
 	@Override
 	public void storeSettingsInFile() {
 		try (PrintStream writer = new PrintStream(CONTROL_SETTINGS.getFullPath(), "UTF-8")) {
-			writer.println("shutdownKey=" + (int)shutdownKey);
-			writer.println("fullscreenKey=" + (int)fullscreenKey);
+			writer.println(shutdownKey.getFileName() + "=" + (int)shutdownKey.getCustomKey());
+			writer.println(fullscreenKey.getFileName() + "=" + (int)fullscreenKey.getCustomKey());
+			writer.println(moveForwardKey.getFileName() + "=" + (int)moveForwardKey.getCustomKey());
+			writer.println(moveBackwardKey.getFileName() + "=" + (int)moveBackwardKey.getCustomKey());
+			writer.println(moveLeftKey.getFileName() + "=" + (int)moveLeftKey.getCustomKey());
+			writer.print(moveRightKey.getFileName() + "=" + (int)moveRightKey.getCustomKey());
 		} catch (FileNotFoundException | UnsupportedEncodingException ex) {
 			ErrorFileLogger.logError(Thread.currentThread(), ex);
 		}

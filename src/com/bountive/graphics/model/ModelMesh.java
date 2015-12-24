@@ -1,4 +1,4 @@
-package com.bountive.model;
+package com.bountive.graphics.model;
 
 public class ModelMesh {
 	
@@ -8,5 +8,13 @@ public class ModelMesh {
 	public ModelMesh(int vertexArrayID, int vertCount) {
 		vaoID = vertexArrayID;
 		vertexCount = vertCount;
+	}
+	
+	public int getVaoID() {
+		return vaoID;
+	}
+	
+	public int getVertexCount() {
+		return vertexCount;
 	}
 }

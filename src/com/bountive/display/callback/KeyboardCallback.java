@@ -20,16 +20,24 @@ public class KeyboardCallback extends GLFWKeyCallback {
 		if (action == GLFW.GLFW_RELEASE) {
 			currentKeys.remove(key);
 			
-			if (ControlSettings.shutdownKey == key) {
+			if (ControlSettings.shutdownKey.equals(key)) {
 				GLFW.glfwSetWindowShouldClose(windowID, GL11.GL_TRUE);
 			}
-			else if (ControlSettings.fullscreenKey == key) {
+			else if (ControlSettings.fullscreenKey.equals(key)) {
 				WindowSettings.windowSettings.setFullscreen(!WindowSettings.windowSettings.isFullscreenEnabled());
 				Window.buildScreen();
+			}
+			else if (ControlSettings.moveForwardKey.equals(key)) {
+				ControlSettings.moveForwardKey.setPressed(false);
 			}
 		}
 		else if (action == GLFW.GLFW_PRESS) {
 			currentKeys.add(key);
+			
+			//if (in the game and...)
+			if (ControlSettings.moveForwardKey.equals(key)) {
+				ControlSettings.moveForwardKey.setPressed(true);
+			}
 		}
 	}
 }

@@ -6,14 +6,17 @@ import math.Vector2f;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWvidmode;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
 
 import com.bountive.display.callback.CallbackManager;
+import com.bountive.graphics.model.ModelBrickList;
+import com.bountive.graphics.model.util.ModelManager;
 import com.bountive.setting.ControlSettings;
 import com.bountive.setting.WindowSettings;
 import com.bountive.start.Info;
-import com.bountive.util.ErrorFileLogger;
+import com.bountive.util.logger.ErrorFileLogger;
 
 public class Window {
 
@@ -71,7 +74,7 @@ public class Window {
 		}
 		else {
 			Vector2f windowSize = WindowSettings.windowSettings.getWindowSize();
-			displayHandle = GLFW.glfwCreateWindow((int)windowSize.x, (int)windowSize.y, TITLE, MemoryUtil.NULL, MemoryUtil.NULL);
+			displayHandle = GLFW.glfwCreateWindow((int)windowSize.x, (int)windowSize.y, TITLE, MemoryUtil.NULL, (window.windowID == MemoryUtil.NULL) ? MemoryUtil.NULL : window.windowID);
 		}
 		
 		if (displayHandle == MemoryUtil.NULL) {
@@ -79,7 +82,6 @@ public class Window {
 		}
 		
 		if (window.windowID != MemoryUtil.NULL) {
-			saveSettings();
 			window.callbackManager.release();
 			GLFW.glfwDestroyWindow(window.windowID);
 		}
@@ -89,11 +91,15 @@ public class Window {
 		if (!WindowSettings.windowSettings.isFullscreenEnabled()) {
 			GLFW.glfwSetWindowPos(window.windowID, (int)WindowSettings.windowSettings.getWindowPosition().x, (int)WindowSettings.windowSettings.getWindowPosition().y);
 		}
-			
+		
 		GLFW.glfwMakeContextCurrent(window.windowID);
 		GLFW.glfwSwapInterval(WindowSettings.windowSettings.isVSyncEnabled() ? 1 : 0);
 		GLFW.glfwShowWindow(window.windowID);
 		window.callbackManager = new CallbackManager(window.windowID);
+		
+		GL.createCapabilities();
+		ModelManager.getManager().release();
+		ModelBrickList.createModels();
 	}
 	
 	public static void saveSettings() {

@@ -6,9 +6,13 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
+import com.bountive.brick.Brick;
+import com.bountive.brick.ClayBrick;
 import com.bountive.display.Window;
+import com.bountive.graphics.model.ModelBrickList;
+import com.bountive.graphics.render.BrickRenderer;
 import com.bountive.init.InitializationHandler;
-import com.bountive.util.ErrorFileLogger;
+import com.bountive.util.logger.ErrorFileLogger;
 
 public final class BrickBuilder {
 
@@ -27,6 +31,9 @@ public final class BrickBuilder {
 	private double deltaTime;
 	private double elapsedTime;
 	
+	private BrickRenderer renderer;
+	private ClayBrick brick;
+	
 	public BrickBuilder() {
 		instance = this;
 		logger.info("Creating " + Info.NAME + " " + Info.VERSION + " by " + Info.AUTHOR);
@@ -42,14 +49,19 @@ public final class BrickBuilder {
 			ErrorFileLogger.logError(Thread.currentThread(), e);
 		} finally {
 			Window.saveSettings();
+			renderer.release();
 			InitializationHandler.release();
+			System.gc();
 			System.exit(0);
 		}
-		System.gc();
 	}
 	
 	private void loop() {
 		GL.createCapabilities();
+		ModelBrickList.createModels();//TEMP. TODO: Move createCapabilities and model initialization to somewhere else.
+		
+		renderer = new BrickRenderer();
+		brick = new ClayBrick(Brick.EnumBrickModel.FULL_1x1);
 		
 		lastTime = GLFW.glfwGetTime();
 		
@@ -87,6 +99,10 @@ public final class BrickBuilder {
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+		
+		renderer.addBrickToBatch(brick);
+		renderer.render();
+		
 		GLFW.glfwSwapBuffers(Window.getID());
 	}
 	

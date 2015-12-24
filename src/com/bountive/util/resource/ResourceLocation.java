@@ -1,4 +1,4 @@
-package com.bountive.resource;
+package com.bountive.util.resource;
 
 public class ResourceLocation extends ResourceBase {
 
@@ -8,7 +8,7 @@ public class ResourceLocation extends ResourceBase {
 	private String resourceName;
 	
 	public ResourceLocation(String resourcePath) {
-		this(PARENT_DIRECTORY, resourcePath, DEFAULT_DELIMITER);
+		this(JAR_DIRECTORY, resourcePath, DEFAULT_DELIMITER);
 	}
 	
 	public ResourceLocation(String directory, String path) {
@@ -18,7 +18,7 @@ public class ResourceLocation extends ResourceBase {
 	}
 	
 	public ResourceLocation(String resourcePath, char fileSep) {
-		this(PARENT_DIRECTORY, resourcePath, fileSep);
+		this(JAR_DIRECTORY, resourcePath, fileSep);
 	}
 	
 	public ResourceLocation(String directory, String path, char fileSep) {
@@ -37,7 +37,7 @@ public class ResourceLocation extends ResourceBase {
 		for (int i = 0; i < string.length(); i++) {
 			char currentChar = string.charAt(i);
 			if (currentChar == delimiter) {
-				b.append(S);
+				b.append(SEP);
 			}
 			else {
 				b.append(currentChar);
@@ -55,6 +55,6 @@ public class ResourceLocation extends ResourceBase {
 	}
 	
 	public String getFullPath() {
-		return parentDirectory + resourceName;
+		return parentDirectory + SEP + resourceName;
 	}
 }

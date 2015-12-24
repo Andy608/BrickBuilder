@@ -1,4 +1,4 @@
-package com.bountive.model.util;
+package com.bountive.graphics.model.util;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import com.bountive.model.ModelMesh;
+import com.bountive.graphics.model.ModelMesh;
 
 public class ModelBuilder {
 
@@ -63,7 +63,7 @@ public class ModelBuilder {
 	
 	private int createVAO() {
 		int vaoID = GL30.glGenVertexArrays();
-		ModelManager.manager.addVAO(vaoID);
+		ModelManager.getManager().addVAO(vaoID);
 		GL30.glBindVertexArray(vaoID);
 		return vaoID;
 	}
@@ -76,7 +76,7 @@ public class ModelBuilder {
 	 */
 	private void bindVAO(int arrayIndex, float[] bufferData, int dataLengthPerVertex) {
 		int vbo = GL15.glGenBuffers();
-		ModelManager.manager.addVBO(vbo);
+		ModelManager.getManager().addVBO(vbo);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, toReadableFloatBuffer(bufferData), GL15.GL_STATIC_DRAW);
 		GL20.glVertexAttribPointer(arrayIndex, dataLengthPerVertex, GL11.GL_FLOAT, false, 0, 0);
@@ -90,7 +90,7 @@ public class ModelBuilder {
 	
 	private void bindIndicesBuffer(int[] indices) {
 		int vboID = GL15.glGenBuffers();
-		ModelManager.manager.addVBO(vboID);
+		ModelManager.getManager().addVBO(vboID);
 		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboID);
 		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, toReadableIntBuffer(indices), GL15.GL_STATIC_DRAW);
 	}
@@ -105,5 +105,9 @@ public class ModelBuilder {
 		FloatBuffer b = BufferUtils.createFloatBuffer(bufferData.length);
 		b.put(bufferData).flip();
 		return b;
+	}
+	
+	public static ModelBuilder getBuilder() {
+		return builder;
 	}
 }

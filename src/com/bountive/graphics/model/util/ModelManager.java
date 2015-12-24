@@ -1,4 +1,4 @@
-package com.bountive.model.util;
+package com.bountive.graphics.model.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL30;
 
 public class ModelManager {
 
-	public static ModelManager manager;
+	private static ModelManager manager;
 	
 	private List<Integer> vaoList;
 	private List<Integer> vboList;
@@ -32,11 +32,22 @@ public class ModelManager {
 		vboList.add(vboID);
 	}
 	
-	public void release() {
-		for (int vao : vaoList)
+	public void releaseVAOs() {
+//		System.out.println(vaoList == null);
+		
+		for (int vao : vaoList) {
 			GL30.glDeleteVertexArrays(vao);
+		}
+	}
+	
+	public void release() {
+		releaseVAOs();
 		
 		for (int vbo : vboList)
 			GL15.glDeleteBuffers(vbo);
+	}
+	
+	public static ModelManager getManager() {
+		return manager;
 	}
 }
