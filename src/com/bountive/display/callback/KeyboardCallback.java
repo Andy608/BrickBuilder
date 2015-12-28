@@ -7,8 +7,8 @@ import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.opengl.GL11;
 
 import com.bountive.display.Window;
-import com.bountive.setting.ControlSettings;
-import com.bountive.setting.WindowSettings;
+import com.bountive.setting.ControlOptions;
+import com.bountive.setting.GameOptions;
 
 public class KeyboardCallback extends GLFWKeyCallback {
 
@@ -20,23 +20,35 @@ public class KeyboardCallback extends GLFWKeyCallback {
 		if (action == GLFW.GLFW_RELEASE) {
 			currentKeys.remove(key);
 			
-			if (ControlSettings.shutdownKey.equals(key)) {
+			if (ControlOptions.shutdownKey.equals(key)) {
 				GLFW.glfwSetWindowShouldClose(windowID, GL11.GL_TRUE);
 			}
-			else if (ControlSettings.fullscreenKey.equals(key)) {
-				WindowSettings.windowSettings.setFullscreen(!WindowSettings.windowSettings.isFullscreenEnabled());
+			else if (ControlOptions.fullscreenKey.equals(key)) {
+				GameOptions.gameOptions.setFullscreen(!GameOptions.gameOptions.isFullscreenEnabled());
 				Window.buildScreen();
 			}
-			else if (ControlSettings.moveForwardKey.equals(key)) {
-				ControlSettings.moveForwardKey.setPressed(false);
+			else if (ControlOptions.moveForwardKey.equals(key)) {
+				ControlOptions.moveForwardKey.setPressed(false);
+			}
+			else if (ControlOptions.moveBackwardKey.equals(key)) {
+				ControlOptions.moveBackwardKey.setPressed(false);
 			}
 		}
 		else if (action == GLFW.GLFW_PRESS) {
 			currentKeys.add(key);
 			
 			//if (in the game and...)
-			if (ControlSettings.moveForwardKey.equals(key)) {
-				ControlSettings.moveForwardKey.setPressed(true);
+			if (ControlOptions.moveForwardKey.equals(key)) {
+				ControlOptions.moveForwardKey.setPressed(true);
+			}
+			else if (ControlOptions.moveBackwardKey.equals(key)) {
+				ControlOptions.moveBackwardKey.setPressed(true);
+			}
+			else if (ControlOptions.moveLeftKey.equals(key)) {
+				ControlOptions.moveLeftKey.setPressed(true);
+			}
+			else if (ControlOptions.moveRightKey.equals(key)) {
+				ControlOptions.moveRightKey.setPressed(true);
 			}
 		}
 	}

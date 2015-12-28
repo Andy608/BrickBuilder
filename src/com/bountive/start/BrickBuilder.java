@@ -12,7 +12,7 @@ import com.bountive.display.Window;
 import com.bountive.graphics.model.ModelBrickList;
 import com.bountive.graphics.render.BrickRenderer;
 import com.bountive.init.InitializationHandler;
-import com.bountive.util.logger.ErrorFileLogger;
+import com.bountive.util.logger.LoggerUtils;
 
 public final class BrickBuilder {
 
@@ -46,9 +46,9 @@ public final class BrickBuilder {
 			InitializationHandler.init();
 			loop();
 		} catch (Exception e) {
-			ErrorFileLogger.logError(Thread.currentThread(), e);
+			LoggerUtils.logError(Thread.currentThread(), e);
 		} finally {
-			Window.saveSettings();
+			Window.saveOptions();
 			renderer.release();
 			InitializationHandler.release();
 			System.gc();

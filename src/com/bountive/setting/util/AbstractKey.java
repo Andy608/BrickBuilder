@@ -1,6 +1,6 @@
 package com.bountive.setting.util;
 
-public abstract class AbstractKey extends AbstractFileSetting{
+public abstract class AbstractKey extends AbstractFileSetting {
 
 	private boolean isPressed;
 	

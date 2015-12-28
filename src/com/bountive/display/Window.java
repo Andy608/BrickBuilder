@@ -13,10 +13,10 @@ import org.lwjgl.system.MemoryUtil;
 import com.bountive.display.callback.CallbackManager;
 import com.bountive.graphics.model.ModelBrickList;
 import com.bountive.graphics.model.util.ModelManager;
-import com.bountive.setting.ControlSettings;
-import com.bountive.setting.WindowSettings;
+import com.bountive.setting.ControlOptions;
+import com.bountive.setting.GameOptions;
 import com.bountive.start.Info;
-import com.bountive.util.logger.ErrorFileLogger;
+import com.bountive.util.logger.LoggerUtils;
 
 public class Window {
 
@@ -40,15 +40,15 @@ public class Window {
 		
 		try {
 			initGLFW();
-			WindowSettings.init();
-			WindowSettings.windowSettings.loadSettingsFromFile();
+			GameOptions.init();
+			GameOptions.gameOptions.loadOptionsFromFile();
 			
-			ControlSettings.init();
-			ControlSettings.controlSettings.loadSettingsFromFile();
+			ControlOptions.init();
+			ControlOptions.controlOptions.loadOptionsFromFile();
 			
 			createWindow();
 		} catch (RuntimeException e) {
-			ErrorFileLogger.logError(Thread.currentThread(), e);
+			LoggerUtils.logError(Thread.currentThread(), e);
 		}
 	}
 	
@@ -68,12 +68,12 @@ public class Window {
 		
 		long displayHandle;
 		
-		if (WindowSettings.windowSettings.isFullscreenEnabled()) {
+		if (GameOptions.gameOptions.isFullscreenEnabled()) {
 			ByteBuffer primaryMonitor = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
 			displayHandle = GLFW.glfwCreateWindow(GLFWvidmode.width(primaryMonitor), GLFWvidmode.height(primaryMonitor), TITLE, GLFW.glfwGetPrimaryMonitor(), window.windowID);
 		}
 		else {
-			Vector2f windowSize = WindowSettings.windowSettings.getWindowSize();
+			Vector2f windowSize = GameOptions.gameOptions.getWindowSize();
 			displayHandle = GLFW.glfwCreateWindow((int)windowSize.x, (int)windowSize.y, TITLE, MemoryUtil.NULL, (window.windowID == MemoryUtil.NULL) ? MemoryUtil.NULL : window.windowID);
 		}
 		
@@ -88,12 +88,12 @@ public class Window {
 		
 		window.windowID = displayHandle;
 		
-		if (!WindowSettings.windowSettings.isFullscreenEnabled()) {
-			GLFW.glfwSetWindowPos(window.windowID, (int)WindowSettings.windowSettings.getWindowPosition().x, (int)WindowSettings.windowSettings.getWindowPosition().y);
+		if (!GameOptions.gameOptions.isFullscreenEnabled()) {
+			GLFW.glfwSetWindowPos(window.windowID, (int)GameOptions.gameOptions.getWindowPosition().x, (int)GameOptions.gameOptions.getWindowPosition().y);
 		}
 		
 		GLFW.glfwMakeContextCurrent(window.windowID);
-		GLFW.glfwSwapInterval(WindowSettings.windowSettings.isVSyncEnabled() ? 1 : 0);
+		GLFW.glfwSwapInterval(GameOptions.gameOptions.isVSyncEnabled() ? 1 : 0);
 		GLFW.glfwShowWindow(window.windowID);
 		window.callbackManager = new CallbackManager(window.windowID);
 		
@@ -102,10 +102,10 @@ public class Window {
 		ModelBrickList.createModels();
 	}
 	
-	public static void saveSettings() {
+	public static void saveOptions() {
 		System.out.println("Saving!");
-		WindowSettings.windowSettings.storeSettingsInFile();
-		ControlSettings.controlSettings.storeSettingsInFile();
+		GameOptions.gameOptions.storeOptionsInFile();
+		ControlOptions.controlOptions.storeOptionsInFile();
 	}
 	
 	public static long getID() {

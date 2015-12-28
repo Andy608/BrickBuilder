@@ -17,9 +17,7 @@ public class MultiKeyControl extends AbstractKey {
 	}
 	
 	public void resetKeyBinding() {
-		for (int i = 0; i < defaultKey.length; i++) {
-			customKey[i] = defaultKey[i];
-		}
+		customKey = defaultKey.clone();
 	}
 	
 	public int[] getDefaultKeyBinding() {

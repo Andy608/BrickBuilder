@@ -1,5 +1,7 @@
 package com.bountive.graphics.view;
 
+import com.bountive.setting.ControlOptions;
+
 import math.Matrix4f;
 import math.Vector3f;
 
@@ -24,10 +26,27 @@ public class FlyingCamera extends AbstractCamera {
 		moveSpeed = defaultSpeed;
 	}
 	
+	//TODO: TEST THIS!!!
 	public void update(double deltaTime) {
+		if (ControlOptions.moveForwardKey.isPressed()) {
+			cameraPosition.x += (moveSpeed * deltaTime) * (float)(Math.sin(Math.toRadians(getYaw())));
+			cameraPosition.z -= (moveSpeed * deltaTime) * (float)(Math.cos(Math.toRadians(getYaw())));
+		}
 		
-		//
+		if (ControlOptions.moveBackwardKey.isPressed()) {
+			cameraPosition.x -= (moveSpeed * deltaTime) * (float)(Math.sin(Math.toRadians(getYaw())));
+			cameraPosition.z += (moveSpeed * deltaTime) * (float)(Math.cos(Math.toRadians(getYaw())));
+		}
 		
+		if (ControlOptions.moveLeftKey.isPressed()) {
+			cameraPosition.x += (moveSpeed * deltaTime) * (float)(Math.sin(Math.toRadians(getYaw() - 90)));
+			cameraPosition.z -= (moveSpeed * deltaTime) * (float)(Math.cos(Math.toRadians(getYaw() - 90)));
+		}
+		
+		if (ControlOptions.moveRightKey.isPressed()) {
+			cameraPosition.x += (moveSpeed * deltaTime) * (float)(Math.sin(Math.toRadians(getYaw() + 90)));
+			cameraPosition.z -= (moveSpeed * deltaTime) * (float)(Math.cos(Math.toRadians(getYaw() + 90)));
+		}
 	}
 	
 	@Override

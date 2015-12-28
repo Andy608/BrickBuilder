@@ -13,7 +13,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
-import com.bountive.util.logger.ErrorFileLogger;
+import com.bountive.util.logger.LoggerUtils;
 import com.bountive.util.resource.ResourceLocation;
 
 public abstract class AbstractShader {
@@ -52,7 +52,7 @@ public abstract class AbstractShader {
 		
 		GL20.glCompileShader(vertexShaderID);
 		if (GL20.glGetShaderi(vertexShaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
-			ErrorFileLogger.logError(Thread.currentThread(), new RuntimeException("[Unable to compile vertex shader: " + 
+			LoggerUtils.logError(Thread.currentThread(), new RuntimeException("[Unable to compile vertex shader: " + 
 			vertexLocation.getResourceName() + "] " + GL20.glGetShaderInfoLog(vertexShaderID, GL20.glGetShaderi(vertexShaderID, GL20.GL_INFO_LOG_LENGTH))));
 		}
 		GL20.glAttachShader(shaderProgramID, vertexShaderID);
@@ -69,7 +69,7 @@ public abstract class AbstractShader {
 		
 		GL20.glCompileShader(fragmentShaderID);
 		if (GL20.glGetShaderi(fragmentShaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
-			ErrorFileLogger.logError(Thread.currentThread(), new RuntimeException("[Unable to compile fragment shader: " + 
+			LoggerUtils.logError(Thread.currentThread(), new RuntimeException("[Unable to compile fragment shader: " + 
 			fragmentLocation.getResourceName() + "] " + GL20.glGetShaderInfoLog(fragmentShaderID, GL20.glGetShaderi(fragmentShaderID, GL20.GL_INFO_LOG_LENGTH))));
 		}
 		GL20.glAttachShader(shaderProgramID, fragmentShaderID);
@@ -82,7 +82,7 @@ public abstract class AbstractShader {
 		GL20.glLinkProgram(shaderProgramID);
 		
 		if (GL20.glGetProgrami(shaderProgramID, GL20.GL_LINK_STATUS) == GL11.GL_FALSE) {
-			ErrorFileLogger.logError(Thread.currentThread(), new IllegalStateException("Unable to link shader program. Vertex Shader: " + vertexLocation.getResourceName() 
+			LoggerUtils.logError(Thread.currentThread(), new IllegalStateException("Unable to link shader program. Vertex Shader: " + vertexLocation.getResourceName() 
 			+ ". Fragment Shader: " + fragmentLocation.getResourceName() + "."));
 		}
 	}
@@ -96,7 +96,7 @@ public abstract class AbstractShader {
 				shaderSource.append(s).append(System.lineSeparator());
 			}
 		} catch (IOException e) {
-			ErrorFileLogger.logError(Thread.currentThread(), e);
+			LoggerUtils.logError(Thread.currentThread(), e);
 		}
 		
 		return shaderSource.toString();

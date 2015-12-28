@@ -2,13 +2,17 @@ package com.bountive.setting.util;
 
 public class IntegerSetting extends AbstractFileSetting {
 
-	private int defaultSetting;
-	private int customSetting;
+	protected int defaultSetting;
+	protected int customSetting;
 	
-	public IntegerSetting(String fileName, int defaultint) {
+	protected IntegerSetting(String fileName) {
 		super(fileName);
-		defaultSetting = defaultint;
-		customSetting = defaultint;
+	}
+	
+	public IntegerSetting(String fileName, int defaultInteger) {
+		super(fileName);
+		defaultSetting = defaultInteger;
+		customSetting = defaultInteger;
 	}
 	
 	public void setCustomInteger(int customInteger) {

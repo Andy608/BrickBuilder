@@ -32,16 +32,9 @@ public class ModelManager {
 		vboList.add(vboID);
 	}
 	
-	public void releaseVAOs() {
-//		System.out.println(vaoList == null);
-		
-		for (int vao : vaoList) {
-			GL30.glDeleteVertexArrays(vao);
-		}
-	}
-	
 	public void release() {
-		releaseVAOs();
+		for (int vao : vaoList)
+			GL30.glDeleteVertexArrays(vao);
 		
 		for (int vbo : vboList)
 			GL15.glDeleteBuffers(vbo);
