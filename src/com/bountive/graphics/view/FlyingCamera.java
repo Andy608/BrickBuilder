@@ -36,15 +36,15 @@ public class FlyingCamera extends AbstractCamera {
 		Vector3f direction = new Vector3f();
 		
 		if (ControlOptions.moveForwardKey.isPressed()) {
-			direction.x += (float)(MathHelper.sin(getYaw()) * MathHelper.cos(getPitch()));//glitch when pressing w and space at 90 degree angle --> camera moves forward from rounding error.
+			direction.x += (float)(MathHelper.sin(getYaw()) * MathHelper.cos(getPitch()));
 			direction.y -= (float)(MathHelper.sin(getPitch()));//Pitch becomes negative as the player looks up --> making sin(pitch) negative.
-			direction.z -= (float)(MathHelper.cos(getYaw()) * MathHelper.cos(getPitch()));//glitch when pressing w and space at 90 degree angle --> camera moves forward from rounding error.
+			direction.z -= (float)(MathHelper.cos(getYaw()) * MathHelper.cos(getPitch()));
 		}
 		
 		if (ControlOptions.moveBackwardKey.isPressed()) {
-			direction.x -= (float)(MathHelper.sin(getYaw()) * MathHelper.cos(getPitch()));//glitch when pressing s and space at 90 degree angle --> camera moves backward from rounding error.
+			direction.x -= (float)(MathHelper.sin(getYaw()) * MathHelper.cos(getPitch()));
 			direction.y += (float)(MathHelper.sin(getPitch()));
-			direction.z += (float)(MathHelper.cos(getYaw()) * MathHelper.cos(getPitch()));//glitch when pressing s and space at 90 degree angle --> camera moves backward from rounding error.
+			direction.z += (float)(MathHelper.cos(getYaw()) * MathHelper.cos(getPitch()));
 		}
 		
 		if (ControlOptions.moveLeftKey.isPressed()) {
@@ -68,7 +68,6 @@ public class FlyingCamera extends AbstractCamera {
 		if (direction.lengthSquared() > 0) {
 			direction.normalise();
 			direction.scale((float)(deltaTime * moveSpeed));
-//			System.out.println(direction);
 			Vector3f.add(cameraPosition, direction, cameraPosition);
 		}
 		

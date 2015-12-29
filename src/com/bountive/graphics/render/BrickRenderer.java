@@ -76,8 +76,8 @@ public class BrickRenderer {
 	private void renderBrick(Brick b, ModelMesh m) {
 		brickShader.loadTransformationMatrix(MatrixMathHelper.buildTransformationMatrix(new Vector3f(0, 0, -10), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1)));//TEMP - should use the transformation of the brick.
 		
-		GL20.glEnableVertexAttribArray(0);//position
-		GL20.glEnableVertexAttribArray(1);//color
+		GL20.glEnableVertexAttribArray(0);
+		GL20.glEnableVertexAttribArray(1);
 		GL11.glDrawElements(GL11.GL_TRIANGLES, m.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
 		GL20.glDisableVertexAttribArray(1);
 		GL20.glDisableVertexAttribArray(0);

@@ -88,7 +88,6 @@ public abstract class AbstractBaseOptions {
 		try {
 			i = Integer.parseInt(fileOption.substring(fileOption.indexOf(delimiter) + 1));
 		} catch (NumberFormatException e) {
-//			LoggerUtils.logWarn(getClass(), "Did you edit this file? Unable to get saved option. Using default instead.", true);
 			throw e;
 		}
 		return i;

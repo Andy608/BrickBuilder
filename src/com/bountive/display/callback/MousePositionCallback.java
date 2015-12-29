@@ -15,8 +15,6 @@ public class MousePositionCallback extends GLFWCursorPosCallback {
 	public void invoke(long windowID, double xpos, double ypos) {
 		Vector2f windowSize = Window.getWindowSize();
 		
-//		System.out.println(windowSize);
-		
 		mousePos.set((float)xpos, (float)ypos);
 		
 		int width = (((int)windowSize.x & 1) == 0) ? (int)windowSize.x : (int)windowSize.x - 1;

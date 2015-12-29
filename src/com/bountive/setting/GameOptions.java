@@ -30,8 +30,9 @@ public final class GameOptions extends AbstractBaseOptions {
 	
 	private BooleanSetting isPerspective;
 	private ClampedIntegerSetting fieldOfView;
-
-	//	private IntegerSetting maxFrameRate;
+	
+	//private ClampedIntegerSetting mouseSensitivity;
+	//private IntegerSetting maxFrameRate;
 	
 	private GameOptions() {
 		gameOptions = this;
