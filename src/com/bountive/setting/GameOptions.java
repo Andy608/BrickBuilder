@@ -4,13 +4,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
 
 import math.Vector2f;
 
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWvidmode;
-
+import com.bountive.display.Window;
+import com.bountive.graphics.view.CameraMatrixManager;
 import com.bountive.setting.util.BooleanSetting;
 import com.bountive.setting.util.ClampedIntegerSetting;
 import com.bountive.setting.util.Vector2fSetting;
@@ -25,20 +23,20 @@ public final class GameOptions extends AbstractBaseOptions {
 	
 	private Vector2fSetting windowSize;
 	private Vector2fSetting windowPosition;
-	
 	private BooleanSetting saveWindowState;
+	
 	private BooleanSetting vSync;
 	private BooleanSetting fullscreen;
-	private BooleanSetting isPerspective;
 	
+	private BooleanSetting isPerspective;
 	private ClampedIntegerSetting fieldOfView;
-//	private IntegerSetting maxFrameRate;
+
+	//	private IntegerSetting maxFrameRate;
 	
 	private GameOptions() {
 		gameOptions = this;
 	}
 	
-	//TODO: Maybe change this to just print a warning message than crash the game.
 	public static void init() throws IllegalStateException {
 		if (gameOptions == null) {
 			new GameOptions();
@@ -51,14 +49,16 @@ public final class GameOptions extends AbstractBaseOptions {
 	
 	@Override
 	protected void initDefaultOptions() {
-		ByteBuffer display = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
-		windowSize = new Vector2fSetting("window_size", new Vector2f(GLFWvidmode.width(display) / 2, GLFWvidmode.height(display) / 2));
-		windowPosition = new Vector2fSetting("window_position", new Vector2f((GLFWvidmode.width(display) - windowSize.getDefaultVector2f().x) / 2, (GLFWvidmode.height(display) - windowSize.getDefaultVector2f().y) / 2));
+		//Window state options
+		windowSize = new Vector2fSetting("window_size", new Vector2f(Window.getPrimaryMonitorWidth() / 2, Window.getPrimaryMonitorHeight() / 2));
+		windowPosition = new Vector2fSetting("window_position", new Vector2f((Window.getPrimaryMonitorWidth() - windowSize.getDefaultVector2f().x) / 2, (Window.getPrimaryMonitorHeight() - windowSize.getDefaultVector2f().y) / 2));
 		saveWindowState = new BooleanSetting("save_window_state", true);
+		
+		//Graphics options
 		vSync = new BooleanSetting("vsync", true);
 		fullscreen = new BooleanSetting("fullscreen", false);
-		isPerspective = new BooleanSetting("perspective", true);
 		
+		isPerspective = new BooleanSetting("perspective", true);
 		fieldOfView = new ClampedIntegerSetting("FOV", 30, 110, 69);
 	}
 	
@@ -80,8 +80,7 @@ public final class GameOptions extends AbstractBaseOptions {
 							int width = getSingleIntegerFromOption(s, (int)windowSize.getDefaultVector2f().x, DEFAULT_DELIMITER, SEPARATOR);
 							int height = getSingleIntegerFromOption(s, (int)windowSize.getDefaultVector2f().y, SEPARATOR);
 							
-							ByteBuffer primaryMonitor = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
-							if (width == GLFWvidmode.width(primaryMonitor)) {
+							if (width == Window.getPrimaryMonitorWidth()) {
 								windowSize.resetVector2f();
 							}
 							else {
@@ -130,7 +129,7 @@ public final class GameOptions extends AbstractBaseOptions {
 				}
 			}
 			catch (Exception e) {
-				LoggerUtils.logWarn(Thread.currentThread(), e, GAME_OPTIONS.getResourceName() + " is corrupt! Using default values.", false);
+				LoggerUtils.logWarn(Thread.currentThread(), e, GAME_OPTIONS.getResourceName() + " is corrupt! Using default values.", true);
 			}
 		}
 		else {
@@ -176,7 +175,7 @@ public final class GameOptions extends AbstractBaseOptions {
 		return true;
 	}
 	
-	public Vector2f getWindowSize() {
+	public Vector2f getSavedWindowSize() {
 		return windowSize.getCustomVector2f();
 	}
 	
@@ -214,13 +213,14 @@ public final class GameOptions extends AbstractBaseOptions {
 	
 	public void setFOV(int fov) {
 		fieldOfView.setCustomInteger(fov);
+		CameraMatrixManager.manager.buildProjectionMatrix();
 	}
 	
 	public int getFOV() {
 		return fieldOfView.getCustomInteger();
 	}
 	
-	public void updateWindowSize(int x, int y) {
+	public void updateSavedWindowSize(int x, int y) {
 		windowSize.setCustomVector2f(x, y);
 	}
 	

@@ -2,6 +2,7 @@ package com.bountive.display.callback;
 
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
@@ -20,6 +21,7 @@ public class CallbackManager {
 	private GLFWWindowPosCallback windowPositionCallback;
 	
 	private GLFWKeyCallback keyCallback;
+	private GLFWCursorPosCallback mousePosCallback;
 	
 	public CallbackManager(long windowID) {
 		GLFW.glfwSetErrorCallback(errorCallback = Callbacks.errorCallbackPrint(System.err));
@@ -31,6 +33,7 @@ public class CallbackManager {
 		GLFW.glfwSetWindowPosCallback(windowID, windowPositionCallback = new WindowPositionCallback());
 		
 		GLFW.glfwSetKeyCallback(windowID, keyCallback = new KeyboardCallback());
+		GLFW.glfwSetCursorPosCallback(windowID, mousePosCallback = new MousePositionCallback());
 	}
 	
 	public void release() {
@@ -40,5 +43,6 @@ public class CallbackManager {
 		frameBufferSizeCallback.release();
 		windowPositionCallback.release();
 		keyCallback.release();
+		mousePosCallback.release();
 	}
 }

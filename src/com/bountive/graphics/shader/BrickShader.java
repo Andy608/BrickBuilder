@@ -1,10 +1,11 @@
-package com.bountive.graphics.shader;
-
-public class BrickShader extends EntityShader {
-	
-	//WILL MAKE UNIQUE IN THE FUTURE.
-	
-	public BrickShader() {
-		super();
-	}
-}
+//package com.bountive.graphics.shader;
+//
+//public abstract class BrickShader extends EntityShader {
+//	
+//	public BrickShader() {
+//		super();
+//	}
+//
+//	@Override
+//	protected void bindUniformVariables() {}
+//}

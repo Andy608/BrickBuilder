@@ -15,10 +15,10 @@ import com.bountive.util.resource.ResourceLocation;
 public class LoggerUtils implements Thread.UncaughtExceptionHandler {
 
 	private static final Logger consoleLogger = Logger.getLogger(LoggerUtils.class);
-	private static final ResourceLocation ERROR_LOG_DIR = new ResourceLocation(ResourceLocation.APPDATA_DIRECTORY, "/log");
+	private static final ResourceLocation LOG_DIR = new ResourceLocation(ResourceLocation.APPDATA_DIRECTORY, "/logs");
 	private static final String s = System.lineSeparator();
 	
-	private static final String DATE_FORMAT = "dd MM yyyy HH mm ss";
+	private static final String DATE_FORMAT = "dd_MM_yyyy HH_mm_ss";
 	
 	@Override
 	public void uncaughtException(Thread t, Throwable e) {
@@ -35,7 +35,7 @@ public class LoggerUtils implements Thread.UncaughtExceptionHandler {
 		String date = getDate(DATE_FORMAT);
 		String message = s + "---------- " + Info.NAME + " Error Report ----------" + s + s + date
 				+ s + s + "Uh oh, I'm going down. Save yourself!" + s + s
-				+ "Details about the crash is listed below" + s
+				+ "Details about the crash are listed below" + s
 				+ "---------------------------------------" + s + s +
 				"Crash occured in class: " + t.getName();
 		
@@ -47,7 +47,7 @@ public class LoggerUtils implements Thread.UncaughtExceptionHandler {
 		String date = getDate(DATE_FORMAT);
 		String message = s + "---------- " + Info.NAME + " Warning Report ----------" + s + s + date
 				+ s + s + "Keep calm! I can get back up from this!" + s + s
-				+ "Details about the crash is listed below" + s
+				+ "Details about the crash are listed below" + s
 				+ "---------------------------------------" + s + s +
 				"Crash occured in class: " + t.getName() + " | " + warnMessage;
 		
@@ -62,7 +62,7 @@ public class LoggerUtils implements Thread.UncaughtExceptionHandler {
 	}
 	
 	private static void logToErrorFile(String date, String message, Throwable e) {
-		File f = new File(ERROR_LOG_DIR.getFullPath());
+		File f = new File(LOG_DIR.getFullPath());
 		boolean append = false;
 		if (f.exists()) {
 			append = true;
@@ -71,7 +71,7 @@ public class LoggerUtils implements Thread.UncaughtExceptionHandler {
 			f.mkdirs();
 		}
 		
-		ResourceLocation fileName = new ResourceLocation(ERROR_LOG_DIR.getFullPath(), "/error_report_" + date + ".txt");
+		ResourceLocation fileName = new ResourceLocation(LOG_DIR.getFullPath(), "/log_report_" + date + ".txt");
 		
 		try (PrintStream writer = new PrintStream(new FileOutputStream(fileName.getFullPath(), append))) {
 			writer.println(message + s);

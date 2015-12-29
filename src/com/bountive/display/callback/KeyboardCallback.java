@@ -26,12 +26,29 @@ public class KeyboardCallback extends GLFWKeyCallback {
 			else if (ControlOptions.fullscreenKey.equals(key)) {
 				GameOptions.gameOptions.setFullscreen(!GameOptions.gameOptions.isFullscreenEnabled());
 				Window.buildScreen();
+//				GameOptions.gameOptions.setPerspective(!GameOptions.gameOptions.isPerspective());
+//				CameraMatrixManager.manager.buildProjectionMatrix();
 			}
 			else if (ControlOptions.moveForwardKey.equals(key)) {
 				ControlOptions.moveForwardKey.setPressed(false);
 			}
 			else if (ControlOptions.moveBackwardKey.equals(key)) {
 				ControlOptions.moveBackwardKey.setPressed(false);
+			}
+			else if (ControlOptions.moveLeftKey.equals(key)) {
+				ControlOptions.moveLeftKey.setPressed(false);
+			}
+			else if (ControlOptions.moveRightKey.equals(key)) {
+				ControlOptions.moveRightKey.setPressed(false);
+			}
+			else if (ControlOptions.jumpKey.equals(key)) {
+				ControlOptions.jumpKey.setPressed(false);
+			}
+			else if (ControlOptions.duckKey.equals(key)) {
+				ControlOptions.duckKey.setPressed(false);
+			}
+			else if (ControlOptions.pauseKey.equals(key)) {
+				ControlOptions.pauseKey.setPressed(!ControlOptions.pauseKey.isPressed());
 			}
 		}
 		else if (action == GLFW.GLFW_PRESS) {
@@ -49,6 +66,12 @@ public class KeyboardCallback extends GLFWKeyCallback {
 			}
 			else if (ControlOptions.moveRightKey.equals(key)) {
 				ControlOptions.moveRightKey.setPressed(true);
+			}
+			else if (ControlOptions.jumpKey.equals(key)) {
+				ControlOptions.jumpKey.setPressed(true);
+			}
+			else if (ControlOptions.duckKey.equals(key)) {
+				ControlOptions.duckKey.setPressed(true);
 			}
 		}
 	}

@@ -24,12 +24,13 @@ public class Window {
 	private static Window window;
 	private long windowID;
 	private CallbackManager callbackManager;
+	private static Vector2f primaryMonitorSize;
 	
 	private Window() {
 		window = this;
 	}
 	
-	public static void init() throws IllegalStateException {
+	public static void init() throws IllegalStateException, RuntimeException {
 		if (window == null) {
 			window = new Window();
 		}
@@ -40,13 +41,15 @@ public class Window {
 		
 		try {
 			initGLFW();
+			ByteBuffer primaryMonitor = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
+			primaryMonitorSize = new Vector2f(GLFWvidmode.width(primaryMonitor), GLFWvidmode.height(primaryMonitor));
+			
 			GameOptions.init();
 			GameOptions.gameOptions.loadOptionsFromFile();
 			
 			ControlOptions.init();
 			ControlOptions.controlOptions.loadOptionsFromFile();
 			
-			createWindow();
 		} catch (RuntimeException e) {
 			LoggerUtils.logError(Thread.currentThread(), e);
 		}
@@ -58,7 +61,7 @@ public class Window {
 		}
 	}
 	
-	private static void createWindow() throws RuntimeException {
+	public static void createWindow() throws RuntimeException {
 		GLFW.glfwDefaultWindowHints();
 		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GL11.GL_FALSE);
 		buildScreen();
@@ -69,11 +72,10 @@ public class Window {
 		long displayHandle;
 		
 		if (GameOptions.gameOptions.isFullscreenEnabled()) {
-			ByteBuffer primaryMonitor = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
-			displayHandle = GLFW.glfwCreateWindow(GLFWvidmode.width(primaryMonitor), GLFWvidmode.height(primaryMonitor), TITLE, GLFW.glfwGetPrimaryMonitor(), window.windowID);
+			displayHandle = GLFW.glfwCreateWindow(getPrimaryMonitorWidth(), getPrimaryMonitorHeight(), TITLE, GLFW.glfwGetPrimaryMonitor(), window.windowID);
 		}
 		else {
-			Vector2f windowSize = GameOptions.gameOptions.getWindowSize();
+			Vector2f windowSize = GameOptions.gameOptions.getSavedWindowSize();
 			displayHandle = GLFW.glfwCreateWindow((int)windowSize.x, (int)windowSize.y, TITLE, MemoryUtil.NULL, (window.windowID == MemoryUtil.NULL) ? MemoryUtil.NULL : window.windowID);
 		}
 		
@@ -110,6 +112,22 @@ public class Window {
 	
 	public static long getID() {
 		return window.windowID;
+	}
+	
+	public static int getPrimaryMonitorWidth() {
+		return (int)primaryMonitorSize.x;
+	}
+	
+	public static int getPrimaryMonitorHeight() {
+		return (int)primaryMonitorSize.y;
+	}
+	
+	public static Vector2f getPrimaryMonitorSize() {
+		return primaryMonitorSize;
+	}
+	
+	public static Vector2f getWindowSize() {
+		return GameOptions.gameOptions.isFullscreenEnabled() ? Window.getPrimaryMonitorSize() : GameOptions.gameOptions.getSavedWindowSize();
 	}
 	
 	public static void release() {

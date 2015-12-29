@@ -1,9 +1,11 @@
 package com.bountive.graphics.view;
 
-import com.bountive.setting.ControlOptions;
-
-import math.Matrix4f;
 import math.Vector3f;
+
+import com.bountive.display.callback.MousePositionCallback;
+import com.bountive.setting.ControlOptions;
+import com.bountive.util.math.MathHelper;
+import com.bountive.util.math.MatrixMathHelper;
 
 public class FlyingCamera extends AbstractCamera {
 
@@ -26,37 +28,63 @@ public class FlyingCamera extends AbstractCamera {
 		moveSpeed = defaultSpeed;
 	}
 	
-	//TODO: TEST THIS!!!
+	@Override
 	public void update(double deltaTime) {
+		
+		//TODO: MOST OF THIS WILL BE USED TO MOVE THE PLAYER'S POSITION. FOR NOW, IM USING THIS CAMERA AS THE PLAYER.
+		
+		Vector3f direction = new Vector3f();
+		
 		if (ControlOptions.moveForwardKey.isPressed()) {
-			cameraPosition.x += (moveSpeed * deltaTime) * (float)(Math.sin(Math.toRadians(getYaw())));
-			cameraPosition.z -= (moveSpeed * deltaTime) * (float)(Math.cos(Math.toRadians(getYaw())));
+			direction.x += (float)(MathHelper.sin(getYaw()) * MathHelper.cos(getPitch()));//glitch when pressing w and space at 90 degree angle --> camera moves forward from rounding error.
+			direction.y -= (float)(MathHelper.sin(getPitch()));//Pitch becomes negative as the player looks up --> making sin(pitch) negative.
+			direction.z -= (float)(MathHelper.cos(getYaw()) * MathHelper.cos(getPitch()));//glitch when pressing w and space at 90 degree angle --> camera moves forward from rounding error.
 		}
 		
 		if (ControlOptions.moveBackwardKey.isPressed()) {
-			cameraPosition.x -= (moveSpeed * deltaTime) * (float)(Math.sin(Math.toRadians(getYaw())));
-			cameraPosition.z += (moveSpeed * deltaTime) * (float)(Math.cos(Math.toRadians(getYaw())));
+			direction.x -= (float)(MathHelper.sin(getYaw()) * MathHelper.cos(getPitch()));//glitch when pressing s and space at 90 degree angle --> camera moves backward from rounding error.
+			direction.y += (float)(MathHelper.sin(getPitch()));
+			direction.z += (float)(MathHelper.cos(getYaw()) * MathHelper.cos(getPitch()));//glitch when pressing s and space at 90 degree angle --> camera moves backward from rounding error.
 		}
 		
 		if (ControlOptions.moveLeftKey.isPressed()) {
-			cameraPosition.x += (moveSpeed * deltaTime) * (float)(Math.sin(Math.toRadians(getYaw() - 90)));
-			cameraPosition.z -= (moveSpeed * deltaTime) * (float)(Math.cos(Math.toRadians(getYaw() - 90)));
+			direction.x += (float)(MathHelper.sin(getYaw() - 90));
+			direction.z -= (float)(MathHelper.cos(getYaw() - 90));
 		}
 		
 		if (ControlOptions.moveRightKey.isPressed()) {
-			cameraPosition.x += (moveSpeed * deltaTime) * (float)(Math.sin(Math.toRadians(getYaw() + 90)));
-			cameraPosition.z -= (moveSpeed * deltaTime) * (float)(Math.cos(Math.toRadians(getYaw() + 90)));
+			direction.x -= (float)(MathHelper.sin(getYaw() - 90));
+			direction.z += (float)(MathHelper.cos(getYaw() - 90));
 		}
+		
+		if (ControlOptions.jumpKey.isPressed()) {
+			direction.y += 1;
+		}
+		
+		if (ControlOptions.duckKey.isPressed()) {
+			direction.y -= 1;
+		}
+		
+		if (direction.lengthSquared() > 0) {
+			direction.normalise();
+			direction.scale((float)(deltaTime * moveSpeed));
+//			System.out.println(direction);
+			Vector3f.add(cameraPosition, direction, cameraPosition);
+		}
+		
+		cameraRotation.y += /*sensitivity*/ 10 * (float)Math.toRadians(MousePositionCallback.getMouseOffset().x);
+		cameraRotation.x = MathHelper.clampFloat(cameraRotation.x + /*sensitivity*/ 10 * (float)Math.toRadians(MousePositionCallback.getMouseOffset().y), -90, 90);
+		
+		createViewMatrix();
 	}
 	
 	@Override
 	protected void createViewMatrix() {
 		viewMatrix.setIdentity();
-		Matrix4f.rotate((float)Math.toRadians(getPitch()), X_AXIS, viewMatrix, viewMatrix);
-		Matrix4f.rotate((float)Math.toRadians(getYaw()), Y_AXIS, viewMatrix, viewMatrix);
-		Matrix4f.rotate((float)Math.toRadians(getRoll()), Z_AXIS, viewMatrix, viewMatrix);
-		Vector3f oppositePosition = new Vector3f(-cameraPosition.x, -cameraPosition.y, -cameraPosition.z);
-		Matrix4f.translate(oppositePosition, viewMatrix, viewMatrix);
+		viewMatrix.rotate((float)Math.toRadians(getPitch()), MatrixMathHelper.X_AXIS);
+		viewMatrix.rotate((float)Math.toRadians(getYaw()), MatrixMathHelper.Y_AXIS);
+		viewMatrix.rotate((float)Math.toRadians(getRoll()), MatrixMathHelper.Z_AXIS);
+		viewMatrix.translate(new Vector3f(-cameraPosition.x, -cameraPosition.y, -cameraPosition.z));
 	}
 	
 	public float getMoveSpeed() {

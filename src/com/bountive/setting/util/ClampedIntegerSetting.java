@@ -15,14 +15,14 @@ public class ClampedIntegerSetting extends IntegerSetting {
 	 */
 	public ClampedIntegerSetting(String fileName, int min, int max, int defaultInteger) throws IllegalArgumentException {
 		super(fileName);
-		defaultSetting = MathHelper.clamp(min, max, defaultInteger);
+		defaultSetting = MathHelper.clampInt(defaultInteger, min, max);
 		MIN = min;
 		MAX = max;
 	}
 	
 	@Override
 	public void setCustomInteger(int customInteger) {
-		customSetting = MathHelper.clamp(MIN, MAX, customInteger);
+		customSetting = MathHelper.clampInt(customInteger, MIN, MAX);
 	}
 
 	public int getMax() {

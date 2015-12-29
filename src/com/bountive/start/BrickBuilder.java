@@ -1,5 +1,7 @@
 package com.bountive.start;
 
+import math.Vector2f;
+
 import org.apache.log4j.Logger;
 import org.lwjgl.Sys;
 import org.lwjgl.glfw.GLFW;
@@ -11,7 +13,9 @@ import com.bountive.brick.ClayBrick;
 import com.bountive.display.Window;
 import com.bountive.graphics.model.ModelBrickList;
 import com.bountive.graphics.render.BrickRenderer;
+import com.bountive.graphics.view.FlyingCamera;
 import com.bountive.init.InitializationHandler;
+import com.bountive.setting.ControlOptions;
 import com.bountive.util.logger.LoggerUtils;
 
 public final class BrickBuilder {
@@ -31,8 +35,11 @@ public final class BrickBuilder {
 	private double deltaTime;
 	private double elapsedTime;
 	
-	private BrickRenderer renderer;
-	private ClayBrick brick;
+	//TODO: MOVE THESE TO CORRECT SPOTS.
+	private BrickRenderer renderer; // <-- Will be handled by the world rendering system.
+	private ClayBrick brick; // <-- Will be handled by the world generation system.
+	private FlyingCamera c; // <-- Will be attached to a player.
+	/////////////////////////////
 	
 	public BrickBuilder() {
 		instance = this;
@@ -57,11 +64,19 @@ public final class BrickBuilder {
 	}
 	
 	private void loop() {
-		GL.createCapabilities();
-		ModelBrickList.createModels();//TEMP. TODO: Move createCapabilities and model initialization to somewhere else.
+		//TEMP. TODO: Move createCapabilities and model initialization to somewhere else.
+		GL.createCapabilities();									//////
+		ModelBrickList.createModels();								//////
+																	//////
+		renderer = new BrickRenderer();								//////
+		brick = new ClayBrick(Brick.EnumBrickModel.FULL_1x1);		//////
+		c = new FlyingCamera();										//////
 		
-		renderer = new BrickRenderer();
-		brick = new ClayBrick(Brick.EnumBrickModel.FULL_1x1);
+		
+		Vector2f windowSize = Window.getWindowSize(); //TODO: Move this to the world loading code.
+		GLFW.glfwSetCursorPos(Window.getID(), windowSize.x / 2f, windowSize.y / 2f); 	//////////////
+		
+		//////////////////////////////////////////////////////////////////
 		
 		lastTime = GLFW.glfwGetTime();
 		
@@ -87,6 +102,14 @@ public final class BrickBuilder {
 	private void update(double deltaTime) {
 		tickCount++;
 		
+		//////TODO:Move this to somewhere better.
+		if (!ControlOptions.pauseKey.isPressed()) {
+			Vector2f windowSize = Window.getWindowSize();
+			GLFW.glfwSetCursorPos(Window.getID(), windowSize.x / 2f, windowSize.y / 2f);
+			c.update(deltaTime);
+		}
+		//////
+		
 		if (tickCount % TICKS_PER_SECOND == 0) {
 			System.out.println("Ticks: " + tickCount + ", Frames: " + frameCount);
 			tickCount = 0;
@@ -101,7 +124,7 @@ public final class BrickBuilder {
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		
 		renderer.addBrickToBatch(brick);
-		renderer.render();
+		renderer.render(c);
 		
 		GLFW.glfwSwapBuffers(Window.getID());
 	}

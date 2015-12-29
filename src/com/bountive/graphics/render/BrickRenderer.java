@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import math.Vector3f;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
@@ -12,16 +14,19 @@ import org.lwjgl.opengl.GL30;
 import com.bountive.brick.Brick;
 import com.bountive.graphics.model.ModelBrickList;
 import com.bountive.graphics.model.ModelMesh;
-import com.bountive.graphics.shader.BrickShader;
+import com.bountive.graphics.shader.EntityShader;
+import com.bountive.graphics.view.AbstractCamera;
+import com.bountive.graphics.view.CameraMatrixManager;
+import com.bountive.util.math.MatrixMathHelper;
 
 public class BrickRenderer {
 
-	private BrickShader brickShader;
+	private EntityShader brickShader;
 	
 	private Map<Brick.EnumBrickModel, List<Brick>> bricks;
 	
 	public BrickRenderer() {
-		brickShader = new BrickShader();
+		brickShader = new EntityShader();
 		bricks = new HashMap<Brick.EnumBrickModel, List<Brick>>();
 	}
 	
@@ -41,8 +46,10 @@ public class BrickRenderer {
 		}
 	}
 	
-	public void render() {
+	public void render(AbstractCamera c) {
 		brickShader.bind();
+		brickShader.loadProjectionMatrix(CameraMatrixManager.manager.getProjectionMatrix());
+		brickShader.loadViewMatrix(c.getViewMatrix());
 		for (Brick.EnumBrickModel modelType : bricks.keySet()) {
 			
 			ModelMesh mesh = bindModel(modelType);
@@ -67,6 +74,8 @@ public class BrickRenderer {
 	}
 	
 	private void renderBrick(Brick b, ModelMesh m) {
+		brickShader.loadTransformationMatrix(MatrixMathHelper.buildTransformationMatrix(new Vector3f(0, 0, -10), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1)));//TEMP - should use the transformation of the brick.
+		
 		GL20.glEnableVertexAttribArray(0);//position
 		GL20.glEnableVertexAttribArray(1);//color
 		GL11.glDrawElements(GL11.GL_TRIANGLES, m.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
