@@ -5,7 +5,7 @@ import math.Vector2f;
 
 import com.bountive.display.Window;
 import com.bountive.setting.GameOptions;
-import com.bountive.util.logger.LoggerUtils;
+import com.bountive.util.logger.LoggerUtil;
 
 /**
  * This class keeps track of
@@ -30,7 +30,7 @@ public class CameraMatrixManager {
 			manager.initMatrices();
 		}
 		else {
-			LoggerUtils.logWarn(Thread.currentThread(), manager.getClass().getSimpleName() + " is already initialized.");
+			LoggerUtil.logWarn(Thread.currentThread(), manager.getClass().getSimpleName() + " is already initialized.");
 		}
 	}
 	

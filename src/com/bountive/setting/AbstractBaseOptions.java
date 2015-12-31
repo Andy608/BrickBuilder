@@ -5,12 +5,15 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import math.Vector2f;
 
+import com.bountive.util.ArrayUtil;
 import com.bountive.util.SystemUtil;
 import com.bountive.util.SystemUtil.EnumOS;
+import com.bountive.util.logger.LoggerUtil;
 import com.bountive.util.resource.ResourceLocation;
 
 public abstract class AbstractBaseOptions {
@@ -61,7 +64,10 @@ public abstract class AbstractBaseOptions {
 	}
 	
 	protected boolean getBooleanValue(Boolean savedValue, boolean defaultValue) {
-		if (savedValue == null) return defaultValue;
+		if (savedValue == null) {
+			LoggerUtil.logWarn(Thread.currentThread(), "Boolean value cannot be null. Return default.");
+			return defaultValue;
+		}
 		else return savedValue.booleanValue();
 	}
 	
@@ -84,22 +90,65 @@ public abstract class AbstractBaseOptions {
 	}
 	
 	protected int getSingleIntegerFromOption(String fileOption, int defaultValue, char delimiter) throws NumberFormatException {
-		int i = defaultValue;
 		try {
-			i = Integer.parseInt(fileOption.substring(fileOption.indexOf(delimiter) + 1));
+			return Integer.parseInt(fileOption.substring(fileOption.indexOf(delimiter) + 1));
 		} catch (NumberFormatException e) {
-			throw e;
+			LoggerUtil.logWarn(Thread.currentThread(), e, "Could not parse integer from string. Returning default.", false);
+			return defaultValue;
 		}
-		return i;
 	}
 	
-	protected int getSingleIntegerFromOption(String fileOption, int defaultValue, char startingDelimiter, char endingDelimiter) throws NumberFormatException {
-		int i = defaultValue;
+	protected int getSingleIntegerFromOption(String fileOption, int defaultValue, char startingDelimiter, char endingDelimiter) {
 		try {
-			i = Integer.parseInt(fileOption.substring(fileOption.indexOf(startingDelimiter) + 1, fileOption.indexOf(endingDelimiter)));
+			return Integer.parseInt(fileOption.substring(fileOption.indexOf(startingDelimiter) + 1, fileOption.indexOf(endingDelimiter)));
 		} catch (NumberFormatException e) {
-			throw e;
+			LoggerUtil.logWarn(Thread.currentThread(), e, "Could not parse integer from string. Returning default.", false);
+			return defaultValue;
 		}
-		return i;
+	}
+	
+	protected float getSingleFloatFromOption(String fileOption, float defaultValue, char delimiter) {
+		try {
+			return Float.parseFloat(fileOption.substring(fileOption.indexOf(delimiter) + 1));
+		} catch (NumberFormatException e) {
+			LoggerUtil.logWarn(Thread.currentThread(), e, "Could not parse float from string. Returning default.", false);
+			return defaultValue;
+		}
+	}
+	
+	protected int[] getMultipleIntegersFromOption(String fileOption, int[] defaultValue, char startingDelimiter, char inBetweenDelimiter) throws NumberFormatException {
+		List<Integer> customValues = new ArrayList<Integer>();
+		
+		try {
+			int startDelimiterIndex = 0, endDelimiterIndex;
+			char[] fileOptionCharArray = fileOption.toCharArray();
+			for (int i = 0; i < fileOptionCharArray.length; i++) {
+				//if i == startingDelimiter, wait for inBetweenDelimiter.
+				//once at inBetweenDelimiter, add string from startingDelimiter to inBetweenDelimiter to arrayList.
+				//if i == inBetweenDelimiter, wait for inBetweenDelimiter.
+				//once at inBetweenDelimiter, add string from inBetweenDelimiter to inBetweenDelimiter to arrayList.
+				//if reach the end of string, add from beginningDelimiter to end of string to arrayList.
+				
+				if (fileOptionCharArray[i] == startingDelimiter) {
+					startDelimiterIndex = i;
+				}
+				else if (fileOptionCharArray[i] == inBetweenDelimiter) {
+					if (fileOptionCharArray[startDelimiterIndex] == startingDelimiter || fileOptionCharArray[startDelimiterIndex] == inBetweenDelimiter) {
+						endDelimiterIndex = i;
+						customValues.add(Integer.parseInt(fileOption.substring(startDelimiterIndex + 1, endDelimiterIndex)));
+						startDelimiterIndex = i;
+					}
+				}
+				else if (i == fileOptionCharArray.length - 1) {
+					customValues.add(Integer.parseInt(fileOption.substring(startDelimiterIndex + 1)));
+				}
+			}
+			
+			return ArrayUtil.convertListToIntegerArray(customValues);
+			
+		} catch (NumberFormatException e) {
+			LoggerUtil.logWarn(Thread.currentThread(), e, "Could not parse multiple integers from string. Returning default.", false);
+			return defaultValue;
+		}
 	}
 }

@@ -13,7 +13,7 @@ public class ClampedIntegerSetting extends IntegerSetting {
 	 * @param defaultInteger : The default value. Should be in between the min and max.
 	 * @throws IllegalArgumentException when the min is greater than the max, max is less than the min, or min is equal to the max.
 	 */
-	public ClampedIntegerSetting(String fileName, int min, int max, int defaultInteger) throws IllegalArgumentException {
+	public ClampedIntegerSetting(String fileName, int defaultInteger, int min, int max) throws IllegalArgumentException {
 		super(fileName);
 		defaultSetting = MathHelper.clampInt(defaultInteger, min, max);
 		MIN = min;

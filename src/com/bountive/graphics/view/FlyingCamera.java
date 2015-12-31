@@ -71,8 +71,8 @@ public class FlyingCamera extends AbstractCamera {
 			Vector3f.add(cameraPosition, direction, cameraPosition);
 		}
 		
-		cameraRotation.y += /*sensitivity*/ 10 * (float)Math.toRadians(MousePositionCallback.getMouseOffset().x);
-		cameraRotation.x = MathHelper.clampFloat(cameraRotation.x + /*sensitivity*/ 10 * (float)Math.toRadians(MousePositionCallback.getMouseOffset().y), -90, 90);
+		cameraRotation.y += ControlOptions.mouseSensitivity.getValue() * (float)Math.toRadians(MousePositionCallback.getMouseOffsetX());
+		cameraRotation.x = MathHelper.clampFloat(cameraRotation.x + ControlOptions.mouseSensitivity.getValue() * (float)Math.toRadians(MousePositionCallback.getMouseOffsetY()), -90, 90);
 		
 		createViewMatrix();
 	}

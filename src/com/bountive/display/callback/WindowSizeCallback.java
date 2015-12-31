@@ -14,7 +14,8 @@ public class WindowSizeCallback extends GLFWWindowSizeCallback {
 			GameOptions.gameOptions.updateSavedWindowSize(width, height);
 		}
 		
-		if (CameraMatrixManager.manager != null)//TODO: if on game screen...
+		if (CameraMatrixManager.manager != null) {//TODO: if on game screen...
 			CameraMatrixManager.manager.buildProjectionMatrix();
+		}
 	}
 }

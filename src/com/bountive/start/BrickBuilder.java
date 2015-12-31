@@ -11,12 +11,13 @@ import org.lwjgl.opengl.GL11;
 import com.bountive.brick.Brick;
 import com.bountive.brick.ClayBrick;
 import com.bountive.display.Window;
+import com.bountive.display.callback.MousePositionCallback;
 import com.bountive.graphics.model.ModelBrickList;
 import com.bountive.graphics.render.BrickRenderer;
 import com.bountive.graphics.view.FlyingCamera;
 import com.bountive.init.InitializationHandler;
 import com.bountive.setting.ControlOptions;
-import com.bountive.util.logger.LoggerUtils;
+import com.bountive.util.logger.LoggerUtil;
 
 public final class BrickBuilder {
 
@@ -53,7 +54,7 @@ public final class BrickBuilder {
 			InitializationHandler.init();
 			loop();
 		} catch (Exception e) {
-			LoggerUtils.logError(Thread.currentThread(), e);
+			LoggerUtil.logError(Thread.currentThread(), e);
 		} finally {
 			Window.saveOptions();
 			renderer.release();
@@ -103,9 +104,8 @@ public final class BrickBuilder {
 		tickCount++;
 		
 		//////TODO:Move this to somewhere better.
-		if (!ControlOptions.pauseKey.isPressed()) {
-			Vector2f windowSize = Window.getWindowSize();
-			GLFW.glfwSetCursorPos(Window.getID(), windowSize.x / 2f, windowSize.y / 2f);
+		if (!ControlOptions.isPaused()) {
+			MousePositionCallback.centerMouse();
 			c.update(deltaTime);
 		}
 		//////

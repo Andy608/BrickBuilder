@@ -6,7 +6,6 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.opengl.GL11;
 
-import com.bountive.display.Window;
 import com.bountive.setting.ControlOptions;
 import com.bountive.setting.GameOptions;
 
@@ -20,58 +19,60 @@ public class KeyboardCallback extends GLFWKeyCallback {
 		if (action == GLFW.GLFW_RELEASE) {
 			currentKeys.remove(key);
 			
-			if (ControlOptions.shutdownKey.equals(key)) {
-				GLFW.glfwSetWindowShouldClose(windowID, GL11.GL_TRUE);
-			}
-			else if (ControlOptions.fullscreenKey.equals(key)) {
-				GameOptions.gameOptions.setFullscreen(!GameOptions.gameOptions.isFullscreenEnabled());
-				Window.buildScreen();
-//				GameOptions.gameOptions.setPerspective(!GameOptions.gameOptions.isPerspective());
-//				CameraMatrixManager.manager.buildProjectionMatrix();
-			}
-			else if (ControlOptions.moveForwardKey.equals(key)) {
+			if (ControlOptions.moveForwardKey.equalsControl(key)) {
 				ControlOptions.moveForwardKey.setPressed(false);
 			}
-			else if (ControlOptions.moveBackwardKey.equals(key)) {
+			else if (ControlOptions.moveBackwardKey.equalsControl(key)) {
 				ControlOptions.moveBackwardKey.setPressed(false);
 			}
-			else if (ControlOptions.moveLeftKey.equals(key)) {
+			else if (ControlOptions.moveLeftKey.equalsControl(key)) {
 				ControlOptions.moveLeftKey.setPressed(false);
 			}
-			else if (ControlOptions.moveRightKey.equals(key)) {
+			else if (ControlOptions.moveRightKey.equalsControl(key)) {
 				ControlOptions.moveRightKey.setPressed(false);
 			}
-			else if (ControlOptions.jumpKey.equals(key)) {
+			else if (ControlOptions.jumpKey.equalsControl(key)) {
 				ControlOptions.jumpKey.setPressed(false);
 			}
-			else if (ControlOptions.duckKey.equals(key)) {
+			else if (ControlOptions.duckKey.equalsControl(key)) {
 				ControlOptions.duckKey.setPressed(false);
 			}
-			else if (ControlOptions.pauseKey.equals(key)) {
-				ControlOptions.pauseKey.setPressed(!ControlOptions.pauseKey.isPressed());
+			else if (ControlOptions.getPausedKey() == key) {
+				ControlOptions.setPaused(!ControlOptions.isPaused());
 			}
 		}
 		else if (action == GLFW.GLFW_PRESS) {
 			currentKeys.add(key);
 			
-			//if (in the game and...)
-			if (ControlOptions.moveForwardKey.equals(key)) {
+			//if (in the game and...)/////////
+			if (ControlOptions.moveForwardKey.equalsControl(key)) {
 				ControlOptions.moveForwardKey.setPressed(true);
 			}
-			else if (ControlOptions.moveBackwardKey.equals(key)) {
+			else if (ControlOptions.moveBackwardKey.equalsControl(key)) {
 				ControlOptions.moveBackwardKey.setPressed(true);
 			}
-			else if (ControlOptions.moveLeftKey.equals(key)) {
+			else if (ControlOptions.moveLeftKey.equalsControl(key)) {
 				ControlOptions.moveLeftKey.setPressed(true);
 			}
-			else if (ControlOptions.moveRightKey.equals(key)) {
+			else if (ControlOptions.moveRightKey.equalsControl(key)) {
 				ControlOptions.moveRightKey.setPressed(true);
 			}
-			else if (ControlOptions.jumpKey.equals(key)) {
+			else if (ControlOptions.jumpKey.equalsControl(key)) {
 				ControlOptions.jumpKey.setPressed(true);
 			}
-			else if (ControlOptions.duckKey.equals(key)) {
+			else if (ControlOptions.duckKey.equalsControl(key)) {
 				ControlOptions.duckKey.setPressed(true);
+			}
+			///////////////////////////////
+			else if (ControlOptions.shutdownKey.equalsControl(currentKeys)) {
+				GLFW.glfwSetWindowShouldClose(windowID, GL11.GL_TRUE);
+			}
+			else if (ControlOptions.fullscreenKey.equalsControl(currentKeys)) {
+				currentKeys.clear();
+				GameOptions.gameOptions.setFullscreen(!GameOptions.gameOptions.isFullscreenEnabled());
+				
+//				GameOptions.gameOptions.setPerspective(!GameOptions.gameOptions.isPerspective());
+//				CameraMatrixManager.manager.buildProjectionMatrix();
 			}
 		}
 	}

@@ -7,8 +7,12 @@ import java.io.UnsupportedEncodingException;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.bountive.display.Window;
+import com.bountive.display.callback.MousePositionCallback;
+import com.bountive.setting.util.MultiKeyControl;
+import com.bountive.setting.util.PercentageSetting;
 import com.bountive.setting.util.SingleKeyControl;
-import com.bountive.util.logger.LoggerUtils;
+import com.bountive.util.logger.LoggerUtil;
 import com.bountive.util.resource.ResourceLocation;
 
 public final class ControlOptions extends AbstractBaseOptions {
@@ -17,9 +21,10 @@ public final class ControlOptions extends AbstractBaseOptions {
 	
 	public static ControlOptions controlOptions;
 
-	public static SingleKeyControl shutdownKey;//TODO: MAKE MACRO --> LCONTROL + LSHIFT + ESC
-	public static SingleKeyControl pauseKey;
-	public static SingleKeyControl fullscreenKey;//TODO: MAKE MACRO --> LCONTROL + TAB
+	public static MultiKeyControl shutdownKey;//TODO: MAKE MACRO --> LCONTROL + LSHIFT + ESC
+	private static SingleKeyControl pauseKey;
+	public static MultiKeyControl fullscreenKey;
+	public static PercentageSetting mouseSensitivity;
 	
 	public static SingleKeyControl moveForwardKey;
 	public static SingleKeyControl moveBackwardKey;
@@ -39,16 +44,20 @@ public final class ControlOptions extends AbstractBaseOptions {
 			controlOptions.initDefaultOptions();
 		}
 		else {
-			LoggerUtils.logWarn(Thread.currentThread(), CONTROL_OPTIONS.getResourceName() + " is already initialized.");
+			LoggerUtil.logWarn(Thread.currentThread(), CONTROL_OPTIONS.getResourceName() + " is already initialized.");
 		}
 	}
 	
 	@Override
 	protected void initDefaultOptions() {
 		//Utility keys
-		shutdownKey = new SingleKeyControl("shutdown_key", GLFW.GLFW_KEY_F4);
+		shutdownKey = new MultiKeyControl("shutdown_key", GLFW.GLFW_KEY_LEFT_SHIFT, GLFW.GLFW_KEY_ESCAPE);
 		pauseKey = new SingleKeyControl("pause_key", GLFW.GLFW_KEY_ESCAPE);
-		fullscreenKey = new SingleKeyControl("fullscreen_key", GLFW.GLFW_KEY_F1);
+//		fullscreenKey = new SingleKeyControl("fullscreen_key", GLFW.GLFW_KEY_F1);
+		fullscreenKey = new MultiKeyControl("fullscreen_key", GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_TAB);
+		
+		//Utility sliders
+		mouseSensitivity = new PercentageSetting("mouse_sensitivity", 10, 1f, 0.05f, 3f);
 		
 		//In-game controls
 		moveForwardKey = new SingleKeyControl("move_forward_key", GLFW.GLFW_KEY_W);
@@ -72,13 +81,16 @@ public final class ControlOptions extends AbstractBaseOptions {
 					String controlAttrib = s.substring(0, s.indexOf(DEFAULT_DELIMITER));
 					
 					if (controlAttrib.equals(shutdownKey.getFileName())) {
-						shutdownKey.setCustomKey(getSingleIntegerFromOption(s, shutdownKey.getDefaultKey(), DEFAULT_DELIMITER));
+						shutdownKey.setCustomKeyBinding(getMultipleIntegersFromOption(s, shutdownKey.getDefaultKeyBinding(), DEFAULT_DELIMITER, SEPARATOR));
 					}
 					else if (controlAttrib.equals(pauseKey.getFileName())) {
 						pauseKey.setCustomKey(getSingleIntegerFromOption(s, pauseKey.getDefaultKey(), DEFAULT_DELIMITER));
 					}
 					else if (controlAttrib.equals(fullscreenKey.getFileName())) {
-						fullscreenKey.setCustomKey(getSingleIntegerFromOption(s, fullscreenKey.getDefaultKey(), DEFAULT_DELIMITER));
+						fullscreenKey.setCustomKeyBinding(getMultipleIntegersFromOption(s, fullscreenKey.getDefaultKeyBinding(), DEFAULT_DELIMITER, SEPARATOR));
+					}
+					else if (controlAttrib.equals(mouseSensitivity.getFileName())) {
+						mouseSensitivity.setCustomPercentage(getSingleFloatFromOption(s, mouseSensitivity.getDefaultPercentage(), DEFAULT_DELIMITER));
 					}
 					else if (controlAttrib.equals(moveForwardKey.getFileName())) {
 						moveForwardKey.setCustomKey(getSingleIntegerFromOption(s, moveForwardKey.getDefaultKey(), DEFAULT_DELIMITER));
@@ -103,7 +115,7 @@ public final class ControlOptions extends AbstractBaseOptions {
 					}
 				}
 			} catch (Exception e) {
-				LoggerUtils.logWarn(Thread.currentThread(), e, CONTROL_OPTIONS.getResourceName() + " is corrupt! Using default values.", true);
+				LoggerUtil.logWarn(Thread.currentThread(), e, CONTROL_OPTIONS.getResourceName() + " is corrupt! Using default values.", true);
 			}
 		}
 		else {
@@ -113,9 +125,10 @@ public final class ControlOptions extends AbstractBaseOptions {
 
 	@Override
 	public void setDefaultOptions() {
-		shutdownKey.resetKey();
+		shutdownKey.resetKeyBinding();
 		pauseKey.resetKey();
-		fullscreenKey.resetKey();
+		fullscreenKey.resetKeyBinding();
+		mouseSensitivity.resetPercentage();
 		moveForwardKey.resetKey();
 		moveBackwardKey.resetKey();
 		moveLeftKey.resetKey();
@@ -127,17 +140,50 @@ public final class ControlOptions extends AbstractBaseOptions {
 	@Override
 	public void storeOptionsInFile() {
 		try (PrintStream writer = new PrintStream(CONTROL_OPTIONS.getFullPath(), "UTF-8")) {
-			writer.println(shutdownKey.getFileName() + DEFAULT_DELIMITER + (int)shutdownKey.getCustomKey());
-			writer.println(pauseKey.getFileName() + DEFAULT_DELIMITER + (int)pauseKey.getCustomKey());
-			writer.println(fullscreenKey.getFileName() + DEFAULT_DELIMITER + (int)fullscreenKey.getCustomKey());
-			writer.println(moveForwardKey.getFileName() + DEFAULT_DELIMITER + (int)moveForwardKey.getCustomKey());
-			writer.println(moveBackwardKey.getFileName() + DEFAULT_DELIMITER + (int)moveBackwardKey.getCustomKey());
-			writer.println(moveLeftKey.getFileName() + DEFAULT_DELIMITER + (int)moveLeftKey.getCustomKey());
-			writer.println(moveRightKey.getFileName() + DEFAULT_DELIMITER + (int)moveRightKey.getCustomKey());
-			writer.println(jumpKey.getFileName() + DEFAULT_DELIMITER + (int)jumpKey.getCustomKey());
-			writer.print(duckKey.getFileName() + DEFAULT_DELIMITER + (int)duckKey.getCustomKey());
+			writer.println(shutdownKey.getFileName() + DEFAULT_DELIMITER + shutdownKey.getReadableCustomKeyBinding());
+			writer.println(pauseKey.getFileName() + DEFAULT_DELIMITER + pauseKey.getCustomKey());
+			writer.println(fullscreenKey.getFileName() + DEFAULT_DELIMITER + fullscreenKey.getReadableCustomKeyBinding());
+			writer.println(mouseSensitivity.getFileName() + DEFAULT_DELIMITER + mouseSensitivity.getCustomPercentage());
+			writer.println(moveForwardKey.getFileName() + DEFAULT_DELIMITER + moveForwardKey.getCustomKey());
+			writer.println(moveBackwardKey.getFileName() + DEFAULT_DELIMITER + moveBackwardKey.getCustomKey());
+			writer.println(moveLeftKey.getFileName() + DEFAULT_DELIMITER + moveLeftKey.getCustomKey());
+			writer.println(moveRightKey.getFileName() + DEFAULT_DELIMITER + moveRightKey.getCustomKey());
+			writer.println(jumpKey.getFileName() + DEFAULT_DELIMITER + jumpKey.getCustomKey());
+			writer.print(duckKey.getFileName() + DEFAULT_DELIMITER + duckKey.getCustomKey());
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			LoggerUtils.logError(Thread.currentThread(), e);
+			LoggerUtil.logError(Thread.currentThread(), e);
 		}
+	}
+	
+	public static void unPressAllKeys() {
+		shutdownKey.setPressed(false);
+		pauseKey.setPressed(false);
+		fullscreenKey.setPressed(false);
+		moveForwardKey.setPressed(false);
+		moveBackwardKey.setPressed(false);
+		moveLeftKey.setPressed(false);
+		moveRightKey.setPressed(false);
+		jumpKey.setPressed(false);
+		duckKey.setPressed(false);
+	}
+	
+	public static void setPaused(boolean b) {
+		MousePositionCallback.centerMouse();
+		
+		if (b) GLFW.glfwSetInputMode(Window.getID(), GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
+		else GLFW.glfwSetInputMode(Window.getID(), GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_HIDDEN);
+		pauseKey.setPressed(b);
+	}
+	
+	public static void setPausedKey(int keyID) {
+		pauseKey.setCustomKey(keyID);
+	}
+	
+	public static boolean isPaused() {
+		return pauseKey.isPressed();
+	}
+	
+	public static int getPausedKey() {
+		return pauseKey.getCustomKey();
 	}
 }

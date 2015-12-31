@@ -12,9 +12,9 @@ import org.apache.log4j.Logger;
 import com.bountive.start.Info;
 import com.bountive.util.resource.ResourceLocation;
 
-public class LoggerUtils implements Thread.UncaughtExceptionHandler {
+public class LoggerUtil implements Thread.UncaughtExceptionHandler {
 
-	private static final Logger consoleLogger = Logger.getLogger(LoggerUtils.class);
+	private static final Logger consoleLogger = Logger.getLogger(LoggerUtil.class);
 	private static final ResourceLocation LOG_DIR = new ResourceLocation(ResourceLocation.APPDATA_DIRECTORY, "/logs");
 	private static final String s = System.lineSeparator();
 	

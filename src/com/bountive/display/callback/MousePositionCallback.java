@@ -2,6 +2,7 @@ package com.bountive.display.callback;
 
 import math.Vector2f;
 
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 
 import com.bountive.display.Window;
@@ -23,11 +24,16 @@ public class MousePositionCallback extends GLFWCursorPosCallback {
 		mouseOffset.set((float)(xpos - (width / 2f)), (float)(ypos - (height / 2f)));
 	}
 	
-	public static Vector2f getMouseOffset() {
-		return mouseOffset;
+	public static float getMouseOffsetX() {
+		return mouseOffset.x;
 	}
 	
-	public static Vector2f getMousePos() {
-		return mousePos;
+	public static float getMouseOffsetY() {
+		return mouseOffset.y;
+	}
+	
+	public static void centerMouse() {
+		Vector2f windowSize = Window.getWindowSize();
+		GLFW.glfwSetCursorPos(Window.getID(), windowSize.x / 2f, windowSize.y / 2f);
 	}
 }

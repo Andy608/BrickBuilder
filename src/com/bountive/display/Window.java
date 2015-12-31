@@ -16,7 +16,7 @@ import com.bountive.graphics.model.util.ModelManager;
 import com.bountive.setting.ControlOptions;
 import com.bountive.setting.GameOptions;
 import com.bountive.start.Info;
-import com.bountive.util.logger.LoggerUtils;
+import com.bountive.util.logger.LoggerUtil;
 
 public class Window {
 
@@ -51,7 +51,7 @@ public class Window {
 			ControlOptions.controlOptions.loadOptionsFromFile();
 			
 		} catch (RuntimeException e) {
-			LoggerUtils.logError(Thread.currentThread(), e);
+			LoggerUtil.logError(Thread.currentThread(), e);
 		}
 	}
 	

@@ -16,12 +16,12 @@ public class SingleKeyControl extends AbstractKey {
 		customKey = customKeyOption;
 	}
 	
-	public void resetKey() {
-		customKey = defaultKey;
+	public boolean equalsControl(int key) {
+		return customKey == key;
 	}
 	
-	public boolean equals(int key) {
-		return (key == customKey);
+	public void resetKey() {
+		customKey = defaultKey;
 	}
 	
 	public int getDefaultKey() {

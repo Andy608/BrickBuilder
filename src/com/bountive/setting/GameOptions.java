@@ -12,7 +12,7 @@ import com.bountive.graphics.view.CameraMatrixManager;
 import com.bountive.setting.util.BooleanSetting;
 import com.bountive.setting.util.ClampedIntegerSetting;
 import com.bountive.setting.util.Vector2fSetting;
-import com.bountive.util.logger.LoggerUtils;
+import com.bountive.util.logger.LoggerUtil;
 import com.bountive.util.resource.ResourceLocation;
 
 public final class GameOptions extends AbstractBaseOptions {
@@ -31,7 +31,6 @@ public final class GameOptions extends AbstractBaseOptions {
 	private BooleanSetting isPerspective;
 	private ClampedIntegerSetting fieldOfView;
 	
-	//private ClampedIntegerSetting mouseSensitivity;
 	//private IntegerSetting maxFrameRate;
 	
 	private GameOptions() {
@@ -44,7 +43,7 @@ public final class GameOptions extends AbstractBaseOptions {
 			gameOptions.initDefaultOptions();
 		}
 		else {
-			LoggerUtils.logWarn(Thread.currentThread(), GAME_OPTIONS.getResourceName() + " is already initialized.");
+			LoggerUtil.logWarn(Thread.currentThread(), GAME_OPTIONS.getResourceName() + " is already initialized.");
 		}
 	}
 	
@@ -60,7 +59,7 @@ public final class GameOptions extends AbstractBaseOptions {
 		fullscreen = new BooleanSetting("fullscreen", false);
 		
 		isPerspective = new BooleanSetting("perspective", true);
-		fieldOfView = new ClampedIntegerSetting("FOV", 30, 110, 69);
+		fieldOfView = new ClampedIntegerSetting("FOV", 69, 30, 110);
 	}
 	
 	@Override
@@ -88,7 +87,7 @@ public final class GameOptions extends AbstractBaseOptions {
 								windowSize.setCustomVector2f(getVector2fValue(new Vector2f(width, height), windowSize.getDefaultVector2f()));
 							}
 						} catch (NumberFormatException e) {
-							LoggerUtils.logWarn(Thread.currentThread(), e, GAME_OPTIONS.getResourceName() + " is corrupt! Did you edit this file? Unable to get correct windowSize. Using default value instead.", true);
+							LoggerUtil.logWarn(Thread.currentThread(), e, GAME_OPTIONS.getResourceName() + " is corrupt! Did you edit this file? Unable to get correct windowSize. Using default value instead.", true);
 							windowSize.resetVector2f();
 						}
 					}
@@ -105,7 +104,7 @@ public final class GameOptions extends AbstractBaseOptions {
 								windowPosition.setCustomVector2f(getVector2fValue(new Vector2f(xPos, yPos), windowPosition.getDefaultVector2f()));
 							}
 						} catch (Exception e) {
-							LoggerUtils.logWarn(Thread.currentThread(), e, GAME_OPTIONS.getResourceName() + " is corrupt! Did you edit this file? Unable to get correct windowPosition. Using default value instead.", true);
+							LoggerUtil.logWarn(Thread.currentThread(), e, GAME_OPTIONS.getResourceName() + " is corrupt! Did you edit this file? Unable to get correct windowPosition. Using default value instead.", true);
 							windowPosition.resetVector2f();
 						}
 					}
@@ -130,12 +129,18 @@ public final class GameOptions extends AbstractBaseOptions {
 				}
 			}
 			catch (Exception e) {
-				LoggerUtils.logWarn(Thread.currentThread(), e, GAME_OPTIONS.getResourceName() + " is corrupt! Using default values.", true);
+				LoggerUtil.logWarn(Thread.currentThread(), e, GAME_OPTIONS.getResourceName() + " is corrupt! Using default values.", true);
 			}
 		}
 		else {
 			new File(GAME_OPTIONS.getParentDir()).mkdirs();
 		}
+	}
+	
+	private static void resetWindowState() {
+		gameOptions.windowSize.resetVector2f();
+		gameOptions.windowPosition.resetVector2f();
+		gameOptions.fullscreen.resetBoolean();
 	}
 	
 	@Override
@@ -152,9 +157,7 @@ public final class GameOptions extends AbstractBaseOptions {
 	@Override
 	public void storeOptionsInFile() {
 		if (!saveWindowState.getCustomBoolean() || !isWindowStateValid()) {
-			gameOptions.windowSize.resetVector2f();
-			gameOptions.windowPosition.resetVector2f();
-			gameOptions.fullscreen.resetBoolean();
+			resetWindowState();
 		}
 		
 		try (PrintStream writer = new PrintStream(GAME_OPTIONS.getFullPath(), "UTF-8")) {
@@ -166,13 +169,14 @@ public final class GameOptions extends AbstractBaseOptions {
 			writer.println(isPerspective.getFileName() + DEFAULT_DELIMITER + isPerspective.getCustomBoolean());
 			writer.print(fieldOfView.getFileName() + DEFAULT_DELIMITER + fieldOfView.getCustomInteger());
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			LoggerUtils.logError(Thread.currentThread(), e);
+			LoggerUtil.logError(Thread.currentThread(), e);
 		}
 	}
 	
 	public static boolean isWindowStateValid() {
 		if (gameOptions.windowPosition.getCustomVector2f().x < 0 || gameOptions.windowPosition.getCustomVector2f().y < 0) return false;
 		else if (gameOptions.windowSize.getCustomVector2f().x < 0 || gameOptions.windowSize.getCustomVector2f().y < 0) return false;
+		else if (gameOptions.windowSize.getCustomVector2f().x == Window.getPrimaryMonitorWidth() && gameOptions.windowPosition.getCustomVector2f().x == 0) return false;
 		return true;
 	}
 	
@@ -201,7 +205,11 @@ public final class GameOptions extends AbstractBaseOptions {
 	}
 	
 	public void setFullscreen(boolean b) {
+		GameOptions.gameOptions.storeOptionsInFile();
 		fullscreen.setCustomBoolean(b);
+		Window.buildScreen();
+		ControlOptions.setPaused(ControlOptions.isPaused());
+		CameraMatrixManager.manager.buildProjectionMatrix();
 	}
 	
 	public boolean isPerspective() {
