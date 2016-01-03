@@ -12,7 +12,6 @@ import com.bountive.brick.Brick;
 import com.bountive.brick.ClayBrick;
 import com.bountive.display.Window;
 import com.bountive.display.callback.MousePositionCallback;
-import com.bountive.graphics.model.ModelBrickList;
 import com.bountive.graphics.render.BrickRenderer;
 import com.bountive.graphics.view.FlyingCamera;
 import com.bountive.init.InitializationHandler;
@@ -38,7 +37,7 @@ public final class BrickBuilder {
 	
 	//TODO: MOVE THESE TO CORRECT SPOTS.
 	private BrickRenderer renderer; // <-- Will be handled by the world rendering system.
-	private ClayBrick brick; // <-- Will be handled by the world generation system.
+	private ClayBrick brick, brick2; // <-- Will be handled by the world generation system.
 	private FlyingCamera c; // <-- Will be attached to a player.
 	/////////////////////////////
 	
@@ -66,16 +65,15 @@ public final class BrickBuilder {
 	
 	private void loop() {
 		//TEMP. TODO: Move createCapabilities and model initialization to somewhere else.
-		GL.createCapabilities();									//////
-		ModelBrickList.createModels();								//////
-																	//////
+//		GL.createCapabilities();									//////
+//		ModelBrickList.createModels();								//////
 		renderer = new BrickRenderer();								//////
 		brick = new ClayBrick(Brick.EnumBrickModel.FULL_1x1);		//////
+		brick2 = new ClayBrick(Brick.EnumBrickModel.FLAT_1x1);		//////
 		c = new FlyingCamera();										//////
+//		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);	//TODO: Make debug option to toggle this
 		
-		
-		Vector2f windowSize = Window.getWindowSize(); //TODO: Move this to the world loading code.
-		GLFW.glfwSetCursorPos(Window.getID(), windowSize.x / 2f, windowSize.y / 2f); 	//////////////
+		MousePositionCallback.centerMouse(); 	//TODO: Move this to the world loading code.
 		
 		//////////////////////////////////////////////////////////////////
 		
@@ -124,6 +122,7 @@ public final class BrickBuilder {
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		
 		renderer.addBrickToBatch(brick);
+		renderer.addBrickToBatch(brick2);
 		renderer.render(c);
 		
 		GLFW.glfwSwapBuffers(Window.getID());

@@ -57,4 +57,9 @@ public class ResourceLocation extends ResourceBase {
 	public String getFullPath() {
 		return parentDirectory + SEP + resourceName;
 	}
+	
+	@Override
+	public String toString() {
+		return getFullPath();
+	}
 }

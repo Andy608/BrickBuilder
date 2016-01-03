@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
 
 import com.bountive.display.callback.CallbackManager;
-import com.bountive.graphics.model.ModelBrickList;
+import com.bountive.graphics.model.util.ModelBrickList;
 import com.bountive.graphics.model.util.ModelManager;
 import com.bountive.setting.ControlOptions;
 import com.bountive.setting.GameOptions;

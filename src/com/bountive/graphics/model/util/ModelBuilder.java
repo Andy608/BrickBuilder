@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import com.bountive.graphics.model.ModelMesh;
+import com.bountive.util.resource.ResourceLocation;
 
 public class ModelBuilder {
 
@@ -45,9 +46,20 @@ public class ModelBuilder {
 	public ModelMesh build2DColorRecModel(float[] positions, float[] colorCoords) {
 		int vao = createVAO();
 		int[] indices = new int[] {0, 1, 2, 0, 2, 3};
+		bindVAO(vao);
 		bindIndicesBuffer(indices);
-		bindVAO(0, positions, 2);
-		bindVAO(1, colorCoords, 4);
+		bindAttribWithVAO(0, positions, 2);
+		bindAttribWithVAO(1, colorCoords, 4);
+		unbindVAO();
+		return new ModelMesh(vao, indices.length);
+	}
+	
+	public ModelMesh build3DColorModel(float[] positions, int[] indices, float[] colorCoords) {
+		int vao = createVAO();
+		bindVAO(vao);
+		bindIndicesBuffer(indices);
+		bindAttribWithVAO(0, positions, 3);
+		bindAttribWithVAO(1, colorCoords, 4);
 		unbindVAO();
 		return new ModelMesh(vao, indices.length);
 	}
@@ -57,15 +69,28 @@ public class ModelBuilder {
 	 * @param objFileLocation : The location of the file.
 	 * @return : A new model with the information from the object file.
 	 */
-//	public ModelMesh buildModelFromFile(ResourceLocation objFileLocation) {
-//		return new ModelMesh();
-//	}
+	public ModelMesh buildModelFromFile(ResourceLocation objFileLocation) {
+		int vao = createVAO();
+		
+		ModelComponents modelComponents = new ModelComponents(objFileLocation);
+		
+		bindVAO(vao);
+		bindIndicesBuffer(modelComponents.getIndices());
+		bindAttribWithVAO(0, modelComponents.getPositions(), 3);
+//		bindAttribWithVAO(1, modelComponents.getTextureUVs(), 2);
+//		bindAttribWithVAO(2, modelComponents.getNormals(), 3);
+		unbindVAO();
+		return new ModelMesh(vao, modelComponents.getIndices().length);
+	}
 	
 	private int createVAO() {
 		int vaoID = GL30.glGenVertexArrays();
 		ModelManager.getManager().addVAO(vaoID);
-		GL30.glBindVertexArray(vaoID);
 		return vaoID;
+	}
+	
+	private void bindVAO(int vaoID) {
+		GL30.glBindVertexArray(vaoID);
 	}
 	
 	/**
@@ -74,7 +99,7 @@ public class ModelBuilder {
 	 * @param dataLengthPerVertex : The amount of spots in bufferData one vertex needs. Example: 3D positions 
 	 * 		  (x, y, z) require 3 spots per vertex.
 	 */
-	private void bindVAO(int arrayIndex, float[] bufferData, int dataLengthPerVertex) {
+	private void bindAttribWithVAO(int arrayIndex, float[] bufferData, int dataLengthPerVertex) {
 		int vbo = GL15.glGenBuffers();
 		ModelManager.getManager().addVBO(vbo);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);

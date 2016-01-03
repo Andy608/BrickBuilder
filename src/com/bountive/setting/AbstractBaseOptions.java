@@ -2,15 +2,13 @@ package com.bountive.setting;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 import math.Vector2f;
 
 import com.bountive.util.ArrayUtil;
+import com.bountive.util.FileUtil;
 import com.bountive.util.SystemUtil;
 import com.bountive.util.SystemUtil.EnumOS;
 import com.bountive.util.logger.LoggerUtil;
@@ -29,19 +27,16 @@ public abstract class AbstractBaseOptions {
 	public abstract void storeOptionsInFile();
 	
 	/**
-	 * Reads all information in from a options file and breaks up each line into a string and puts it in an array of Strings.
+	 * Reads all information in from an options file and breaks up each line into a string and puts it in an array of Strings.
 	 * Then trims the array to take out any lines with blank space in them.
 	 * @param optionsFile
-	 * @return
+	 * @return : an array of strings representing each line in the file.
 	 */
 	protected String[] readOptionsFile(File optionsFile) throws IOException {
-		List<String> lineValues = null;
-		lineValues = Files.readAllLines(Paths.get(optionsFile.getPath()), StandardCharsets.UTF_8);
-		return trimExtraSpace(lineValues);
+		return trimExtraSpace(FileUtil.getAllLinesFromFileAsList(optionsFile));
 	}
 	
 	protected String[] trimExtraSpace(List<String> list) {
-		
 		for (int i = 0; i < list.size(); i++) {
 			list.set(i, list.get(i).trim());
 			if (list.get(i).isEmpty()) {
@@ -123,12 +118,6 @@ public abstract class AbstractBaseOptions {
 			int startDelimiterIndex = 0, endDelimiterIndex;
 			char[] fileOptionCharArray = fileOption.toCharArray();
 			for (int i = 0; i < fileOptionCharArray.length; i++) {
-				//if i == startingDelimiter, wait for inBetweenDelimiter.
-				//once at inBetweenDelimiter, add string from startingDelimiter to inBetweenDelimiter to arrayList.
-				//if i == inBetweenDelimiter, wait for inBetweenDelimiter.
-				//once at inBetweenDelimiter, add string from inBetweenDelimiter to inBetweenDelimiter to arrayList.
-				//if reach the end of string, add from beginningDelimiter to end of string to arrayList.
-				
 				if (fileOptionCharArray[i] == startingDelimiter) {
 					startDelimiterIndex = i;
 				}
@@ -143,7 +132,6 @@ public abstract class AbstractBaseOptions {
 					customValues.add(Integer.parseInt(fileOption.substring(startDelimiterIndex + 1)));
 				}
 			}
-			
 			return ArrayUtil.convertListToIntegerArray(customValues);
 			
 		} catch (NumberFormatException e) {

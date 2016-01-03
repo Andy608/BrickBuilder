@@ -21,7 +21,7 @@ public final class ControlOptions extends AbstractBaseOptions {
 	
 	public static ControlOptions controlOptions;
 
-	public static MultiKeyControl shutdownKey;//TODO: MAKE MACRO --> LCONTROL + LSHIFT + ESC
+	public static MultiKeyControl shutdownKey;
 	private static SingleKeyControl pauseKey;
 	public static MultiKeyControl fullscreenKey;
 	public static PercentageSetting mouseSensitivity;
@@ -53,7 +53,6 @@ public final class ControlOptions extends AbstractBaseOptions {
 		//Utility keys
 		shutdownKey = new MultiKeyControl("shutdown_key", GLFW.GLFW_KEY_LEFT_SHIFT, GLFW.GLFW_KEY_ESCAPE);
 		pauseKey = new SingleKeyControl("pause_key", GLFW.GLFW_KEY_ESCAPE);
-//		fullscreenKey = new SingleKeyControl("fullscreen_key", GLFW.GLFW_KEY_F1);
 		fullscreenKey = new MultiKeyControl("fullscreen_key", GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_TAB);
 		
 		//Utility sliders
@@ -155,6 +154,7 @@ public final class ControlOptions extends AbstractBaseOptions {
 		}
 	}
 	
+	//TODO: Use when window is unfocused unexpectedly.
 	public static void unPressAllKeys() {
 		shutdownKey.setPressed(false);
 		pauseKey.setPressed(false);

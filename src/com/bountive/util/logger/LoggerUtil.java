@@ -43,6 +43,10 @@ public class LoggerUtil implements Thread.UncaughtExceptionHandler {
 		logToErrorFile(date, message, e);
 	}
 	
+	public static void logWarn(Throwable e, String warnMessage, boolean logToFile) {
+		logWarn(Thread.currentThread(), e, warnMessage, logToFile);
+	}
+	
 	public static void logWarn(Thread t, Throwable e, String warnMessage, boolean logToFile) {
 		String date = getDate(DATE_FORMAT);
 		String message = s + "---------- " + Info.NAME + " Warning Report ----------" + s + s + date
@@ -55,6 +59,10 @@ public class LoggerUtil implements Thread.UncaughtExceptionHandler {
 		
 		if (logToFile)
 			logToErrorFile(date, message, e);
+	}
+	
+	public static void logWarn(String warnMessage) {
+		logWarn(Thread.currentThread(), warnMessage);
 	}
 	
 	public static void logWarn(Thread t, String warnMessage) {

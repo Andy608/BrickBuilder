@@ -12,8 +12,8 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import com.bountive.brick.Brick;
-import com.bountive.graphics.model.ModelBrickList;
 import com.bountive.graphics.model.ModelMesh;
+import com.bountive.graphics.model.util.ModelBrickList;
 import com.bountive.graphics.shader.EntityShader;
 import com.bountive.graphics.view.AbstractCamera;
 import com.bountive.graphics.view.CameraMatrixManager;
@@ -67,8 +67,11 @@ public class BrickRenderer {
 		ModelMesh brickModel;
 		
 		switch (modelType) {
-		default: brickModel = ModelBrickList.FULL_1X1_BRICK;
+		case FULL_1x1: brickModel = ModelBrickList.FULL_1X1_BRICK; break;
+//		case FLAT_1x1: brickModel = ModelBrickList.FLAT_1X1_BRICK; break;
+		default: brickModel = ModelBrickList.FLAT_1X1_BRICK;
 		}
+		
 		GL30.glBindVertexArray(brickModel.getVaoID());
 		return brickModel;
 	}
