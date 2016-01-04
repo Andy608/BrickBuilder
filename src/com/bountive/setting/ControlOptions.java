@@ -21,9 +21,12 @@ public final class ControlOptions extends AbstractBaseOptions {
 	
 	public static ControlOptions controlOptions;
 
-	public static MultiKeyControl shutdownKey;
 	private static SingleKeyControl pauseKey;
+	
+	public static MultiKeyControl shutdownKey;
 	public static MultiKeyControl fullscreenKey;
+	public static MultiKeyControl debugMode;
+	
 	public static PercentageSetting mouseSensitivity;
 	
 	public static SingleKeyControl moveForwardKey;
@@ -54,6 +57,7 @@ public final class ControlOptions extends AbstractBaseOptions {
 		shutdownKey = new MultiKeyControl("shutdown_key", GLFW.GLFW_KEY_LEFT_SHIFT, GLFW.GLFW_KEY_ESCAPE);
 		pauseKey = new SingleKeyControl("pause_key", GLFW.GLFW_KEY_ESCAPE);
 		fullscreenKey = new MultiKeyControl("fullscreen_key", GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_TAB);
+		debugMode = new MultiKeyControl("debug_mode", GLFW.GLFW_KEY_F1, GLFW.GLFW_KEY_Q);
 		
 		//Utility sliders
 		mouseSensitivity = new PercentageSetting("mouse_sensitivity", 10, 1f, 0.05f, 3f);
@@ -87,6 +91,9 @@ public final class ControlOptions extends AbstractBaseOptions {
 					}
 					else if (controlAttrib.equals(fullscreenKey.getFileName())) {
 						fullscreenKey.setCustomKeyBinding(getMultipleIntegersFromOption(s, fullscreenKey.getDefaultKeyBinding(), DEFAULT_DELIMITER, SEPARATOR));
+					}
+					else if (controlAttrib.equals(debugMode.getFileName())) {
+						debugMode.setCustomKeyBinding(getMultipleIntegersFromOption(s, debugMode.getDefaultKeyBinding(), DEFAULT_DELIMITER, SEPARATOR));
 					}
 					else if (controlAttrib.equals(mouseSensitivity.getFileName())) {
 						mouseSensitivity.setCustomPercentage(getSingleFloatFromOption(s, mouseSensitivity.getDefaultPercentage(), DEFAULT_DELIMITER));
@@ -127,6 +134,7 @@ public final class ControlOptions extends AbstractBaseOptions {
 		shutdownKey.resetKeyBinding();
 		pauseKey.resetKey();
 		fullscreenKey.resetKeyBinding();
+		debugMode.resetKeyBinding();
 		mouseSensitivity.resetPercentage();
 		moveForwardKey.resetKey();
 		moveBackwardKey.resetKey();
@@ -142,6 +150,7 @@ public final class ControlOptions extends AbstractBaseOptions {
 			writer.println(shutdownKey.getFileName() + DEFAULT_DELIMITER + shutdownKey.getReadableCustomKeyBinding());
 			writer.println(pauseKey.getFileName() + DEFAULT_DELIMITER + pauseKey.getCustomKey());
 			writer.println(fullscreenKey.getFileName() + DEFAULT_DELIMITER + fullscreenKey.getReadableCustomKeyBinding());
+			writer.println(debugMode.getFileName() + DEFAULT_DELIMITER + debugMode.getReadableCustomKeyBinding());
 			writer.println(mouseSensitivity.getFileName() + DEFAULT_DELIMITER + mouseSensitivity.getCustomPercentage());
 			writer.println(moveForwardKey.getFileName() + DEFAULT_DELIMITER + moveForwardKey.getCustomKey());
 			writer.println(moveBackwardKey.getFileName() + DEFAULT_DELIMITER + moveBackwardKey.getCustomKey());
@@ -159,6 +168,7 @@ public final class ControlOptions extends AbstractBaseOptions {
 		shutdownKey.setPressed(false);
 		pauseKey.setPressed(false);
 		fullscreenKey.setPressed(false);
+		debugMode.setPressed(false);
 		moveForwardKey.setPressed(false);
 		moveBackwardKey.setPressed(false);
 		moveLeftKey.setPressed(false);

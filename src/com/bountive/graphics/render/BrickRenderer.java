@@ -11,59 +11,60 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import com.bountive.brick.Brick;
 import com.bountive.graphics.model.ModelMesh;
 import com.bountive.graphics.model.util.ModelBrickList;
 import com.bountive.graphics.shader.EntityShader;
 import com.bountive.graphics.view.AbstractCamera;
 import com.bountive.graphics.view.CameraMatrixManager;
 import com.bountive.util.math.MatrixMathHelper;
+import com.bountive.world.object.brick.AbstractBrick;
+import com.bountive.world.object.brick.AbstractBrick.EnumBrickModel;
 
-public class BrickRenderer {
+public class BrickRenderer implements IRenderer {
 
-	private EntityShader brickShader;
-	
-	private Map<Brick.EnumBrickModel, List<Brick>> bricks;
+	protected EntityShader shader;
+	private Map<EnumBrickModel, List<AbstractBrick>> bricks;
 	
 	public BrickRenderer() {
-		brickShader = new EntityShader();
-		bricks = new HashMap<Brick.EnumBrickModel, List<Brick>>();
+		setShader(new EntityShader());
+		bricks = new HashMap<EnumBrickModel, List<AbstractBrick>>();
 	}
 	
 	//For now a new brick will be taken in. But in the future, a brick object will be static with no position or anything 
 	//and the world will keep track of which blocks are at which position in the grid.
 	//
 	//I'm picturing this method taking in a chunk of bricks and then rendering the bricks relative to the chunk's position and the order they are in.
-	public void addBrickToBatch(Brick b) {
-		List<Brick> modelBatch = bricks.get(b.getModelType());
+	public void addBrickToBatch(AbstractBrick b) {
+		List<AbstractBrick> modelBatch = bricks.get(b.getModelType());
 		if (modelBatch != null) {
 			modelBatch.add(b);
 		}
 		else {
-			List<Brick> batch = new ArrayList<Brick>();
+			List<AbstractBrick> batch = new ArrayList<AbstractBrick>();
 			batch.add(b);
 			bricks.put(b.getModelType(), batch);
 		}
 	}
 	
+	@Override
 	public void render(AbstractCamera c) {
-		brickShader.bind();
-		brickShader.loadProjectionMatrix(CameraMatrixManager.manager.getProjectionMatrix());
-		brickShader.loadViewMatrix(c.getViewMatrix());
-		for (Brick.EnumBrickModel modelType : bricks.keySet()) {
+		shader.bind();
+		shader.loadProjectionMatrix(CameraMatrixManager.manager.getProjectionMatrix());
+		shader.loadViewMatrix(c.getViewMatrix());
+		for (EnumBrickModel modelType : bricks.keySet()) {
 			
 			ModelMesh mesh = bindModel(modelType);
-			for (Brick b : bricks.get(modelType)) {
+			for (AbstractBrick b : bricks.get(modelType)) {
 				//Instead of brick, it should take in the properties(position/rotation/scale) of the brick for the transformation matrix.
 				renderBrick(b, mesh);
 			}
 			unbindModel();
 		}
-		brickShader.unbind();
+		shader.unbind();
 		bricks.clear();
 	}
 	
-	private ModelMesh bindModel(Brick.EnumBrickModel modelType) {
+	private ModelMesh bindModel(EnumBrickModel modelType) {
 		ModelMesh brickModel;
 		
 		switch (modelType) {
@@ -76,8 +77,11 @@ public class BrickRenderer {
 		return brickModel;
 	}
 	
-	private void renderBrick(Brick b, ModelMesh m) {
-		brickShader.loadTransformationMatrix(MatrixMathHelper.buildTransformationMatrix(new Vector3f(0, 0, -10), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1)));//TEMP - should use the transformation of the brick.
+	private Vector3f POS = new Vector3f(0, 0, -10);		//TEMP
+	private Vector3f ROT = new Vector3f(0, 0, 0);		//TEMP
+	private Vector3f SCALE = new Vector3f(1, 1, 1);		//TEMP
+	private void renderBrick(AbstractBrick b, ModelMesh m) {
+		shader.loadTransformationMatrix(MatrixMathHelper.buildTransformationMatrix(POS, ROT, SCALE));//TEMP - should use the transformation of the brick.
 		
 		GL20.glEnableVertexAttribArray(0);
 		GL20.glEnableVertexAttribArray(1);
@@ -89,8 +93,13 @@ public class BrickRenderer {
 	private void unbindModel() {
 		GL30.glBindVertexArray(0);
 	}
-	
+
+	public void setShader(EntityShader s) {
+		shader = s;
+	}
+
+	@Override
 	public void release() {
-		brickShader.release();
+		shader.release();
 	}
 }

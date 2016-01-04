@@ -38,7 +38,7 @@ public class MultiKeyControl extends AbstractKey {
 		
 		if (keys == null || keys.size() == 0) return false;
 		if (keys.size() != customKey.length) return false;
-		
+
 		for (int i = 0; i < customKey.length; i++) {
 			if (!keys.contains(customKey[i])) return false;
 		}

@@ -24,6 +24,10 @@ public abstract class AbstractShader {
 	private int vertexShaderID;
 	private int fragmentShaderID;
 	
+	private int projectionMatrixID;
+	private int transformationMatrixID;
+	private int viewMatrixID;
+	
 	private ResourceLocation vertexLocation;
 	private ResourceLocation fragmentLocation;
 	
@@ -39,7 +43,11 @@ public abstract class AbstractShader {
 		bindUniformVariables();
 	}
 	
-	protected abstract void bindUniformVariables();
+	protected void bindUniformVariables() {
+		projectionMatrixID = getUniformLocation("projectionMatrix");
+		transformationMatrixID = getUniformLocation("transformationMatrix");
+		viewMatrixID = getUniformLocation("viewMatrix");
+	}
 	
 	/**
 	 * Takes in the file location of the vertex shader and creates a vertex shader.
@@ -133,6 +141,18 @@ public abstract class AbstractShader {
 		matrix4f.store(matrixBuffer);
 		matrixBuffer.flip();
 		GL20.glUniformMatrix4fv(location, false, matrixBuffer);
+	}
+	
+	public void loadProjectionMatrix(Matrix4f matrix) {
+		loadMatrix(projectionMatrixID, matrix);
+	}
+	
+	public void loadTransformationMatrix(Matrix4f matrix) {
+		loadMatrix(transformationMatrixID, matrix);
+	}
+	
+	public void loadViewMatrix(Matrix4f matrix) {
+		loadMatrix(viewMatrixID, matrix);
 	}
 	
 	protected int getUniformLocation(String uniformName) {

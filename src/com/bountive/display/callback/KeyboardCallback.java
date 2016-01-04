@@ -74,6 +74,10 @@ public class KeyboardCallback extends GLFWKeyCallback {
 //				GameOptions.gameOptions.setPerspective(!GameOptions.gameOptions.isPerspective());
 //				CameraMatrixManager.manager.buildProjectionMatrix();
 			}
+			else if (ControlOptions.debugMode.equalsControl(currentKeys)) {
+				ControlOptions.debugMode.setPressed(!ControlOptions.debugMode.isPressed());
+				GameOptions.gameOptions.enableDebugMode(ControlOptions.debugMode.isPressed());
+			}
 		}
 	}
 }

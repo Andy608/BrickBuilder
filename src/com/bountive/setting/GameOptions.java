@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
+import org.lwjgl.opengl.GL11;
+
 import math.Vector2f;
 
 import com.bountive.display.Window;
@@ -235,5 +237,14 @@ public final class GameOptions extends AbstractBaseOptions {
 	
 	public void updateWindowPosition(int x, int y) {
 		windowPosition.setCustomVector2f(x, y);
+	}
+	
+	public void enableDebugMode(boolean isDebug) {
+		if (isDebug) {
+			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+		}
+		else {
+			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+		}
 	}
 }

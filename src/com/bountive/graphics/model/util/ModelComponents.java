@@ -38,6 +38,7 @@ public final class ModelComponents {
 		startTime = System.nanoTime();
 		try {
 			String[] fileContents = FileUtil.getAllLinesFromInternalFileAsArray(modelFileLocation);
+			
 			List<Vector3f> vertexPositions = new ArrayList<>();
 			List<Vector2f> textureCoords = new ArrayList<>();
 			List<Vector3f> normalsList = new ArrayList<>();

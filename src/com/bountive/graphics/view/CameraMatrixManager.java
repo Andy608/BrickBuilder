@@ -16,7 +16,7 @@ public class CameraMatrixManager {
 	
 	private Matrix4f projectionMatrix;
 	
-	private static final float NEAR_PLANE = 0.1f;
+	private static final float NEAR_PLANE = 0.01f;
 	//TODO: May be moved as a setting in the GameOptions file. Not sure if this should be constant or changeable yet. I may change it depending on weather.
 	private static final float FAR_PLANE  = 200f;
 	
