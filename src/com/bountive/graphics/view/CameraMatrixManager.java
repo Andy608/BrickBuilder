@@ -30,7 +30,7 @@ public class CameraMatrixManager {
 			manager.initMatrices();
 		}
 		else {
-			LoggerUtil.logWarn(Thread.currentThread(), manager.getClass().getSimpleName() + " is already initialized.");
+			LoggerUtil.logWarn(CameraMatrixManager.class, Thread.currentThread(), manager.getClass().getSimpleName() + " is already initialized.");
 		}
 	}
 	

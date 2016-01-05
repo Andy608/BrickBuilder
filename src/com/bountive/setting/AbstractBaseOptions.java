@@ -19,7 +19,7 @@ public abstract class AbstractBaseOptions {
 	protected static final String EXTENSION = ".txt";
 	protected static final char DEFAULT_DELIMITER = '=', SEPARATOR = ',';
 	protected static final EnumOS os = SystemUtil.getOSType();
-	protected static final ResourceLocation OPTIONS_DIR = new ResourceLocation(ResourceLocation.APPDATA_DIRECTORY, "options");
+	protected static final ResourceLocation OPTIONS_DIR = new ResourceLocation(ResourceLocation.GAME_APPDATA_DIRECTORY, "options", false);
 	
 	protected abstract void initDefaultOptions();
 	public abstract void loadOptionsFromFile();
@@ -60,7 +60,7 @@ public abstract class AbstractBaseOptions {
 	
 	protected boolean getBooleanValue(Boolean savedValue, boolean defaultValue) {
 		if (savedValue == null) {
-			LoggerUtil.logWarn(Thread.currentThread(), "Boolean value cannot be null. Return default.");
+			LoggerUtil.logWarn(getClass(), Thread.currentThread(), "Boolean value cannot be null. Return default.");
 			return defaultValue;
 		}
 		else return savedValue.booleanValue();
@@ -88,7 +88,7 @@ public abstract class AbstractBaseOptions {
 		try {
 			return Integer.parseInt(fileOption.substring(fileOption.indexOf(delimiter) + 1));
 		} catch (NumberFormatException e) {
-			LoggerUtil.logWarn(Thread.currentThread(), e, "Could not parse integer from string. Returning default.", false);
+			LoggerUtil.logWarn(getClass(), Thread.currentThread(), e, "Could not parse integer from string. Returning default.", false);
 			return defaultValue;
 		}
 	}
@@ -97,7 +97,7 @@ public abstract class AbstractBaseOptions {
 		try {
 			return Integer.parseInt(fileOption.substring(fileOption.indexOf(startingDelimiter) + 1, fileOption.indexOf(endingDelimiter)));
 		} catch (NumberFormatException e) {
-			LoggerUtil.logWarn(Thread.currentThread(), e, "Could not parse integer from string. Returning default.", false);
+			LoggerUtil.logWarn(getClass(), Thread.currentThread(), e, "Could not parse integer from string. Returning default.", false);
 			return defaultValue;
 		}
 	}
@@ -106,7 +106,7 @@ public abstract class AbstractBaseOptions {
 		try {
 			return Float.parseFloat(fileOption.substring(fileOption.indexOf(delimiter) + 1));
 		} catch (NumberFormatException e) {
-			LoggerUtil.logWarn(Thread.currentThread(), e, "Could not parse float from string. Returning default.", false);
+			LoggerUtil.logWarn(getClass(), Thread.currentThread(), e, "Could not parse float from string. Returning default.", false);
 			return defaultValue;
 		}
 	}
@@ -135,7 +135,7 @@ public abstract class AbstractBaseOptions {
 			return ArrayUtil.convertListToIntegerArray(customValues);
 			
 		} catch (NumberFormatException e) {
-			LoggerUtil.logWarn(Thread.currentThread(), e, "Could not parse multiple integers from string. Returning default.", false);
+			LoggerUtil.logWarn(getClass(), Thread.currentThread(), e, "Could not parse multiple integers from string. Returning default.", false);
 			return defaultValue;
 		}
 	}

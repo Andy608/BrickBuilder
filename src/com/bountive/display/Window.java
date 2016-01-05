@@ -51,7 +51,7 @@ public class Window {
 			ControlOptions.controlOptions.loadOptionsFromFile();
 			
 		} catch (RuntimeException e) {
-			LoggerUtil.logError(Thread.currentThread(), e);
+			LoggerUtil.logError(Window.class, Thread.currentThread(), e);
 		}
 	}
 	

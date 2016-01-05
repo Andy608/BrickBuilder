@@ -19,7 +19,7 @@ import com.bountive.util.resource.ResourceLocation;
 
 public final class GameOptions extends AbstractBaseOptions {
 
-	private static final ResourceLocation GAME_OPTIONS = new ResourceLocation(OPTIONS_DIR.getFullPath(), "game_settings" + EXTENSION);
+	private static final ResourceLocation GAME_OPTIONS = new ResourceLocation(OPTIONS_DIR.getFullPath(), "game_settings" + EXTENSION, false);
 	
 	public static GameOptions gameOptions;
 	
@@ -45,7 +45,7 @@ public final class GameOptions extends AbstractBaseOptions {
 			gameOptions.initDefaultOptions();
 		}
 		else {
-			LoggerUtil.logWarn(Thread.currentThread(), GAME_OPTIONS.getResourceName() + " is already initialized.");
+			LoggerUtil.logWarn(GameOptions.class, Thread.currentThread(), GAME_OPTIONS.getResourceName() + " is already initialized.");
 		}
 	}
 	
@@ -89,7 +89,7 @@ public final class GameOptions extends AbstractBaseOptions {
 								windowSize.setCustomVector2f(getVector2fValue(new Vector2f(width, height), windowSize.getDefaultVector2f()));
 							}
 						} catch (NumberFormatException e) {
-							LoggerUtil.logWarn(Thread.currentThread(), e, GAME_OPTIONS.getResourceName() + " is corrupt! Did you edit this file? Unable to get correct windowSize. Using default value instead.", true);
+							LoggerUtil.logWarn(getClass(), Thread.currentThread(), e, GAME_OPTIONS.getResourceName() + " is corrupt! Did you edit this file? Unable to get correct windowSize. Using default value instead.", true);
 							windowSize.resetVector2f();
 						}
 					}
@@ -106,7 +106,7 @@ public final class GameOptions extends AbstractBaseOptions {
 								windowPosition.setCustomVector2f(getVector2fValue(new Vector2f(xPos, yPos), windowPosition.getDefaultVector2f()));
 							}
 						} catch (Exception e) {
-							LoggerUtil.logWarn(Thread.currentThread(), e, GAME_OPTIONS.getResourceName() + " is corrupt! Did you edit this file? Unable to get correct windowPosition. Using default value instead.", true);
+							LoggerUtil.logWarn(getClass(), Thread.currentThread(), e, GAME_OPTIONS.getResourceName() + " is corrupt! Did you edit this file? Unable to get correct windowPosition. Using default value instead.", true);
 							windowPosition.resetVector2f();
 						}
 					}
@@ -131,7 +131,7 @@ public final class GameOptions extends AbstractBaseOptions {
 				}
 			}
 			catch (Exception e) {
-				LoggerUtil.logWarn(Thread.currentThread(), e, GAME_OPTIONS.getResourceName() + " is corrupt! Using default values.", true);
+				LoggerUtil.logWarn(getClass(), Thread.currentThread(), e, GAME_OPTIONS.getResourceName() + " is corrupt! Using default values.", true);
 			}
 		}
 		else {
@@ -171,7 +171,7 @@ public final class GameOptions extends AbstractBaseOptions {
 			writer.println(isPerspective.getFileName() + DEFAULT_DELIMITER + isPerspective.getCustomBoolean());
 			writer.print(fieldOfView.getFileName() + DEFAULT_DELIMITER + fieldOfView.getCustomInteger());
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			LoggerUtil.logError(Thread.currentThread(), e);
+			LoggerUtil.logError(getClass(), Thread.currentThread(), e);
 		}
 	}
 	

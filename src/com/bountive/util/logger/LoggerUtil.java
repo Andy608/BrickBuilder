@@ -4,69 +4,113 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 import com.bountive.start.Info;
+import com.bountive.util.FileUtil;
 import com.bountive.util.resource.ResourceLocation;
 
 public class LoggerUtil implements Thread.UncaughtExceptionHandler {
 
-	private static final Logger consoleLogger = Logger.getLogger(LoggerUtil.class);
-	private static final ResourceLocation LOG_DIR = new ResourceLocation(ResourceLocation.APPDATA_DIRECTORY, "/logs");
-	private static final String s = System.lineSeparator();
-	
+	private static final ResourceLocation LOG_PROP_DIR = new ResourceLocation(ResourceLocation.GAME_APPDATA_DIRECTORY, "/logger", false);
+	private static final ResourceLocation LOG_DIR = new ResourceLocation(LOG_PROP_DIR.getFullPath(), "reports", false);
+	private static final ResourceLocation LOG_PROPERTIES = new ResourceLocation(LOG_PROP_DIR.getFullPath(), "bb_logger.properties", false);
 	private static final String DATE_FORMAT = "dd_MM_yyyy HH_mm_ss";
+	
+	private static LoggerUtil loggerUtil;
+	
+	private LoggerUtil() {
+		loggerUtil = this;
+		
+		File filePath = new File(LOG_PROPERTIES.getFullPath());
+		
+		if (!filePath.exists()) {
+			new File(LOG_PROPERTIES.getParentDir()).mkdirs();
+			
+			try (PrintStream writer = new PrintStream(LOG_PROPERTIES.getFullPath(), "UTF-8")) {
+				
+				writer.println("log4j.rootLogger=debug, consoleLogger" + FileUtil.ENTER +
+						"log4j.logger.org.apache=debug, consoleLogger" + FileUtil.ENTER +
+						"# Set type of consoleLogger" + FileUtil.ENTER +
+						"log4j.appender.consoleLogger=org.apache.log4j.ConsoleAppender" + FileUtil.ENTER +
+						"log4j.appender.consoleLogger.layout=org.apache.log4j.PatternLayout" + FileUtil.ENTER +
+						"# Set layout for the consoleLogger" + FileUtil.ENTER +
+						"log4j.appender.consoleLogger.layout.ConversionPattern=[%d{HH:mm:ss}] [%p] [%c{1}]: %m%n");
+			} catch (FileNotFoundException | UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}
+		PropertyConfigurator.configure(LOG_PROPERTIES.getFullPath());
+	}
+	
+	public static void init() {
+		if (loggerUtil == null) {
+			new LoggerUtil();
+		}
+	}
 	
 	@Override
 	public void uncaughtException(Thread t, Throwable e) {
-		logError(t, e);
+		logError(this.getClass(), t, e);
 	}
 	
-	/**
-	 * Should be called when an uncaught exception is thrown or a caught exception is thrown.
-	 * @param c: The class where the error is coming from.
-	 * @param t: The thread the error occurred on.
-	 * @param e: The throwable, or actual error itself.
-	 */
-	public static void logError(Thread t, Throwable e) {
+	private static Logger getLogger(Class<?> c) {
+		return LogManager.getLogger(c.getName());
+	}
+	
+	public static void logInfo(Class<?> c, String infoMessage) {
+		getLogger(c).log(Level.INFO, infoMessage);
+	}
+	
+	public static void logWarn(Class<?> c, String warnMessage) {
+		logWarn(c, Thread.currentThread(), warnMessage);
+	}
+	
+	public static void logWarn(Class<?> c, Thread t, String warnMessage) {
+		getLogger(c).warn("Warning coming from class: " + t.getName() + " | " + warnMessage);
+	}
+	
+	public static void logWarn(Class<?> c, Throwable e, String warnMessage, boolean logToFile) {
+		logWarn(c, Thread.currentThread(), e, warnMessage, logToFile);
+	}
+	
+	public static void logWarn(Class<?> c, Thread t, Throwable e, String warnMessage, boolean logToFile) {
 		String date = getDate(DATE_FORMAT);
-		String message = s + "---------- " + Info.NAME + " Error Report ----------" + s + s + date
-				+ s + s + "Uh oh, I'm going down. Save yourself!" + s + s
-				+ "Details about the crash are listed below" + s
-				+ "---------------------------------------" + s + s +
-				"Crash occured in class: " + t.getName();
-		
-		consoleLogger.error(message, e);
-		logToErrorFile(date, message, e);
-	}
-	
-	public static void logWarn(Throwable e, String warnMessage, boolean logToFile) {
-		logWarn(Thread.currentThread(), e, warnMessage, logToFile);
-	}
-	
-	public static void logWarn(Thread t, Throwable e, String warnMessage, boolean logToFile) {
-		String date = getDate(DATE_FORMAT);
-		String message = s + "---------- " + Info.NAME + " Warning Report ----------" + s + s + date
-				+ s + s + "Keep calm! I can get back up from this!" + s + s
-				+ "Details about the crash are listed below" + s
-				+ "---------------------------------------" + s + s +
+		String message = FileUtil.ENTER + "---------- " + Info.NAME + " Warning Report ----------" + FileUtil.ENTER + FileUtil.ENTER + date
+				+ FileUtil.ENTER + FileUtil.ENTER + "Keep calm! I can get back up from this!" + FileUtil.ENTER + FileUtil.ENTER
+				+ "Details about the crash are listed below" + FileUtil.ENTER
+				+ "---------------------------------------" + FileUtil.ENTER + FileUtil.ENTER +
 				"Crash occured in class: " + t.getName() + " | " + warnMessage;
 		
-		consoleLogger.warn(message, e);
+		getLogger(c).warn(message, e);
 		
 		if (logToFile)
 			logToErrorFile(date, message, e);
 	}
 	
-	public static void logWarn(String warnMessage) {
-		logWarn(Thread.currentThread(), warnMessage);
-	}
-	
-	public static void logWarn(Thread t, String warnMessage) {
-		consoleLogger.warn("Warning coming from class: " + t.getName() + " | " + warnMessage);
+	/**
+	 * Should be called when an uncaught exception occurs.
+	 * @param c: The class where the error is coming from.
+	 * @param t: The thread the error occurred on.
+	 * @param e: The throwable, or actual error itself.
+	 */
+	public static void logError(Class<?> c, Thread t, Throwable e) {
+		String date = getDate(DATE_FORMAT);
+		String message = FileUtil.ENTER + "---------- " + Info.NAME + " Error Report ----------" + FileUtil.ENTER + FileUtil.ENTER + date
+				+ FileUtil.ENTER + FileUtil.ENTER + "Uh oh, I'm going down. Save yourself!" + FileUtil.ENTER + FileUtil.ENTER
+				+ "Details about the crash are listed below" + FileUtil.ENTER
+				+ "---------------------------------------" + FileUtil.ENTER + FileUtil.ENTER +
+				"Crash occured in class: " + t.getName();
+		
+		getLogger(c).error(message, e);
+		logToErrorFile(date, message, e);
 	}
 	
 	private static void logToErrorFile(String date, String message, Throwable e) {
@@ -79,10 +123,10 @@ public class LoggerUtil implements Thread.UncaughtExceptionHandler {
 			f.mkdirs();
 		}
 		
-		ResourceLocation fileName = new ResourceLocation(LOG_DIR.getFullPath(), "/log_report_" + date + ".txt");
+		ResourceLocation fileName = new ResourceLocation(LOG_DIR.getFullPath(), "/log_report_" + date + ".txt", false);
 		
 		try (PrintStream writer = new PrintStream(new FileOutputStream(fileName.getFullPath(), append))) {
-			writer.println(message + s);
+			writer.println(message + FileUtil.ENTER);
 			writer.println(e.getClass() + ": " + e.getMessage());
 			for (int i = 0; i < e.getStackTrace().length; i++) {
                 writer.println("\t" + e.getStackTrace()[i].toString());
@@ -94,5 +138,9 @@ public class LoggerUtil implements Thread.UncaughtExceptionHandler {
 	
 	private static String getDate(String format) {
 		return new SimpleDateFormat(format).format(new Date());
+	}
+	
+	public static LoggerUtil getInstance() {
+		return loggerUtil;
 	}
 }

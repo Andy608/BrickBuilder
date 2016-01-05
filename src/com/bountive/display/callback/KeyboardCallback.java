@@ -12,6 +12,7 @@ import com.bountive.setting.GameOptions;
 public class KeyboardCallback extends GLFWKeyCallback {
 
 	private static LinkedHashSet<Integer> currentKeys = new LinkedHashSet<>();
+	public static boolean toggle;
 	
 	@Override
 	public void invoke(long windowID, int key, int scancode, int action, int mods) {
@@ -39,6 +40,9 @@ public class KeyboardCallback extends GLFWKeyCallback {
 			}
 			else if (ControlOptions.getPausedKey() == key) {
 				ControlOptions.setPaused(!ControlOptions.isPaused());
+			}
+			else if (GLFW.GLFW_KEY_C == key) {
+				toggle = !toggle;
 			}
 		}
 		else if (action == GLFW.GLFW_PRESS) {

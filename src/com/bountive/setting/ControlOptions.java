@@ -17,7 +17,7 @@ import com.bountive.util.resource.ResourceLocation;
 
 public final class ControlOptions extends AbstractBaseOptions {
 
-	private static final ResourceLocation CONTROL_OPTIONS = new ResourceLocation(OPTIONS_DIR.getFullPath(), "control_options" + EXTENSION);
+	private static final ResourceLocation CONTROL_OPTIONS = new ResourceLocation(OPTIONS_DIR.getFullPath(), "control_options" + EXTENSION, false);
 	
 	public static ControlOptions controlOptions;
 
@@ -47,7 +47,7 @@ public final class ControlOptions extends AbstractBaseOptions {
 			controlOptions.initDefaultOptions();
 		}
 		else {
-			LoggerUtil.logWarn(Thread.currentThread(), CONTROL_OPTIONS.getResourceName() + " is already initialized.");
+			LoggerUtil.logWarn(ControlOptions.class, Thread.currentThread(), CONTROL_OPTIONS.getResourceName() + " is already initialized.");
 		}
 	}
 	
@@ -121,7 +121,7 @@ public final class ControlOptions extends AbstractBaseOptions {
 					}
 				}
 			} catch (Exception e) {
-				LoggerUtil.logWarn(Thread.currentThread(), e, CONTROL_OPTIONS.getResourceName() + " is corrupt! Using default values.", true);
+				LoggerUtil.logWarn(getClass(), Thread.currentThread(), e, CONTROL_OPTIONS.getResourceName() + " is corrupt! Using default values.", true);
 			}
 		}
 		else {
@@ -159,7 +159,7 @@ public final class ControlOptions extends AbstractBaseOptions {
 			writer.println(jumpKey.getFileName() + DEFAULT_DELIMITER + jumpKey.getCustomKey());
 			writer.print(duckKey.getFileName() + DEFAULT_DELIMITER + duckKey.getCustomKey());
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			LoggerUtil.logError(Thread.currentThread(), e);
+			LoggerUtil.logError(getClass(), Thread.currentThread(), e);
 		}
 	}
 	

@@ -15,6 +15,9 @@ import com.bountive.util.resource.ResourceLocation;
 
 public class FileUtil {
 
+	public static final String ENTER = System.lineSeparator();
+	public static final String SEP = System.getProperty("file.separator");
+	
 	public static String[] getAllLinesFromExternalFileAsArray(File file) throws IOException {
 		List<String> lineValues = null;
 		lineValues = Files.readAllLines(Paths.get(file.getPath()), StandardCharsets.UTF_8);
@@ -28,7 +31,11 @@ public class FileUtil {
 	}
 	
 	public static String[] getAllLinesFromInternalFileAsArray(ResourceLocation location) {
-		try (BufferedReader r = new BufferedReader(new InputStreamReader(FileUtil.class.getClassLoader().getResourceAsStream(location.getFullPath())))) {
+		String s = "/" + location.getFullPath();
+		System.out.println(s);
+		System.out.println("HELLO : " + FileUtil.class.getResourceAsStream(s));
+		
+		try (BufferedReader r = new BufferedReader(new InputStreamReader(FileUtil.class.getResourceAsStream(s)))) {
 			List<String> result = new ArrayList<>();
             for (;;) {
                 String line = r.readLine();
@@ -38,7 +45,7 @@ public class FileUtil {
             }
             return result.toArray(new String[result.size()]);
 		} catch (Exception e) {
-			LoggerUtil.logWarn(Thread.currentThread(), e, "Could not read from file or file is corrupt. File Path: " + location, false);
+			LoggerUtil.logError(FileUtil.class, Thread.currentThread(), e);
 			return null;
 		}
 	}

@@ -1,7 +1,6 @@
 package com.bountive.graphics.shader;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
 
@@ -60,7 +59,7 @@ public abstract class AbstractShader {
 		
 		GL20.glCompileShader(vertexShaderID);
 		if (GL20.glGetShaderi(vertexShaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
-			LoggerUtil.logError(Thread.currentThread(), new RuntimeException("[Unable to compile vertex shader: " + 
+			LoggerUtil.logError(getClass(), Thread.currentThread(), new RuntimeException("[Unable to compile vertex shader: " + 
 			vertexLocation.getResourceName() + "] " + GL20.glGetShaderInfoLog(vertexShaderID, GL20.glGetShaderi(vertexShaderID, GL20.GL_INFO_LOG_LENGTH))));
 		}
 		GL20.glAttachShader(shaderProgramID, vertexShaderID);
@@ -77,7 +76,7 @@ public abstract class AbstractShader {
 		
 		GL20.glCompileShader(fragmentShaderID);
 		if (GL20.glGetShaderi(fragmentShaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
-			LoggerUtil.logError(Thread.currentThread(), new RuntimeException("[Unable to compile fragment shader: " + 
+			LoggerUtil.logError(getClass(), Thread.currentThread(), new RuntimeException("[Unable to compile fragment shader: " + 
 			fragmentLocation.getResourceName() + "] " + GL20.glGetShaderInfoLog(fragmentShaderID, GL20.glGetShaderi(fragmentShaderID, GL20.GL_INFO_LOG_LENGTH))));
 		}
 		GL20.glAttachShader(shaderProgramID, fragmentShaderID);
@@ -90,7 +89,7 @@ public abstract class AbstractShader {
 		GL20.glLinkProgram(shaderProgramID);
 		
 		if (GL20.glGetProgrami(shaderProgramID, GL20.GL_LINK_STATUS) == GL11.GL_FALSE) {
-			LoggerUtil.logError(Thread.currentThread(), new IllegalStateException("Unable to link shader program. Vertex Shader: " + vertexLocation.getResourceName() 
+			LoggerUtil.logError(getClass(), Thread.currentThread(), new IllegalStateException("Unable to link shader program. Vertex Shader: " + vertexLocation.getResourceName() 
 			+ ". Fragment Shader: " + fragmentLocation.getResourceName() + "."));
 		}
 	}
@@ -98,15 +97,15 @@ public abstract class AbstractShader {
 	private String readShaderFile(ResourceLocation loc) {
 		StringBuilder shaderSource = new StringBuilder();
 		
-		try (BufferedReader r = new BufferedReader(new InputStreamReader(AbstractShader.class.getClassLoader().getResourceAsStream(loc.getFullPath())))) {
+		System.out.println(loc.getFullPath());
+		try (BufferedReader r = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/" + loc.getFullPath())))) {
 			String s;
 			while ((s = r.readLine()) != null) {
 				shaderSource.append(s).append(System.lineSeparator());
 			}
-		} catch (IOException e) {
-			LoggerUtil.logError(Thread.currentThread(), e);
+		} catch (Exception e) {
+			LoggerUtil.logError(getClass(), Thread.currentThread(), e);
 		}
-		
 		return shaderSource.toString();
 	}
 	

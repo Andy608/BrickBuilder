@@ -1,11 +1,11 @@
 package com.bountive.start;
 
-import org.apache.log4j.Logger;
 import org.lwjgl.Sys;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 import com.bountive.display.Window;
+import com.bountive.display.callback.KeyboardCallback;
 import com.bountive.display.callback.MousePositionCallback;
 import com.bountive.graphics.render.BrickRenderer;
 import com.bountive.graphics.view.FlyingCamera;
@@ -18,7 +18,6 @@ import com.bountive.world.object.brick.TestBrick;
 
 public final class BrickBuilder {
 
-	private static final Logger logger = Logger.getLogger(BrickBuilder.class);
 	private static BrickBuilder instance;
 	
 	private static final int TICKS_PER_SECOND = 60;
@@ -41,17 +40,22 @@ public final class BrickBuilder {
 	
 	public BrickBuilder() {
 		instance = this;
-		logger.info("Creating " + Info.NAME + " " + Info.VERSION + " by " + Info.AUTHOR);
+		LoggerUtil.logInfo(this.getClass(), "Creating " + Info.NAME + " " + Info.VERSION + " by " + Info.AUTHOR);
 	}
 	
 	protected void run() {
-		logger.info("Initializing internal structure. Currently running on LWJGL " + Sys.getVersion() + ".");
+		
+		if (Sys.getVersion() == null) {
+			System.out.println("HELLO?");
+		}
+		
+//		LoggerUtil.logInfo(this.getClass(), "Initializing internal structure. Currently running on LWJGL " + Sys.getVersion() + ".");
 		
 		try {
 			InitializationHandler.init();
 			loop();
 		} catch (Exception e) {
-			LoggerUtil.logError(Thread.currentThread(), e);
+			LoggerUtil.logError(getClass(), Thread.currentThread(), e);
 		} finally {
 			Window.saveOptions();
 			renderer.release();
@@ -106,7 +110,7 @@ public final class BrickBuilder {
 		//////
 		
 		if (tickCount % TICKS_PER_SECOND == 0) {
-			System.out.println("Ticks: " + tickCount + ", Frames: " + frameCount);
+			LoggerUtil.logInfo(this.getClass(), "Ticks: " + tickCount + ", Frames: " + frameCount);
 			tickCount = 0;
 			frameCount = 0;
 		}
@@ -118,8 +122,10 @@ public final class BrickBuilder {
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		
-		renderer.addBrickToBatch(brick);
-		renderer.addBrickToBatch(brick2);
+		if (KeyboardCallback.toggle)
+			renderer.addBrickToBatch(brick);
+		else
+			renderer.addBrickToBatch(brick2);
 		
 		renderer.render(c);
 		

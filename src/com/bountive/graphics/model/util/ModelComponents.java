@@ -94,7 +94,7 @@ public final class ModelComponents {
 				positions[counter++] = vertexPositions.get(i).z;
 			}
 		} catch (Exception e) {
-			LoggerUtil.logError(Thread.currentThread(), e);
+			LoggerUtil.logError(getClass(), Thread.currentThread(), e);
 		}
 		endTime = System.nanoTime();
 		System.out.println(endTime - startTime);
@@ -129,7 +129,7 @@ public final class ModelComponents {
 	public float[] getTextureUVs() {
 		if (isTextureCoords) return Arrays.copyOf(uvTextureCoordinates, uvTextureCoordinates.length);
 		else {
-			LoggerUtil.logWarn("This model does not have any texture coordinates.");
+			LoggerUtil.logWarn(getClass(), "This model does not have any texture coordinates.");
 			return null;
 		}
 	}
@@ -137,7 +137,7 @@ public final class ModelComponents {
 	public float[] getNormals() {
 		if (isNormals) return Arrays.copyOf(normals, normals.length);
 		else {
-			LoggerUtil.logWarn("This model does not have normals.");
+			LoggerUtil.logWarn(getClass(), "This model does not have normals.");
 			return null;
 		}
 	}
