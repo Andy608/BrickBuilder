@@ -14,7 +14,7 @@ public class Main {
 		String decodedPath;
 		try {
 			decodedPath = URLDecoder.decode(path, "UTF-8");
-			System.setProperty("org.lwjgl.librarypath", decodedPath + FileUtil.getFileSeparator(false) + "natives");
+			System.setProperty("org.lwjgl.librarypath", decodedPath + FileUtil.getFileSeparator(false));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
