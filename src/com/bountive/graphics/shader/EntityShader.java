@@ -1,10 +1,11 @@
 package com.bountive.graphics.shader;
 
-import com.bountive.util.resource.ResourceLocation;
+import com.bountive.util.resource.FileResourceLocation;
+import com.bountive.util.resource.FileResourceLocation.EnumFileExtension;
 
 public class EntityShader extends AbstractShader {
 
 	public EntityShader() {
-		super(new ResourceLocation(RESOURCE_DIRECTORY, "entityVertexShader.vs", true), new ResourceLocation(RESOURCE_DIRECTORY, "entityFragmentShader.fs", true));
+		super(new FileResourceLocation(RESOURCE_DIRECTORY, "entityVertexShader", EnumFileExtension.VS), new FileResourceLocation(RESOURCE_DIRECTORY, "entityFragmentShader", EnumFileExtension.FS));
 	}
 }

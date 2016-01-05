@@ -9,11 +9,11 @@ import math.Vector3f;
 
 import com.bountive.util.FileUtil;
 import com.bountive.util.logger.LoggerUtil;
-import com.bountive.util.resource.ResourceLocation;
+import com.bountive.util.resource.FileResourceLocation;
 
 public final class ModelComponents {
 
-	private ResourceLocation modelFileLocation;
+	private FileResourceLocation modelFileLocation;
 	
 	private static final String POSITION_PREFIX = "v ";
 	private static final String UV_TEXTURE_PREFIX = "vt ";
@@ -29,7 +29,7 @@ public final class ModelComponents {
 	
 	private long startTime, endTime;
 	
-	public ModelComponents(ResourceLocation location) {
+	public ModelComponents(FileResourceLocation location) {
 		modelFileLocation = location;
 		dissectFile();
 	}

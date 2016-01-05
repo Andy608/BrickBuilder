@@ -11,12 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bountive.util.logger.LoggerUtil;
-import com.bountive.util.resource.ResourceLocation;
+import com.bountive.util.resource.FileResourceLocation;
 
 public class FileUtil {
 
 	public static final String ENTER = System.lineSeparator();
-	public static final String SEP = System.getProperty("file.separator");
+	private static final String SEP = System.getProperty("file.separator");
 	
 	public static String[] getAllLinesFromExternalFileAsArray(File file) throws IOException {
 		List<String> lineValues = null;
@@ -30,7 +30,7 @@ public class FileUtil {
 		return lineValues;
 	}
 	
-	public static String[] getAllLinesFromInternalFileAsArray(ResourceLocation location) {
+	public static String[] getAllLinesFromInternalFileAsArray(FileResourceLocation location) {
 		String s = "/" + location.getFullPath();
 		System.out.println(s);
 		System.out.println("HELLO : " + FileUtil.class.getResourceAsStream(s));
@@ -48,5 +48,9 @@ public class FileUtil {
 			LoggerUtil.logError(FileUtil.class, Thread.currentThread(), e);
 			return null;
 		}
+	}
+	
+	public static String getFileSeparator(boolean isJar) {
+		return !isJar ? SEP : "/";
 	}
 }

@@ -15,13 +15,16 @@ import org.apache.log4j.PropertyConfigurator;
 
 import com.bountive.start.Info;
 import com.bountive.util.FileUtil;
-import com.bountive.util.resource.ResourceLocation;
+import com.bountive.util.resource.FileResourceLocation;
+import com.bountive.util.resource.FileResourceLocation.EnumFileExtension;
+import com.bountive.util.resource.ResourceDirectory;
+import com.bountive.util.resource.ResourceHelper;
 
 public class LoggerUtil implements Thread.UncaughtExceptionHandler {
 
-	private static final ResourceLocation LOG_PROP_DIR = new ResourceLocation(ResourceLocation.GAME_APPDATA_DIRECTORY, "/logger", false);
-	private static final ResourceLocation LOG_DIR = new ResourceLocation(LOG_PROP_DIR.getFullPath(), "reports", false);
-	private static final ResourceLocation LOG_PROPERTIES = new ResourceLocation(LOG_PROP_DIR.getFullPath(), "bb_logger.properties", false);
+	private static final ResourceDirectory LOG_PROP_DIR = new ResourceDirectory(ResourceHelper.GAME_APPDATA_DIRECTORY.getFullDirectory(), "logger", false);
+	private static final ResourceDirectory LOG_DIR = new ResourceDirectory(LOG_PROP_DIR.getFullDirectory(), "reports", false);
+	private static final FileResourceLocation LOG_PROPERTIES = new FileResourceLocation(LOG_PROP_DIR, "bb_logger", EnumFileExtension.PROPERTIES);
 	private static final String DATE_FORMAT = "dd_MM_yyyy HH_mm_ss";
 	
 	private static LoggerUtil loggerUtil;
@@ -32,7 +35,7 @@ public class LoggerUtil implements Thread.UncaughtExceptionHandler {
 		File filePath = new File(LOG_PROPERTIES.getFullPath());
 		
 		if (!filePath.exists()) {
-			new File(LOG_PROPERTIES.getParentDir()).mkdirs();
+			new File(LOG_PROPERTIES.getParentDirectory().getFullDirectory()).mkdirs();
 			
 			try (PrintStream writer = new PrintStream(LOG_PROPERTIES.getFullPath(), "UTF-8")) {
 				
@@ -114,7 +117,7 @@ public class LoggerUtil implements Thread.UncaughtExceptionHandler {
 	}
 	
 	private static void logToErrorFile(String date, String message, Throwable e) {
-		File f = new File(LOG_DIR.getFullPath());
+		File f = new File(LOG_DIR.getFullDirectory());
 		boolean append = false;
 		if (f.exists()) {
 			append = true;
@@ -123,7 +126,7 @@ public class LoggerUtil implements Thread.UncaughtExceptionHandler {
 			f.mkdirs();
 		}
 		
-		ResourceLocation fileName = new ResourceLocation(LOG_DIR.getFullPath(), "/log_report_" + date + ".txt", false);
+		FileResourceLocation fileName = new FileResourceLocation(LOG_DIR, "log_report_" + date, EnumFileExtension.TXT);
 		
 		try (PrintStream writer = new PrintStream(new FileOutputStream(fileName.getFullPath(), append))) {
 			writer.println(message + FileUtil.ENTER);

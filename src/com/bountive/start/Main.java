@@ -1,15 +1,24 @@
 package com.bountive.start;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
+import com.bountive.util.FileUtil;
 import com.bountive.util.logger.LoggerUtil;
-import com.bountive.util.resource.ResourceLocation;
 
 public class Main {
 
 	public static void main(String[] args) {
-		ResourceLocation nativesLocation = new ResourceLocation("C:/Program Files (x86)/" + Info.NAME + "/natives", "", false);
-		System.setProperty("org.lwjgl.librarypath", new File(nativesLocation.getFullPath()).getAbsolutePath());
+		String path = (new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath())).getParentFile().getPath();
+		String decodedPath;
+		try {
+			decodedPath = URLDecoder.decode(path, "UTF-8");
+			System.setProperty("org.lwjgl.librarypath", decodedPath + FileUtil.getFileSeparator(false) + "natives");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
 		System.out.println(System.getProperty("org.lwjgl.librarypath"));
 		LoggerUtil.init();
 		Thread.setDefaultUncaughtExceptionHandler(LoggerUtil.getInstance());

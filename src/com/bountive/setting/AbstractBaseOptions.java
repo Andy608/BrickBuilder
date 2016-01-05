@@ -12,14 +12,14 @@ import com.bountive.util.FileUtil;
 import com.bountive.util.SystemUtil;
 import com.bountive.util.SystemUtil.EnumOS;
 import com.bountive.util.logger.LoggerUtil;
-import com.bountive.util.resource.ResourceLocation;
+import com.bountive.util.resource.ResourceDirectory;
+import com.bountive.util.resource.ResourceHelper;
 
 public abstract class AbstractBaseOptions {
 
-	protected static final String EXTENSION = ".txt";
 	protected static final char DEFAULT_DELIMITER = '=', SEPARATOR = ',';
 	protected static final EnumOS os = SystemUtil.getOSType();
-	protected static final ResourceLocation OPTIONS_DIR = new ResourceLocation(ResourceLocation.GAME_APPDATA_DIRECTORY, "options", false);
+	protected static final ResourceDirectory OPTIONS_DIR = new ResourceDirectory(ResourceHelper.GAME_APPDATA_DIRECTORY.getFullDirectory(), "options", false);
 	
 	protected abstract void initDefaultOptions();
 	public abstract void loadOptionsFromFile();

@@ -13,11 +13,12 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
 import com.bountive.util.logger.LoggerUtil;
-import com.bountive.util.resource.ResourceLocation;
+import com.bountive.util.resource.FileResourceLocation;
+import com.bountive.util.resource.ResourceDirectory;
 
 public abstract class AbstractShader {
 
-	protected static final String RESOURCE_DIRECTORY = "res/graphics/shader";
+	protected static final ResourceDirectory RESOURCE_DIRECTORY = new ResourceDirectory("res/graphics", "shader", true);
 	
 	private int shaderProgramID;
 	private int vertexShaderID;
@@ -27,12 +28,12 @@ public abstract class AbstractShader {
 	private int transformationMatrixID;
 	private int viewMatrixID;
 	
-	private ResourceLocation vertexLocation;
-	private ResourceLocation fragmentLocation;
+	private FileResourceLocation vertexLocation;
+	private FileResourceLocation fragmentLocation;
 	
 	private FloatBuffer matrixBuffer;
 	
-	public AbstractShader(ResourceLocation vertexFileLocation, ResourceLocation fragmentFileLocation) {
+	public AbstractShader(FileResourceLocation vertexFileLocation, FileResourceLocation fragmentFileLocation) {
 		shaderProgramID = GL20.glCreateProgram();
 		vertexLocation = vertexFileLocation;
 		fragmentLocation = fragmentFileLocation;
@@ -60,7 +61,7 @@ public abstract class AbstractShader {
 		GL20.glCompileShader(vertexShaderID);
 		if (GL20.glGetShaderi(vertexShaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
 			LoggerUtil.logError(getClass(), Thread.currentThread(), new RuntimeException("[Unable to compile vertex shader: " + 
-			vertexLocation.getResourceName() + "] " + GL20.glGetShaderInfoLog(vertexShaderID, GL20.glGetShaderi(vertexShaderID, GL20.GL_INFO_LOG_LENGTH))));
+			vertexLocation.getFileNameWithExtension() + "] " + GL20.glGetShaderInfoLog(vertexShaderID, GL20.glGetShaderi(vertexShaderID, GL20.GL_INFO_LOG_LENGTH))));
 		}
 		GL20.glAttachShader(shaderProgramID, vertexShaderID);
 	}
@@ -77,7 +78,7 @@ public abstract class AbstractShader {
 		GL20.glCompileShader(fragmentShaderID);
 		if (GL20.glGetShaderi(fragmentShaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
 			LoggerUtil.logError(getClass(), Thread.currentThread(), new RuntimeException("[Unable to compile fragment shader: " + 
-			fragmentLocation.getResourceName() + "] " + GL20.glGetShaderInfoLog(fragmentShaderID, GL20.glGetShaderi(fragmentShaderID, GL20.GL_INFO_LOG_LENGTH))));
+			fragmentLocation.getFileNameWithExtension() + "] " + GL20.glGetShaderInfoLog(fragmentShaderID, GL20.glGetShaderi(fragmentShaderID, GL20.GL_INFO_LOG_LENGTH))));
 		}
 		GL20.glAttachShader(shaderProgramID, fragmentShaderID);
 	}
@@ -89,12 +90,12 @@ public abstract class AbstractShader {
 		GL20.glLinkProgram(shaderProgramID);
 		
 		if (GL20.glGetProgrami(shaderProgramID, GL20.GL_LINK_STATUS) == GL11.GL_FALSE) {
-			LoggerUtil.logError(getClass(), Thread.currentThread(), new IllegalStateException("Unable to link shader program. Vertex Shader: " + vertexLocation.getResourceName() 
-			+ ". Fragment Shader: " + fragmentLocation.getResourceName() + "."));
+			LoggerUtil.logError(getClass(), Thread.currentThread(), new IllegalStateException("Unable to link shader program. Vertex Shader: " + vertexLocation.getFileNameWithExtension() 
+			+ ". Fragment Shader: " + fragmentLocation.getFileNameWithExtension() + "."));
 		}
 	}
 	
-	private String readShaderFile(ResourceLocation loc) {
+	private String readShaderFile(FileResourceLocation loc) {
 		StringBuilder shaderSource = new StringBuilder();
 		
 		System.out.println(loc.getFullPath());

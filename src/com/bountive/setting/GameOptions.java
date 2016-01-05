@@ -5,9 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
-import org.lwjgl.opengl.GL11;
-
 import math.Vector2f;
+
+import org.lwjgl.opengl.GL11;
 
 import com.bountive.display.Window;
 import com.bountive.graphics.view.CameraMatrixManager;
@@ -15,11 +15,12 @@ import com.bountive.setting.util.BooleanSetting;
 import com.bountive.setting.util.ClampedIntegerSetting;
 import com.bountive.setting.util.Vector2fSetting;
 import com.bountive.util.logger.LoggerUtil;
-import com.bountive.util.resource.ResourceLocation;
+import com.bountive.util.resource.FileResourceLocation;
+import com.bountive.util.resource.FileResourceLocation.EnumFileExtension;
 
 public final class GameOptions extends AbstractBaseOptions {
 
-	private static final ResourceLocation GAME_OPTIONS = new ResourceLocation(OPTIONS_DIR.getFullPath(), "game_settings" + EXTENSION, false);
+	private static final FileResourceLocation GAME_OPTIONS = new FileResourceLocation(OPTIONS_DIR, "game_settings", EnumFileExtension.PROPERTIES);
 	
 	public static GameOptions gameOptions;
 	
@@ -45,7 +46,7 @@ public final class GameOptions extends AbstractBaseOptions {
 			gameOptions.initDefaultOptions();
 		}
 		else {
-			LoggerUtil.logWarn(GameOptions.class, Thread.currentThread(), GAME_OPTIONS.getResourceName() + " is already initialized.");
+			LoggerUtil.logWarn(GameOptions.class, Thread.currentThread(), GAME_OPTIONS.getFileNameWithExtension() + " is already initialized.");
 		}
 	}
 	
@@ -89,7 +90,7 @@ public final class GameOptions extends AbstractBaseOptions {
 								windowSize.setCustomVector2f(getVector2fValue(new Vector2f(width, height), windowSize.getDefaultVector2f()));
 							}
 						} catch (NumberFormatException e) {
-							LoggerUtil.logWarn(getClass(), Thread.currentThread(), e, GAME_OPTIONS.getResourceName() + " is corrupt! Did you edit this file? Unable to get correct windowSize. Using default value instead.", true);
+							LoggerUtil.logWarn(getClass(), Thread.currentThread(), e, GAME_OPTIONS.getFileNameWithExtension() + " is corrupt! Did you edit this file? Unable to get correct windowSize. Using default value instead.", true);
 							windowSize.resetVector2f();
 						}
 					}
@@ -106,7 +107,7 @@ public final class GameOptions extends AbstractBaseOptions {
 								windowPosition.setCustomVector2f(getVector2fValue(new Vector2f(xPos, yPos), windowPosition.getDefaultVector2f()));
 							}
 						} catch (Exception e) {
-							LoggerUtil.logWarn(getClass(), Thread.currentThread(), e, GAME_OPTIONS.getResourceName() + " is corrupt! Did you edit this file? Unable to get correct windowPosition. Using default value instead.", true);
+							LoggerUtil.logWarn(getClass(), Thread.currentThread(), e, GAME_OPTIONS.getFileNameWithExtension() + " is corrupt! Did you edit this file? Unable to get correct windowPosition. Using default value instead.", true);
 							windowPosition.resetVector2f();
 						}
 					}
@@ -131,11 +132,11 @@ public final class GameOptions extends AbstractBaseOptions {
 				}
 			}
 			catch (Exception e) {
-				LoggerUtil.logWarn(getClass(), Thread.currentThread(), e, GAME_OPTIONS.getResourceName() + " is corrupt! Using default values.", true);
+				LoggerUtil.logWarn(getClass(), Thread.currentThread(), e, GAME_OPTIONS.getFileNameWithExtension() + " is corrupt! Using default values.", true);
 			}
 		}
 		else {
-			new File(GAME_OPTIONS.getParentDir()).mkdirs();
+			new File(GAME_OPTIONS.getParentDirectory().getFullDirectory()).mkdirs();
 		}
 	}
 	

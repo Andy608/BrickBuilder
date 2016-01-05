@@ -13,11 +13,12 @@ import com.bountive.setting.util.MultiKeyControl;
 import com.bountive.setting.util.PercentageSetting;
 import com.bountive.setting.util.SingleKeyControl;
 import com.bountive.util.logger.LoggerUtil;
-import com.bountive.util.resource.ResourceLocation;
+import com.bountive.util.resource.FileResourceLocation;
+import com.bountive.util.resource.FileResourceLocation.EnumFileExtension;
 
 public final class ControlOptions extends AbstractBaseOptions {
 
-	private static final ResourceLocation CONTROL_OPTIONS = new ResourceLocation(OPTIONS_DIR.getFullPath(), "control_options" + EXTENSION, false);
+	private static final FileResourceLocation CONTROL_OPTIONS = new FileResourceLocation(OPTIONS_DIR, "control_options", EnumFileExtension.PROPERTIES);
 	
 	public static ControlOptions controlOptions;
 
@@ -47,7 +48,7 @@ public final class ControlOptions extends AbstractBaseOptions {
 			controlOptions.initDefaultOptions();
 		}
 		else {
-			LoggerUtil.logWarn(ControlOptions.class, Thread.currentThread(), CONTROL_OPTIONS.getResourceName() + " is already initialized.");
+			LoggerUtil.logWarn(ControlOptions.class, Thread.currentThread(), CONTROL_OPTIONS.getFileNameWithExtension() + " is already initialized.");
 		}
 	}
 	
@@ -121,11 +122,11 @@ public final class ControlOptions extends AbstractBaseOptions {
 					}
 				}
 			} catch (Exception e) {
-				LoggerUtil.logWarn(getClass(), Thread.currentThread(), e, CONTROL_OPTIONS.getResourceName() + " is corrupt! Using default values.", true);
+				LoggerUtil.logWarn(getClass(), Thread.currentThread(), e, CONTROL_OPTIONS.getFileNameWithExtension() + " is corrupt! Using default values.", true);
 			}
 		}
 		else {
-			new File(CONTROL_OPTIONS.getParentDir()).mkdirs();
+			new File(CONTROL_OPTIONS.getParentDirectory().getFullDirectory()).mkdirs();
 		}
 	}
 

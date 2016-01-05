@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import com.bountive.graphics.model.ModelMesh;
-import com.bountive.util.resource.ResourceLocation;
+import com.bountive.util.resource.FileResourceLocation;
 
 public class ModelBuilder {
 
@@ -69,7 +69,7 @@ public class ModelBuilder {
 	 * @param objFileLocation : The location of the file.
 	 * @return : A new model with the information from the object file.
 	 */
-	public ModelMesh buildModelFromFile(ResourceLocation objFileLocation) {
+	public ModelMesh buildModelFromFile(FileResourceLocation objFileLocation) {
 		int vao = createVAO();
 		
 		ModelComponents modelComponents = new ModelComponents(objFileLocation);
