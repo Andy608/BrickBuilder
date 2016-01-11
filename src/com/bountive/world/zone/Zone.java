@@ -17,8 +17,8 @@ public class Zone {
 	public static final float BRICK_CONTAINER_HEIGHT = 0.4f;
 //	public static final int ZONE_WIDTH = 18;
 //	public static final int ZONE_HEIGHT = 45;
-	public static final int ZONE_WIDTH = 16;
-	public static final int ZONE_HEIGHT = 16;
+	public static final int ZONE_WIDTH = 5;
+	public static final int ZONE_HEIGHT = 4;
 	
 	private AbstractBrick[] zoneArray;
 	private List<Integer> knownIndexes;
@@ -50,7 +50,7 @@ public class Zone {
 	
 	private void populateZone() {
 		Random rand = MathHelper.RAND;
-		for (int i = 0; i < 200; i++) {
+		for (int i = 0; i < ZONE_WIDTH * ZONE_WIDTH * ZONE_HEIGHT; i++) {
 			onBrickPlaced(Bricks.stoneList.getBrick(rand.nextInt(Bricks.stoneList.getColorAmount()), 0), i);
 //			zoneArray[i] = Bricks.stoneList.getBrick(rand.nextInt(Bricks.stoneList.getColorAmount()), 0);
 		}

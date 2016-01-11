@@ -7,7 +7,7 @@ import com.bountive.world.brick.list.BrickStoneList;
 
 public class Bricks {
 
-	public static BrickStoneList stoneList = new BrickStoneList(0, new EnumBrickColor[]{EnumBrickColor.BLACK, EnumBrickColor.GRAY, EnumBrickColor.WHITE}, new EnumBrickModel[]{EnumBrickModel.REGULAR_1X1, EnumBrickModel.FLAT_1X1});
+	public static BrickStoneList stoneList = new BrickStoneList(0, new EnumBrickColor[]{EnumBrickColor.WHITE, EnumBrickColor.BRIGHT_RED, EnumBrickColor.BRIGHT_YELLOW}, new EnumBrickModel[]{EnumBrickModel.REGULAR_1X1, EnumBrickModel.FLAT_1X1});
 	
 	
 	//In future use the list in IDManager to render using IDs of brick.

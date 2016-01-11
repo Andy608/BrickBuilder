@@ -20,4 +20,5 @@ public class BrickShader extends AbstractShader {
 	public void loadBrickColor(float red, float green, float blue) {
 		super.loadFloats(brickColorID, red, green, blue);
 	}
+	
 }

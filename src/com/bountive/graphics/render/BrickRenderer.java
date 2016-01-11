@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import math.Vector3f;
-
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
@@ -16,7 +14,6 @@ import com.bountive.graphics.model.util.ModelBrickList;
 import com.bountive.graphics.shader.EntityShader;
 import com.bountive.graphics.view.AbstractCamera;
 import com.bountive.graphics.view.CameraMatrixManager;
-import com.bountive.util.math.MatrixMathHelper;
 import com.bountive.world.brick.AbstractBrick;
 import com.bountive.world.brick.helper.EnumBrickModel;
 
@@ -78,9 +75,9 @@ public class BrickRenderer implements IRenderer {
 		return brickModel;
 	}
 	
-	private Vector3f POS = new Vector3f(0, 0, -10);		//TEMP
-	private Vector3f ROT = new Vector3f(0, 0, 0);		//TEMP
-	private Vector3f SCALE = new Vector3f(1, 1, 1);		//TEMP
+//	private Vector3f POS = new Vector3f(0, 0, -10);		//TEMP
+//	private Vector3f ROT = new Vector3f(0, 0, 0);		//TEMP
+//	private Vector3f SCALE = new Vector3f(1, 1, 1);		//TEMP
 	private void renderBrick(AbstractBrick b, ModelMesh m) {
 //		shader.loadTransformationMatrix(MatrixMathHelper.buildTransformationMatrix(POS, ROT, SCALE));//TEMP - should use the transformation of the brick.
 		

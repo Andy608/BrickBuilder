@@ -16,7 +16,7 @@ void main() {
 
 	vec4 localPosition = vec4(position, 1.0);
 	
-	vColor = clamp(mixColors(localPosition, vec4(brickColorTint, 1.0), 0.8), 0.1, 1.0);
+	vColor = clamp(mixColors(localPosition, vec4(brickColorTint, 1.0), 0.7), 0.1, 1.0);
 	
 	
 	//vColor = vec4(brickColorTint, 1.0);

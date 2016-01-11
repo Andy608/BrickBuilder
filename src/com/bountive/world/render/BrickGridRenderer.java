@@ -52,8 +52,6 @@ public class BrickGridRenderer implements IRenderer {
 		shader.loadProjectionMatrix(CameraMatrixManager.manager.getProjectionMatrix());
 		shader.loadViewMatrix(c.getViewMatrix());
 		
-		shader.loadTransformationMatrix(customTransformMatrix);
-		
 		//For all model types, bind them, then send the bound model and positions to render
 		
 		HashMap<AbstractBrick, List<Integer>> brickIndexes = zone.getBrickIndexes();
@@ -125,7 +123,7 @@ public class BrickGridRenderer implements IRenderer {
 							MatrixMathHelper.translateMatrix(translationMatrix, Vector3f.add(zone.getPosition(), zone.zoneIndexToZoneCoord(brickOffset, index), null))));
 		
 			EnumBrickColor colorID = brickType.getColorID();
-			shader.loadBrickColor(colorID.RED, colorID.GREEN, colorID.BLUE);
+			shader.loadBrickColor(colorID.R, colorID.G, colorID.B);
 			
 			GL11.glDrawElements(GL11.GL_TRIANGLES, vertCount, GL11.GL_UNSIGNED_INT, 0);
 		}

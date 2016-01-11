@@ -6,19 +6,21 @@ public enum EnumBrickColor {
 
 	WHITE(255, 255, 255),
 	GRAY(161, 165, 162),
+	BRIGHT_RED(196, 40, 27),
+	BRIGHT_YELLOW(245, 205, 47),
 	BLACK(0, 0, 0);
 	
 	public static final float MAX_COLOR = 255f;
-	public final float RED, GREEN, BLUE;
+	public final float R, G, B;
 	
 	/**
 	 * Converts from 0 - 255 format to a 0 - 1 format.
 	 * @param: Takes in (r, g, b) color each from 0 - 255. Values are clamped if outside this range. (Alpha value is calculated in the shader with alpha percentage from brick class).
 	 */
 	private EnumBrickColor(int r, int g, int b) {
-		RED = MathHelper.clampInt(r, 0, (int)MAX_COLOR) / MAX_COLOR;
-		GREEN =  MathHelper.clampInt(g, 0, (int)MAX_COLOR) / MAX_COLOR;
-		BLUE =  MathHelper.clampInt(b, 0, (int)MAX_COLOR) / MAX_COLOR;
+		R = MathHelper.clampInt(r, 0, (int)MAX_COLOR) / MAX_COLOR;
+		G =  MathHelper.clampInt(g, 0, (int)MAX_COLOR) / MAX_COLOR;
+		B =  MathHelper.clampInt(b, 0, (int)MAX_COLOR) / MAX_COLOR;
 	}
 	
 	/**
@@ -26,6 +28,6 @@ public enum EnumBrickColor {
 	 */
 	@Override
 	public String toString() {
-		return super.name() + "(" + RED * MAX_COLOR + ", " + GREEN * MAX_COLOR + ", " + BLUE * MAX_COLOR + ")";
+		return super.name() + "(" + R * MAX_COLOR + ", " + G * MAX_COLOR + ", " + B * MAX_COLOR + ")";
 	}
 }
