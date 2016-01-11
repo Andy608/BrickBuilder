@@ -101,7 +101,7 @@ public class Window {
 		
 		GL.createCapabilities();
 		ModelManager.getManager().release();
-		ModelBrickList.createModels();
+		ModelBrickList.loadModels();
 	}
 	
 	public static void saveOptions() {

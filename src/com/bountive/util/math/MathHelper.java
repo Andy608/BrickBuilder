@@ -1,8 +1,11 @@
 package com.bountive.util.math;
 
+import java.util.Random;
+
 public class MathHelper {
 
 	private static float[] SIN_TABLE = new float[65536];
+	public static final Random RAND = new Random();
 	
 	public static final int clampInt(int value, int min, int max) {
 		return (value > max) ? max : (value < min) ? min : value; 

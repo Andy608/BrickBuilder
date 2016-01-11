@@ -76,6 +76,10 @@ public class LoggerUtil implements Thread.UncaughtExceptionHandler {
 		logWarn(c, Thread.currentThread(), warnMessage);
 	}
 	
+	public static void logError(Class<?> c, Throwable e) {
+		logError(c, Thread.currentThread(), e);
+	}
+	
 	public static void logWarn(Class<?> c, Thread t, String warnMessage) {
 		getLogger(c).warn("Warning coming from class: " + t.getName() + " | " + warnMessage);
 	}

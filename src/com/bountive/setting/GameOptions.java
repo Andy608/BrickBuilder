@@ -62,7 +62,7 @@ public final class GameOptions extends AbstractBaseOptions {
 		fullscreen = new BooleanSetting("fullscreen", false);
 		
 		isPerspective = new BooleanSetting("perspective", true);
-		fieldOfView = new ClampedIntegerSetting("FOV", 69, 30, 110);
+		fieldOfView = new ClampedIntegerSetting("FOV", 70, 30, 110);
 	}
 	
 	@Override

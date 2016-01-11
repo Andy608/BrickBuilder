@@ -5,6 +5,7 @@ import com.bountive.graphics.model.util.ModelBuilder;
 import com.bountive.graphics.model.util.ModelManager;
 import com.bountive.graphics.view.CameraMatrixManager;
 import com.bountive.setting.ControlOptions;
+import com.bountive.world.brick.Bricks;
 
 public class InitializationHandler {
 
@@ -15,6 +16,7 @@ public class InitializationHandler {
 		Window.createWindow();
 		
 		//TODO:Initialize this when loading up the world.
+		Bricks.registerBricks();
 		CameraMatrixManager.init();
 		ControlOptions.setPaused(false);
 		///////////////////////////////////////

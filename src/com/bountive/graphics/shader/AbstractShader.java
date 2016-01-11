@@ -98,7 +98,7 @@ public abstract class AbstractShader {
 	private String readShaderFile(FileResourceLocation loc) {
 		StringBuilder shaderSource = new StringBuilder();
 		
-		System.out.println(loc.getFullPath());
+//		System.out.println(loc.getFullPath());
 		try (BufferedReader r = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/" + loc.getFullPath())))) {
 			String s;
 			while ((s = r.readLine()) != null) {
@@ -120,6 +120,10 @@ public abstract class AbstractShader {
 	
 	protected void loadFloat(int location, float value) {
 		GL20.glUniform1f(location, value);
+	}
+	
+	protected void loadFloats(int location, float v1, float v2, float v3) {
+		GL20.glUniform3f(location, v1, v2, v3);
 	}
 	
 	protected void load3DVector(int location, Vector3f vector) {

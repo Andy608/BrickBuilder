@@ -32,8 +32,8 @@ public class FileUtil {
 	
 	public static String[] getAllLinesFromInternalFileAsArray(FileResourceLocation location) {
 		String s = "/" + location.getFullPath();
-		System.out.println(s);
-		System.out.println("HELLO : " + FileUtil.class.getResourceAsStream(s));
+//		System.out.println(s);
+//		System.out.println("HELLO : " + FileUtil.class.getResourceAsStream(s));
 		
 		try (BufferedReader r = new BufferedReader(new InputStreamReader(FileUtil.class.getResourceAsStream(s)))) {
 			List<String> result = new ArrayList<>();

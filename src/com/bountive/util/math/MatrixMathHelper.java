@@ -10,32 +10,70 @@ public class MatrixMathHelper {
 	public static final Vector3f Z_AXIS = new Vector3f(0, 0, 1);
 	private static final Vector3f DEFAULT_SCALE = new Vector3f(1, 1, 1);
 	
-	public static Matrix4f buildTransformationMatrix(Vector3f translation, Vector3f rotation, Vector3f scale) {
-		Matrix4f m = new Matrix4f();
-		
-		m.translate(translation);
+	public static final Matrix4f DEFAULT_SCALE_MATRIX = new Matrix4f();
+	
+	public static Matrix4f rotateMatrix(Matrix4f source, float x, float y, float z) {
+		source.rotate((float)(Math.toRadians(x)), X_AXIS);
+		source.rotate((float)(Math.toRadians(y)), Y_AXIS);
+		source.rotate((float)(Math.toRadians(z)), Z_AXIS);
+		return source;
+	}
+	
+	//TODO: USE CONTROLLED VECTOR POOL --------------------------v
+	public static Matrix4f rotateMatrix(Matrix4f source, Vector3f rotation) {
+		source.rotate((float)(Math.toRadians(rotation.x)), X_AXIS);
+		source.rotate((float)(Math.toRadians(rotation.y)), Y_AXIS);
+		source.rotate((float)(Math.toRadians(rotation.z)), Z_AXIS);
+		return source;
+	}
+	
+	//TODO: USE CONTROLLED VECTOR POOL ------------------------v
+	public static Matrix4f scaleMatrix(Matrix4f source, Vector3f scale) {
+		source.scale(scale);
+		return source;
+	}
+	
+	//TODO: USE CONTROLLED VECTOR POOL -------------------------------v
+	public static Matrix4f translateMatrix(Matrix4f source, Vector3f translation) {
+		source.translate(translation);
+		return source;
+	}
+	
+	/**
+	 * Builds a custom transformation matrix depending on the order of v1, v2, and v3.
+	 * @param source : The transformationMatrix source.
+	 * @param m1 : The first matrix to be multiplied.
+	 * @param m2 : The second matrix to be multiplied.
+	 * @param m3 : The third matrix to be multiplied.
+	 */
+	public static Matrix4f buildCustomTransformationMatrix(Matrix4f source, Matrix4f m1, Matrix4f m2, Matrix4f m3) {
+		//A REGULAR TRANSFORMATION MATRIX WOULD COME OUT OF: m1 = scale, m2 = rotation, m3 = translation
+		//A TRANSFORMATION MATRIX THAT ROTATED ABOUT A POINT IN SPACE WOULD COME OUT OF: m1 = scale, m2 = translation, m3 = rotation
+		Matrix4f.mul(source, m1, source);
+		Matrix4f.mul(source, m2, source);
+		Matrix4f.mul(source, m3, source);
+		return source;
+	}
+	
+	public static Matrix4f buildNormalTransformationMatrix(Matrix4f source, Vector3f translation, Vector3f rotation, Vector3f scale) {
+		source.translate(translation);
 		
 		if (rotation != null) {
-			m.rotate((float)(Math.toRadians(rotation.x)), X_AXIS);
-			m.rotate((float)(Math.toRadians(rotation.y)), Y_AXIS);
-			m.rotate((float)(Math.toRadians(rotation.z)), Z_AXIS);
+			source.rotate((float)(Math.toRadians(rotation.x)), X_AXIS);
+			source.rotate((float)(Math.toRadians(rotation.y)), Y_AXIS);
+			source.rotate((float)(Math.toRadians(rotation.z)), Z_AXIS);
 		}
 		
-		if (scale == null) m.scale(DEFAULT_SCALE);
-		else m.scale(scale);
-		
-		return m;
+		if (scale == null) source.scale(DEFAULT_SCALE);
+		else source.scale(scale);
+		return source;
 	}
 	
-	public static Matrix4f buildTransformationMatrix(Vector3f translation, Vector3f rotation) {
-		return buildTransformationMatrix(translation, rotation, null);
+	public static void buildNormalTransformationMatrix(Matrix4f source, Vector3f translation, Vector3f rotation) {
+		buildNormalTransformationMatrix(source, translation, rotation, null);
 	}
 	
-	public static Matrix4f buildTransformationMatrix(Vector3f translation) {
-		return buildTransformationMatrix(translation, null);
-	}
-	
-	public static void resetVector(Vector3f v) {
-		v.set(0, 0, 0);
+	public static void buildNormalTransformationMatrix(Matrix4f source, Vector3f translation) {
+		buildNormalTransformationMatrix(source, translation, null);
 	}
 }

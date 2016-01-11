@@ -17,8 +17,8 @@ import com.bountive.graphics.shader.EntityShader;
 import com.bountive.graphics.view.AbstractCamera;
 import com.bountive.graphics.view.CameraMatrixManager;
 import com.bountive.util.math.MatrixMathHelper;
-import com.bountive.world.object.brick.AbstractBrick;
-import com.bountive.world.object.brick.AbstractBrick.EnumBrickModel;
+import com.bountive.world.brick.AbstractBrick;
+import com.bountive.world.brick.helper.EnumBrickModel;
 
 public class BrickRenderer implements IRenderer {
 
@@ -35,14 +35,14 @@ public class BrickRenderer implements IRenderer {
 	//
 	//I'm picturing this method taking in a chunk of bricks and then rendering the bricks relative to the chunk's position and the order they are in.
 	public void addBrickToBatch(AbstractBrick b) {
-		List<AbstractBrick> modelBatch = bricks.get(b.getModelType());
+		List<AbstractBrick> modelBatch = bricks.get(b.getModelID());
 		if (modelBatch != null) {
 			modelBatch.add(b);
 		}
 		else {
 			List<AbstractBrick> batch = new ArrayList<AbstractBrick>();
 			batch.add(b);
-			bricks.put(b.getModelType(), batch);
+			bricks.put(b.getModelID(), batch);
 		}
 	}
 	
@@ -51,6 +51,7 @@ public class BrickRenderer implements IRenderer {
 		shader.bind();
 		shader.loadProjectionMatrix(CameraMatrixManager.manager.getProjectionMatrix());
 		shader.loadViewMatrix(c.getViewMatrix());
+		
 		for (EnumBrickModel modelType : bricks.keySet()) {
 			
 			ModelMesh mesh = bindModel(modelType);
@@ -68,7 +69,7 @@ public class BrickRenderer implements IRenderer {
 		ModelMesh brickModel;
 		
 		switch (modelType) {
-		case FULL_1x1: brickModel = ModelBrickList.FULL_1X1_BRICK; break;
+		case REGULAR_1X1: brickModel = ModelBrickList.REGULAR_1X1_BRICK; break;
 //		case FLAT_1x1: brickModel = ModelBrickList.FLAT_1X1_BRICK; break;
 		default: brickModel = ModelBrickList.FLAT_1X1_BRICK;
 		}
@@ -81,7 +82,7 @@ public class BrickRenderer implements IRenderer {
 	private Vector3f ROT = new Vector3f(0, 0, 0);		//TEMP
 	private Vector3f SCALE = new Vector3f(1, 1, 1);		//TEMP
 	private void renderBrick(AbstractBrick b, ModelMesh m) {
-		shader.loadTransformationMatrix(MatrixMathHelper.buildTransformationMatrix(POS, ROT, SCALE));//TEMP - should use the transformation of the brick.
+//		shader.loadTransformationMatrix(MatrixMathHelper.buildTransformationMatrix(POS, ROT, SCALE));//TEMP - should use the transformation of the brick.
 		
 		GL20.glEnableVertexAttribArray(0);
 		GL20.glEnableVertexAttribArray(1);

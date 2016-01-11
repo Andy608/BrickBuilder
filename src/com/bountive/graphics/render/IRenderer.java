@@ -5,6 +5,5 @@ import com.bountive.graphics.view.AbstractCamera;
 public interface IRenderer {
 
 	void render(AbstractCamera c);
-	
 	void release();
 }

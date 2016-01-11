@@ -19,7 +19,7 @@ public class Main {
 			e.printStackTrace();
 		}
 		
-		System.out.println(System.getProperty("org.lwjgl.librarypath"));
+//		System.out.println(System.getProperty("org.lwjgl.librarypath"));
 		LoggerUtil.init();
 		Thread.setDefaultUncaughtExceptionHandler(LoggerUtil.getInstance());
 		new BrickBuilder().run();

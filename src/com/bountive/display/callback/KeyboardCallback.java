@@ -41,8 +41,8 @@ public class KeyboardCallback extends GLFWKeyCallback {
 			else if (ControlOptions.getPausedKey() == key) {
 				ControlOptions.setPaused(!ControlOptions.isPaused());
 			}
-			else if (GLFW.GLFW_KEY_C == key) {
-				toggle = !toggle;
+			else if (GLFW.GLFW_KEY_R == key) {
+				toggle = false;
 			}
 		}
 		else if (action == GLFW.GLFW_PRESS) {
@@ -81,6 +81,9 @@ public class KeyboardCallback extends GLFWKeyCallback {
 			else if (ControlOptions.debugMode.equalsControl(currentKeys)) {
 				ControlOptions.debugMode.setPressed(!ControlOptions.debugMode.isPressed());
 				GameOptions.gameOptions.enableDebugMode(ControlOptions.debugMode.isPressed());
+			}
+			else if (GLFW.GLFW_KEY_R == key) {
+				toggle = true;
 			}
 		}
 	}
