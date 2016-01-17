@@ -78,7 +78,7 @@ public class ModelBuilder {
 		bindIndicesBuffer(modelComponents.getIndices());
 		bindAttribWithVAO(0, modelComponents.getPositions(), 3);
 //		bindAttribWithVAO(1, modelComponents.getTextureUVs(), 2);
-//		bindAttribWithVAO(2, modelComponents.getNormals(), 3);
+		bindAttribWithVAO(1, modelComponents.getNormals(), 3);
 		unbindVAO();
 		return new ModelMesh(vao, modelComponents.getIndices().length);
 	}

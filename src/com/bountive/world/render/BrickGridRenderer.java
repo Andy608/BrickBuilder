@@ -1,8 +1,5 @@
 package com.bountive.world.render;
 
-import java.util.HashMap;
-import java.util.List;
-
 import math.Matrix4f;
 import math.Vector3f;
 
@@ -25,6 +22,7 @@ public class BrickGridRenderer implements IRenderer {
 	
 	private BrickShader shader;
 	private Zone zone;
+	private ModelMesh boundModel;
 	
 	public BrickGridRenderer() {
 		useShader(new BrickShader());
@@ -54,20 +52,27 @@ public class BrickGridRenderer implements IRenderer {
 		
 		//For all model types, bind them, then send the bound model and positions to render
 		
-		HashMap<AbstractBrick, List<Integer>> brickIndexes = zone.getBrickIndexes();
-		HashMap<EnumBrickModel, List<AbstractBrick>> modelBatch = zone.getModelBatch();
+//		HashMap<AbstractBrick, List<Integer>> brickIndexes = zone.getBrickIndexes();
+//		HashMap<EnumBrickModel, List<AbstractBrick>> modelBatch = zone.getModelBatch();
 		
 		
 //		GL11.glEnable(GL11.GL_CULL_FACE);
-		for (EnumBrickModel modelType : modelBatch.keySet()) {
-			ModelMesh brickModel = bindModel(modelType);
-			List<AbstractBrick> sameModelBricks = modelBatch.get(modelType);
-			
-			for (AbstractBrick brick : sameModelBricks) {
-				renderBricks(brick, brickModel, brickIndexes.get(brick));
-			}
+//		for (EnumBrickModel modelType : modelBatch.keySet()) {
+//			ModelMesh brickModel = bindModel(modelType);
+//			List<AbstractBrick> sameModelBricks = modelBatch.get(modelType);
+//			
+//			for (AbstractBrick brick : sameModelBricks) {
+//				renderBricks(brick, brickModel, brickIndexes.get(brick));
+//			}
+//			unbindModel();
+//		}
+		
+		for (int i = 0; i < zone.getZoneSize(); i++) {
+			bindModel(zone.getBrick(i).getModelID());
+			renderBrick(zone.getBrick(i), boundModel, i);
 			unbindModel();
 		}
+		
 //		GL11.glDisable(GL11.GL_CULL_FACE);
 		
 		
@@ -85,6 +90,7 @@ public class BrickGridRenderer implements IRenderer {
 		}
 		
 		GL30.glBindVertexArray(brickModel.getVaoID());
+		boundModel = brickModel;
 		return brickModel;
 	}
 	
@@ -104,29 +110,51 @@ public class BrickGridRenderer implements IRenderer {
 	private Matrix4f rotationMatrix;		//USE A MATRIX4f POOL INSTEAD
 	private Matrix4f translationMatrix;		//USE A MATRIX4f POOL INSTEAD
 	private Vector3f brickOffset;			//USE A VECTOR3f POOL INSTEAD;
-	private void renderBricks(AbstractBrick brickType, ModelMesh brickModel, List<Integer> indexes) {
+//	private void renderBricks(AbstractBrick brickType, ModelMesh brickModel, List<Integer> indexes) {
+//		
+//		int vertCount = brickModel.getVertexCount();
+//		
+//		for (int index : indexes) {
+//			customTransformMatrix.setIdentity();
+//			rotationMatrix.setIdentity();
+//			translationMatrix.setIdentity();
+//			brickOffset.set(0, 0, 0);
+//			
+//			shader.loadTransformationMatrix(customTransformMatrix);
+//			
+//			shader.loadTransformationMatrix(
+//			MatrixMathHelper.buildCustomTransformationMatrix(customTransformMatrix, 
+//							defaultScaleMatrix, 
+//							MatrixMathHelper.rotateMatrix(rotationMatrix, zone.getRotation()), 
+//							MatrixMathHelper.translateMatrix(translationMatrix, Vector3f.add(zone.getPosition(), zone.zoneIndexToZoneCoord(brickOffset, index), null))));
+//		
+//			EnumBrickColor colorID = brickType.getColorID();
+//			shader.loadBrickColor(colorID.R, colorID.G, colorID.B);
+//			
+//			GL11.glDrawElements(GL11.GL_TRIANGLES, vertCount, GL11.GL_UNSIGNED_INT, 0);
+//		}
+//	}
+	
+	private void renderBrick(AbstractBrick brickType, ModelMesh brickModel, int index) {
 		
 		int vertCount = brickModel.getVertexCount();
+		customTransformMatrix.setIdentity();
+		rotationMatrix.setIdentity();
+		translationMatrix.setIdentity();
+		brickOffset.set(0, 0, 0);
 		
-		for (int index : indexes) {
-			customTransformMatrix.setIdentity();
-			rotationMatrix.setIdentity();
-			translationMatrix.setIdentity();
-			brickOffset.set(0, 0, 0);
-			
-			shader.loadTransformationMatrix(customTransformMatrix);
-			
-			shader.loadTransformationMatrix(
-			MatrixMathHelper.buildCustomTransformationMatrix(customTransformMatrix, 
-							defaultScaleMatrix, 
-							MatrixMathHelper.rotateMatrix(rotationMatrix, zone.getRotation()), 
-							MatrixMathHelper.translateMatrix(translationMatrix, Vector3f.add(zone.getPosition(), zone.zoneIndexToZoneCoord(brickOffset, index), null))));
+//		shader.loadTransformationMatrix(customTransformMatrix);
 		
-			EnumBrickColor colorID = brickType.getColorID();
-			shader.loadBrickColor(colorID.R, colorID.G, colorID.B);
-			
-			GL11.glDrawElements(GL11.GL_TRIANGLES, vertCount, GL11.GL_UNSIGNED_INT, 0);
-		}
+		//RETHINK THIS! IT ONLY WORKS CORRECTLY WHEN ZONE IS AT (0,0,0)
+		shader.loadTransformationMatrix(
+		MatrixMathHelper.buildCustomTransformationMatrix(customTransformMatrix, 
+						defaultScaleMatrix, 
+						MatrixMathHelper.rotateMatrix(rotationMatrix, zone.getRotation()), 
+						MatrixMathHelper.translateMatrix(translationMatrix, Vector3f.add(zone.getPosition(), zone.zoneIndexToZoneCoord(brickOffset, index), null))));
+	
+		EnumBrickColor colorID = brickType.getColorID();
+		shader.loadBrickColor(colorID.R, colorID.G, colorID.B);
+		GL11.glDrawElements(GL11.GL_TRIANGLES, vertCount, GL11.GL_UNSIGNED_INT, 0);
 	}
 	
 	private void unbindModel() {

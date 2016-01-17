@@ -1,7 +1,5 @@
 package com.bountive.world.brick.list;
 
-import java.util.List;
-
 import com.bountive.util.FileUtil;
 import com.bountive.util.math.MathHelper;
 import com.bountive.world.brick.AbstractBrick;
@@ -12,16 +10,6 @@ public abstract class AbstractBrickList {
 
 	private AbstractBrick[][] brickList;
 	private static StringBuilder toString = new StringBuilder();
-	
-	public AbstractBrickList(int materialID, List<EnumBrickColor> colorTypes, List<EnumBrickModel> modelTypes) {
-		brickList = new AbstractBrick[colorTypes.size()][modelTypes.size()];
-		
-		for (int i = 0; i < brickList.length; i++) {
-			for (int j = 0; j < brickList[i].length; j++) {
-				brickList[i][j] = createBrick(materialID, colorTypes.get(i), modelTypes.get(j));
-			}
-		}
-	}
 	
 	public AbstractBrickList(int materialID, EnumBrickColor[] colorTypes, EnumBrickModel[] modelTypes) {
 		brickList = new AbstractBrick[colorTypes.length][modelTypes.length];

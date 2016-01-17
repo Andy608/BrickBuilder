@@ -22,7 +22,8 @@ public class ModelBrickList {
 //		REGULAR_1X1_BRICK = ModelBuilder.getBuilder().buildModelFromFile(new FileResourceLocation(brickDirectory, "unit_cube", EnumFileExtension.OBJ));
 //		FULL_1X1_BRICK = ModelBuilder.getBuilder().buildModelFromFile(new ResourceLocation("res/models/bricks", "full_1x1_brick.obj"));
 		REGULAR_1X1_BRICK = ModelBuilder.getBuilder().buildModelFromFile(new FileResourceLocation(brickDirectory, "1x1_brick_ultra_setting", EnumFileExtension.OBJ));
+//		REGULAR_1X1_BRICK = ModelBuilder.getBuilder().buildModelFromFile(new FileResourceLocation(brickDirectory, "cube_test", EnumFileExtension.OBJ));
 //		FULL_1X1_BRICK = ModelBuilder.getBuilder().buildModelFromFile(new ResourceLocation("res/models/bricks", "texture_test.obj"));
-		FLAT_1X1_BRICK = ModelBuilder.getBuilder().buildModelFromFile(new FileResourceLocation(brickDirectory, "dragon", EnumFileExtension.OBJ));
+//		REGULAR_1X1_BRICK = ModelBuilder.getBuilder().buildModelFromFile(new FileResourceLocation(brickDirectory, "dragon", EnumFileExtension.OBJ));
 	}
 }

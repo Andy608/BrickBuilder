@@ -2,6 +2,8 @@
 
 in vec4 vColor;
 
+out vec4 finalColor;
+
 void main() {
-	gl_FragColor = vColor;
+	finalColor = vColor;
 }

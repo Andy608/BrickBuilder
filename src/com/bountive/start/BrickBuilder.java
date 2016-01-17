@@ -69,7 +69,7 @@ public final class BrickBuilder {
 //		ModelBrickList.createModels();								//////
 		renderer = new BrickRenderer();								//////
 		gridRenderer = new BrickGridRenderer();
-		z = new Zone(new Vector3f(0, 0, -10));
+		z = new Zone(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0));
 //		brick = new BrickStone(0, EnumBrickColor.WHITE, EnumBrickModel.FLAT_1X1);	//////
 //		brick2 = new BrickStone(0, EnumBrickColor.GRAY, EnumBrickModel.FLAT_1X1);	//////
 		c = new FlyingCamera();										//////
@@ -118,8 +118,10 @@ public final class BrickBuilder {
 //		}
 	}
 	
+//	int counter;
 	private void update() {
 		tickCount++;
+//		counter++;
 		
 		//////TODO:Move this to somewhere better.
 		if (!ControlOptions.isPaused()) {
@@ -127,6 +129,9 @@ public final class BrickBuilder {
 			c.update(TIME_SLICE);
 		}
 		//////
+		
+//		z.updateRotation(0, (float)(30 * TIME_SLICE), 0);
+//		if (counter % 360 == 0) counter = 360;
 		
 		if (tickCount % TICKS_PER_SECOND == 0) {
 			LoggerUtil.logInfo(this.getClass(), "Ticks: " + tickCount + ", Frames: " + frameCount);
