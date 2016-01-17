@@ -68,9 +68,11 @@ public class BrickGridRenderer implements IRenderer {
 //		}
 		
 		for (int i = 0; i < zone.getZoneSize(); i++) {
-			bindModel(zone.getBrick(i).getModelID());
-			renderBrick(zone.getBrick(i), boundModel, i);
-			unbindModel();
+			if (zone.getBrick(i) != null) {
+				bindModel(zone.getBrick(i).getModelID());
+				renderBrick(zone.getBrick(i), boundModel, i);
+				unbindModel();
+			}
 		}
 		
 //		GL11.glDisable(GL11.GL_CULL_FACE);
@@ -146,11 +148,14 @@ public class BrickGridRenderer implements IRenderer {
 //		shader.loadTransformationMatrix(customTransformMatrix);
 		
 		//RETHINK THIS! IT ONLY WORKS CORRECTLY WHEN ZONE IS AT (0,0,0)
+		zone.zoneIndexToZoneCoord(brickOffset, index);
+		brickOffset.y = brickOffset.y * Zone.BRICK_CONTAINER_HEIGHT;
+		
 		shader.loadTransformationMatrix(
 		MatrixMathHelper.buildCustomTransformationMatrix(customTransformMatrix, 
 						defaultScaleMatrix, 
 						MatrixMathHelper.rotateMatrix(rotationMatrix, zone.getRotation()), 
-						MatrixMathHelper.translateMatrix(translationMatrix, Vector3f.add(zone.getPosition(), zone.zoneIndexToZoneCoord(brickOffset, index), null))));
+						MatrixMathHelper.translateMatrix(translationMatrix, Vector3f.add(zone.getPosition(), brickOffset, null))));
 	
 		EnumBrickColor colorID = brickType.getColorID();
 		shader.loadBrickColor(colorID.R, colorID.G, colorID.B);

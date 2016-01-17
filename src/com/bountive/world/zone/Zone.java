@@ -12,7 +12,7 @@ public class Zone {
 
 	public static final float BRICK_CONTAINER_HEIGHT = 0.4f;
 	public static final int ZONE_WIDTH = 18;
-	public static final int ZONE_HEIGHT = 45 / 3;
+	public static final int ZONE_HEIGHT = 45;
 //	public static final int ZONE_WIDTH = 1;
 //	public static final int ZONE_HEIGHT = 1;
 	
@@ -46,11 +46,16 @@ public class Zone {
 		populateZone();
 	}
 	
+	Vector3f helper = new Vector3f();
 	private void populateZone() {
 		Random rand = MathHelper.RAND;
 		for (int i = 0; i < zoneArray.length; i++) {
 //			onBrickPlaced(Bricks.stoneList.getBrick(rand.nextInt(Bricks.stoneList.getColorAmount()), 0), i);
-			zoneArray[i] = Bricks.stoneList.getBrick(rand.nextInt(Bricks.stoneList.getColorAmount()), 0);
+			
+			System.out.println(helper);
+			if (zoneIndexToZoneCoord(helper, i).y % 3 == 0) {
+				zoneArray[i] = Bricks.stoneList.getBrick(rand.nextInt(Bricks.stoneList.getColorAmount()), 0);
+			}
 		}
 		
 //		for (int x = 0; x < zoneArrayTest.length; x++) {
@@ -132,28 +137,13 @@ public class Zone {
 	}
 	
 	public Vector3f zoneIndexToZoneCoord(Vector3f source, int index) {
-//		source.x = index % ZONE_WIDTH;
-//		index /= ZONE_WIDTH;
-//		source.z = index % ZONE_WIDTH;
-//		index /= ZONE_WIDTH;
-//		source.y = index;
-//		return source;
-		
-		source.x = (index % ZONE_WIDTH);
+		source.x = index % ZONE_WIDTH;
 		index /= ZONE_WIDTH;
-		source.z = (index % ZONE_WIDTH);
+		source.z = index % ZONE_WIDTH;
 		index /= ZONE_WIDTH;
-		source.y = (index) * 1.2f;
+		source.y = index;
 		return source;
 	}
-	
-//	public HashMap<AbstractBrick, List<Integer>> getBrickIndexes() {
-//		return new HashMap<AbstractBrick, List<Integer>>(brickTypeIndexes);
-//	}
-	
-//	public HashMap<EnumBrickModel, List<AbstractBrick>> getModelBatch() {
-//		return new HashMap<EnumBrickModel, List<AbstractBrick>>(modelBatch);
-//	}
 	
 	public int getZoneSize() {
 		return zoneArray.length;
