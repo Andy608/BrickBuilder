@@ -5,13 +5,20 @@ public class ModelMesh {
 	protected int vaoID;
 	protected int vertexCount;
 	
-	public ModelMesh(int vertexArrayID, int vertCount) {
+	protected int[] vboIDs;
+	
+	public ModelMesh(int vertexArrayID, int[] vertexBufferObjectIDs, int vertCount) {
 		vaoID = vertexArrayID;
 		vertexCount = vertCount;
+		vboIDs = vertexBufferObjectIDs;
 	}
 	
 	public int getVaoID() {
 		return vaoID;
+	}
+	
+	public int[] getVboIDs() {
+		return vboIDs;
 	}
 	
 	public int getVertexCount() {

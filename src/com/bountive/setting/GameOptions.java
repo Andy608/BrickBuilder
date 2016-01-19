@@ -13,7 +13,9 @@ import com.bountive.display.Window;
 import com.bountive.graphics.view.CameraMatrixManager;
 import com.bountive.setting.util.BooleanSetting;
 import com.bountive.setting.util.ClampedIntegerSetting;
+import com.bountive.setting.util.EnumGraphicsLevel;
 import com.bountive.setting.util.Vector2fSetting;
+import com.bountive.start.BrickBuilder;
 import com.bountive.util.logger.LoggerUtil;
 import com.bountive.util.resource.FileResourceLocation;
 import com.bountive.util.resource.FileResourceLocation.EnumFileExtension;
@@ -33,6 +35,10 @@ public final class GameOptions extends AbstractBaseOptions {
 	
 	private BooleanSetting isPerspective;
 	private ClampedIntegerSetting fieldOfView;
+	
+	private ClampedIntegerSetting graphicsLevel;
+	
+	private ClampedIntegerSetting zoneRenderDistance;
 	
 	//private IntegerSetting maxFrameRate;
 	
@@ -63,6 +69,9 @@ public final class GameOptions extends AbstractBaseOptions {
 		
 		isPerspective = new BooleanSetting("perspective", true);
 		fieldOfView = new ClampedIntegerSetting("FOV", 70, 30, 110);
+		
+		graphicsLevel = new ClampedIntegerSetting("brick_quality", 0, EnumGraphicsLevel.LOW.ordinal(), EnumGraphicsLevel.INSANE.ordinal());
+		zoneRenderDistance = new ClampedIntegerSetting("zone_render_distance", 6, 2, 12);
 	}
 	
 	@Override
@@ -126,6 +135,12 @@ public final class GameOptions extends AbstractBaseOptions {
 					else if (settingAttrib.equals(fieldOfView.getFileName())) {
 						fieldOfView.setCustomInteger(getSingleIntegerFromOption(s, fieldOfView.getDefaultInteger(), DEFAULT_DELIMITER));
 					}
+					else if (settingAttrib.equals(graphicsLevel.getFileName())) {
+						graphicsLevel.setCustomInteger(getSingleIntegerFromOption(s, graphicsLevel.getDefaultInteger(), DEFAULT_DELIMITER));
+					}
+					else if (settingAttrib.equals(zoneRenderDistance.getFileName())) {
+						zoneRenderDistance.setCustomInteger(getSingleIntegerFromOption(s, zoneRenderDistance.getDefaultInteger(), DEFAULT_DELIMITER));
+					}
 					else {
 						throw new IllegalStateException(s + " is not an expected option.");
 					}
@@ -155,6 +170,8 @@ public final class GameOptions extends AbstractBaseOptions {
 		fullscreen.resetBoolean();
 		isPerspective.resetBoolean();
 		fieldOfView.resetInteger();
+		graphicsLevel.resetInteger();
+		zoneRenderDistance.resetInteger();
 	}
 	
 	@Override
@@ -170,7 +187,9 @@ public final class GameOptions extends AbstractBaseOptions {
 			writer.println(vSync.getFileName() + DEFAULT_DELIMITER + vSync.getCustomBoolean());
 			writer.println(fullscreen.getFileName() + DEFAULT_DELIMITER + fullscreen.getCustomBoolean());
 			writer.println(isPerspective.getFileName() + DEFAULT_DELIMITER + isPerspective.getCustomBoolean());
-			writer.print(fieldOfView.getFileName() + DEFAULT_DELIMITER + fieldOfView.getCustomInteger());
+			writer.println(fieldOfView.getFileName() + DEFAULT_DELIMITER + fieldOfView.getCustomInteger());
+			writer.println(graphicsLevel.getFileName() + DEFAULT_DELIMITER + graphicsLevel.getCustomInteger());
+			writer.print(zoneRenderDistance.getFileName() + DEFAULT_DELIMITER + zoneRenderDistance.getCustomInteger());
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
 			LoggerUtil.logError(getClass(), Thread.currentThread(), e);
 		}
@@ -211,6 +230,7 @@ public final class GameOptions extends AbstractBaseOptions {
 		GameOptions.gameOptions.storeOptionsInFile();
 		fullscreen.setCustomBoolean(b);
 		Window.buildScreen();
+		BrickBuilder.getInstance().getCurrentWorld().addZonesToWorld();//TODO: THIS IS TEMP
 		ControlOptions.setPaused(ControlOptions.isPaused());
 		CameraMatrixManager.manager.buildProjectionMatrix();
 	}
@@ -230,6 +250,19 @@ public final class GameOptions extends AbstractBaseOptions {
 	
 	public int getFOV() {
 		return fieldOfView.getCustomInteger();
+	}
+	
+	public EnumGraphicsLevel getGraphicsLevel() {
+		return EnumGraphicsLevel.values()[graphicsLevel.getCustomInteger()];
+	}
+	
+	public int getZoneRenderDistance() {
+		return zoneRenderDistance.getCustomInteger();
+	}
+	
+	public void updateZoneRenderDistance(int renderDistance) {
+		zoneRenderDistance.setCustomInteger(renderDistance);
+		//TODO: CALL METHOD IN WORLD ZONE MANAGER OR SOMETHING.
 	}
 	
 	public void updateSavedWindowSize(int x, int y) {

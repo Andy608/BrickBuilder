@@ -1,7 +1,9 @@
 #version 330 core
 
 layout(location = 0) in vec3 position;
-layout(location = 1) in vec3 normal;
+layout(location = 1) in vec4 color;
+layout(location = 2) in vec3 normal;
+layout(location = 3) in vec2 texCoords;
 
 uniform mat4 projectionMatrix;
 uniform mat4 transformationMatrix;
@@ -20,7 +22,9 @@ void main() {
 	
 	gl_Position = projectionMatrix * viewMatrix * worldPosition;
 	
-	vColor = clamp(mixColors(localPosition, vec4(brickColorTint, 1.0), 0.7), 0.1, 1.0);
+	vec4 dramaticPosition = vec4(localPosition.x / 20, localPosition.y / 20, localPosition.z / 20, 1.0);
+	vColor = clamp(mixColors(dramaticPosition, color, 0.0), 0.3, 0.9);
+	//vColor = color;
 }
 
 vec4 mixColors(vec4 color1, vec4 color2, float lerp) {

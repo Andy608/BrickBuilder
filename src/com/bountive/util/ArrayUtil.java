@@ -14,4 +14,14 @@ public class ArrayUtil {
 	    }
 	    return intArray;
 	}
+	
+	public static float[] convertListToFloatArray(List<Float> floats) {
+	    float[] floatArray = new float[floats.size()];
+	    Iterator<Float> iterator = floats.iterator();
+	    
+	    for (int i = 0; i < floatArray.length; i++) {
+	    	floatArray[i] = iterator.next().floatValue();
+	    }
+	    return floatArray;
+	}
 }

@@ -19,7 +19,6 @@ public class MatrixMathHelper {
 		return source;
 	}
 	
-	//TODO: USE CONTROLLED VECTOR POOL --------------------------v
 	public static Matrix4f rotateMatrix(Matrix4f source, Vector3f rotation) {
 		source.rotate((float)(Math.toRadians(rotation.x)), X_AXIS);
 		source.rotate((float)(Math.toRadians(rotation.y)), Y_AXIS);
@@ -27,13 +26,12 @@ public class MatrixMathHelper {
 		return source;
 	}
 	
-	//TODO: USE CONTROLLED VECTOR POOL ------------------------v
 	public static Matrix4f scaleMatrix(Matrix4f source, Vector3f scale) {
-		source.scale(scale);
+		if (scale == null) source.scale(DEFAULT_SCALE);
+		else source.scale(scale);
 		return source;
 	}
 	
-	//TODO: USE CONTROLLED VECTOR POOL -------------------------------v
 	public static Matrix4f translateMatrix(Matrix4f source, Vector3f translation) {
 		source.translate(translation);
 		return source;
@@ -56,7 +54,7 @@ public class MatrixMathHelper {
 	}
 	
 	public static Matrix4f buildNormalTransformationMatrix(Matrix4f source, Vector3f translation, Vector3f rotation, Vector3f scale) {
-		source.translate(translation);
+		if (translation != null) source.translate(translation);
 		
 		if (rotation != null) {
 			source.rotate((float)(Math.toRadians(rotation.x)), X_AXIS);

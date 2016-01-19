@@ -45,7 +45,7 @@ public class FileUtil {
             }
             return result.toArray(new String[result.size()]);
 		} catch (Exception e) {
-			LoggerUtil.logError(FileUtil.class, Thread.currentThread(), e);
+			LoggerUtil.logWarn(FileUtil.class, e, "Could not read file location: " + location, true);
 			return null;
 		}
 	}

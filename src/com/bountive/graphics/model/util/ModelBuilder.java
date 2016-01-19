@@ -1,16 +1,14 @@
 package com.bountive.graphics.model.util;
 
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import com.bountive.graphics.model.ModelMesh;
+import com.bountive.util.BufferUtil;
 import com.bountive.util.resource.FileResourceLocation;
+import com.bountive.world.zone.ModelZone;
 
 public class ModelBuilder {
 
@@ -46,22 +44,38 @@ public class ModelBuilder {
 	public ModelMesh build2DColorRecModel(float[] positions, float[] colorCoords) {
 		int vao = createVAO();
 		int[] indices = new int[] {0, 1, 2, 0, 2, 3};
+		int[] vbos = new int[2];
+		
 		bindVAO(vao);
 		bindIndicesBuffer(indices);
-		bindAttribWithVAO(0, positions, 2);
-		bindAttribWithVAO(1, colorCoords, 4);
+		vbos[0] = bindAttribWithVAOStatic(0, positions, 2);
+		vbos[1] = bindAttribWithVAOStatic(1, colorCoords, 4);
 		unbindVAO();
-		return new ModelMesh(vao, indices.length);
+		return new ModelMesh(vao, vbos, indices.length);
 	}
 	
 	public ModelMesh build3DColorModel(float[] positions, int[] indices, float[] colorCoords) {
 		int vao = createVAO();
+		int[] vbos = new int[2];
+		
 		bindVAO(vao);
 		bindIndicesBuffer(indices);
-		bindAttribWithVAO(0, positions, 3);
-		bindAttribWithVAO(1, colorCoords, 4);
+		vbos[0] = bindAttribWithVAOStatic(0, positions, 3);
+		vbos[1] = bindAttribWithVAOStatic(1, colorCoords, 4);
 		unbindVAO();
-		return new ModelMesh(vao, indices.length);
+		return new ModelMesh(vao, vbos, indices.length);
+	}
+	
+	public ModelZone buildZone(float[] positions, float[] colorCoords, float[] normals, float[] texCoords) {
+		int vao = createVAO();
+		int vbos[] = new int[4];
+		bindVAO(vao);
+		vbos[0] = bindAttribWithVAODynamic(0, positions, 3);
+		vbos[1] = bindAttribWithVAODynamic(1, colorCoords, 4);
+		vbos[2] = bindAttribWithVAODynamic(2, normals, 3);
+		vbos[3] = bindAttribWithVAODynamic(3, texCoords, 2);
+		unbindVAO();
+		return new ModelZone(vao, positions.length / 3, vbos);
 	}
 	
 	/**
@@ -71,16 +85,17 @@ public class ModelBuilder {
 	 */
 	public ModelMesh buildModelFromFile(FileResourceLocation objFileLocation) {
 		int vao = createVAO();
+		int vbos[] = new int[2];
 		
 		ModelComponents modelComponents = new ModelComponents(objFileLocation);
 		
 		bindVAO(vao);
-		bindIndicesBuffer(modelComponents.getIndices());
-		bindAttribWithVAO(0, modelComponents.getPositions(), 3);
+//		bindIndicesBuffer(modelComponents.getIndices());
+		vbos[0] = bindAttribWithVAOStatic(0, modelComponents.getPositionsAsFloat(), 3);
 //		bindAttribWithVAO(1, modelComponents.getTextureUVs(), 2);
-		bindAttribWithVAO(1, modelComponents.getNormals(), 3);
+		vbos[1] = bindAttribWithVAOStatic(1, modelComponents.getNormalsAsFloat(), 3);
 		unbindVAO();
-		return new ModelMesh(vao, modelComponents.getIndices().length);
+		return new ModelMesh(vao, vbos, modelComponents.getPositionsAsFloat().length / 3);
 	}
 	
 	private int createVAO() {
@@ -99,14 +114,26 @@ public class ModelBuilder {
 	 * @param dataLengthPerVertex : The amount of spots in bufferData one vertex needs. Example: 3D positions 
 	 * 		  (x, y, z) require 3 spots per vertex.
 	 */
-	private void bindAttribWithVAO(int arrayIndex, float[] bufferData, int dataLengthPerVertex) {
+	private int bindAttribWithVAOStatic(int arrayIndex, float[] bufferData, int dataLengthPerVertex) {
 		int vbo = GL15.glGenBuffers();
 		ModelManager.getManager().addVBO(vbo);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
-		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, toReadableFloatBuffer(bufferData), GL15.GL_STATIC_DRAW);
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, BufferUtil.toReadableFloatBuffer(bufferData), GL15.GL_STATIC_DRAW);
 		GL20.glVertexAttribPointer(arrayIndex, dataLengthPerVertex, GL11.GL_FLOAT, false, 0, 0);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 		GL20.glEnableVertexAttribArray(arrayIndex);
+		return vbo;
+	}
+	
+	private int bindAttribWithVAODynamic(int arrayIndex, float[] bufferData, int dataLengthPerVertex) {
+		int vbo = GL15.glGenBuffers();
+		ModelManager.getManager().addVBO(vbo);
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, BufferUtil.toReadableFloatBuffer(bufferData), GL15.GL_DYNAMIC_DRAW);
+		GL20.glVertexAttribPointer(arrayIndex, dataLengthPerVertex, GL11.GL_FLOAT, false, 0, 0);
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		GL20.glEnableVertexAttribArray(arrayIndex);
+		return vbo;
 	}
 	
 	private void unbindVAO() {
@@ -117,19 +144,7 @@ public class ModelBuilder {
 		int vboID = GL15.glGenBuffers();
 		ModelManager.getManager().addVBO(vboID);
 		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboID);
-		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, toReadableIntBuffer(indices), GL15.GL_STATIC_DRAW);
-	}
-	
-	private IntBuffer toReadableIntBuffer(int[] bufferData) {
-		IntBuffer b = BufferUtils.createIntBuffer(bufferData.length);
-		b.put(bufferData).flip();
-		return b;
-	}
-	
-	private FloatBuffer toReadableFloatBuffer(float[] bufferData) {
-		FloatBuffer b = BufferUtils.createFloatBuffer(bufferData.length);
-		b.put(bufferData).flip();
-		return b;
+		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, BufferUtil.toReadableIntBuffer(indices), GL15.GL_STATIC_DRAW);
 	}
 	
 	public static ModelBuilder getBuilder() {

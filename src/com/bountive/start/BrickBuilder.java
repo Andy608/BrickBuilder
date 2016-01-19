@@ -1,20 +1,15 @@
 package com.bountive.start;
 
-import math.Vector3f;
-
 import org.lwjgl.Sys;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 import com.bountive.display.Window;
 import com.bountive.display.callback.MousePositionCallback;
-import com.bountive.graphics.render.BrickRenderer;
-import com.bountive.graphics.view.FlyingCamera;
 import com.bountive.init.InitializationHandler;
 import com.bountive.setting.ControlOptions;
 import com.bountive.util.logger.LoggerUtil;
-import com.bountive.world.render.BrickGridRenderer;
-import com.bountive.world.zone.Zone;
+import com.bountive.world.World;
 
 public final class BrickBuilder {
 
@@ -33,11 +28,14 @@ public final class BrickBuilder {
 	private double elapsedTime;
 	
 	//TODO: MOVE THESE TO CORRECT SPOTS.
-	private BrickRenderer renderer; // <-- Will be handled by the world rendering system.
-	private BrickGridRenderer gridRenderer;
-	private Zone z;
+//	private BrickRenderer renderer; // <-- Will be handled by the world rendering system.
+//	private BrickGridRenderer gridRenderer;
+//	private Zone z;
 //	private AbstractBrick brick, brick2; // <-- Will be handled by the world generation system.
-	private FlyingCamera c; // <-- Will be attached to a player.
+//	private FlyingCamera c; // <-- Will be attached to a player.
+	
+	private World world;
+	
 	/////////////////////////////
 	
 	public BrickBuilder() {
@@ -55,8 +53,9 @@ public final class BrickBuilder {
 			LoggerUtil.logError(getClass(), Thread.currentThread(), e);
 		} finally {
 			Window.saveOptions();
-			renderer.release();
-			gridRenderer.release();
+//			renderer.release();
+//			gridRenderer.release();
+			world.release();
 			InitializationHandler.release();
 			System.gc();
 			System.exit(0);
@@ -67,13 +66,13 @@ public final class BrickBuilder {
 		//TEMP. TODO: Move createCapabilities and model initialization to somewhere else.
 //		GL.createCapabilities();									//////
 //		ModelBrickList.createModels();								//////
-		renderer = new BrickRenderer();								//////
-		gridRenderer = new BrickGridRenderer();
-		z = new Zone(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0));
+//		renderer = new BrickRenderer();								//////
+//		gridRenderer = new BrickGridRenderer();
+//		z = new Zone(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0));
 //		brick = new BrickStone(0, EnumBrickColor.WHITE, EnumBrickModel.FLAT_1X1);	//////
 //		brick2 = new BrickStone(0, EnumBrickColor.GRAY, EnumBrickModel.FLAT_1X1);	//////
-		c = new FlyingCamera();										//////
-		
+//		c = new FlyingCamera();										//////
+		world = new World();
 		MousePositionCallback.centerMouse(); 	//TODO: Move this to the world loading code.
 		
 		//////////////////////////////////////////////////////////////////
@@ -99,23 +98,6 @@ public final class BrickBuilder {
 			
 			render((double)(elapsedTime / TIME_SLICE));
 		}
-		
-//		lastTime = GLFW.glfwGetTime();
-//		float lag = 0f;
-//		
-//		while (GLFW.glfwWindowShouldClose(Window.getID()) == GL11.GL_FALSE) {
-//			currentTime = GLFW.glfwGetTime();
-//			elapsedTime = currentTime - lastTime;
-//			lag += elapsedTime;
-//			
-//			
-//			while (lag >= TIME_SLICE) {
-//				update();
-//				GLFW.glfwPollEvents();
-//				lag -= TIME_SLICE;
-//			}
-//			render(lag / TIME_SLICE);
-//		}
 	}
 	
 //	int counter;
@@ -126,12 +108,14 @@ public final class BrickBuilder {
 		//////TODO:Move this to somewhere better.
 		if (!ControlOptions.isPaused()) {
 			MousePositionCallback.centerMouse();
-			c.update(TIME_SLICE);
+			world.getCamera().update(TIME_SLICE);
 		}
 		//////
 		
 //		z.updateRotation(0, (float)(30 * TIME_SLICE), 0);
 //		if (counter % 360 == 0) counter = 360;
+		
+		world.update(TIME_SLICE);
 		
 		if (tickCount % TICKS_PER_SECOND == 0) {
 			LoggerUtil.logInfo(this.getClass(), "Ticks: " + tickCount + ", Frames: " + frameCount);
@@ -146,6 +130,8 @@ public final class BrickBuilder {
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		
+		world.render(lerp);
+		
 //		if (KeyboardCallback.toggle)
 //			renderer.addBrickToBatch(brick);
 //		else
@@ -155,10 +141,14 @@ public final class BrickBuilder {
 //		if (KeyboardCallback.toggle)
 //			z.populateZone();
 		
-		gridRenderer.addZoneToBatch(z);
-		gridRenderer.render(c);
+//		gridRenderer.addZoneToBatch(z);
+//		gridRenderer.render(c);
 		
 		GLFW.glfwSwapBuffers(Window.getID());
+	}
+	
+	public World getCurrentWorld() {
+		return world;
 	}
 	
 	public static BrickBuilder getInstance() {

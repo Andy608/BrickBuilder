@@ -1,0 +1,17 @@
+---------- Brick Builder Alpha V0.0.05 Changelog ----------
+
+- Created a whole different brick structure system that does not use the AbstractBrickList class or any of those older ones.
+    - The new system uses Materials, Models, and ZoneBricks to keep track of all the bricks in the world.
+
+- A bare bones world system has been put in place to support the new zone rendering system.
+- Zones have been rehauled and world nicely but still need a lot of work to get to where they can be used for world generation.
+- Different graphics level option and zone render distance option has been implemented.
+- A low poly 1x1x1 flat brick model has been added in the form of 14 separate pieces to allow for the ZoneModelFactory to construct a zone with it.
+    - The 14 separate pieces allow for rendering only the parts of the model that are visible to the player.
+
+TODO:
+- Add in back face culling.
+- Test zone system with different brick model types and sizes.
+
+
+~ Andy608 :)
