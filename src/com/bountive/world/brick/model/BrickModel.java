@@ -7,9 +7,14 @@ public abstract class BrickModel {
 
 	public final int MODEL_ID;
 	
+	//Length = x direction.
 	public final int BRICK_LENGTH;
+	
+	//Width = z direction.
 	public final int BRICK_WIDTH;
-	public final float BRICK_HEIGHT;
+	
+	//Height = y direction.
+	public final int BRICK_HEIGHT;
 	
 	protected final List<BrickModelComponent> components;
 	
@@ -25,5 +30,10 @@ public abstract class BrickModel {
 	
 	public List<BrickModelComponent> getComponents() {
 		return components;
+	}
+	
+	@Override
+	public String toString() {
+		return "Brick model: " + MODEL_ID + " Model Height: " + BRICK_HEIGHT;
 	}
 }

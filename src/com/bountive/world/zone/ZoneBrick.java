@@ -12,7 +12,8 @@ public class ZoneBrick {
 	private BrickStandardModel brickModel;
 	private EnumBrickColor color;
 	
-	public static final ZoneBrick stoneBrick = new ZoneBrick(BrickMaterials.rock, BrickModels.FLAT_1x1, 0);
+	public static final ZoneBrick flatStoneBrick = new ZoneBrick(BrickMaterials.rock, BrickModels.FLAT_1x1, 0);
+	public static final ZoneBrick fullStoneBrick = new ZoneBrick(BrickMaterials.rock, BrickModels.FULL_1x1, 0);
 	
 	private ZoneBrick(BrickMaterial material, BrickStandardModel model, int colorIndex) {
 		brickMaterial = material;
@@ -30,5 +31,14 @@ public class ZoneBrick {
 	
 	public EnumBrickColor getColor() {
 		return color;
+	}
+	
+	public enum EnumBrickSide {
+		LEFT,
+		RIGHT,
+		BACK,
+		FRONT,
+		BOTTOM,
+		TOP;
 	}
 }

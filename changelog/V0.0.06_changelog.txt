@@ -1,0 +1,16 @@
+---------- Brick Builder Alpha V0.0.06 Changelog ---------- Release Date: ...
+
+- Created a whole different brick structure system that does not use the AbstractBrickList class or any of those older ones.
+    - The new system uses Materials, Models, and ZoneBricks to keep track of all the bricks in the world.
+
+- When switching from full screen to windowed or vise versa, model vbos are now saved between states. This allows for faster load time and less memory usage.
+- Got rid of ZoneModelFactory. Zones now take care of creating and storing their own models.
+- Added in back face culling when rendering zones. *Temp disabled this for debugging purposes.
+- Added support for multiple model types to render together in a zone!
+- Added new full 1x1 brick model.
+
+TODO:
+- Test zone system with different brick model widths and lengths (heights work!).
+
+
+~ Andy608 :)

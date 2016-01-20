@@ -10,6 +10,7 @@ import com.bountive.util.BufferUtil;
 import com.bountive.util.resource.FileResourceLocation;
 import com.bountive.world.zone.ModelZone;
 
+//TODO: REDO THIS WHOLE CLASS
 public class ModelBuilder {
 
 	private static ModelBuilder builder;
@@ -44,38 +45,48 @@ public class ModelBuilder {
 	public ModelMesh build2DColorRecModel(float[] positions, float[] colorCoords) {
 		int vao = createVAO();
 		int[] indices = new int[] {0, 1, 2, 0, 2, 3};
-		int[] vbos = new int[2];
+		VBOWrapper[] vboHandles = new VBOWrapper[2];
 		
 		bindVAO(vao);
 		bindIndicesBuffer(indices);
-		vbos[0] = bindAttribWithVAOStatic(0, positions, 2);
-		vbos[1] = bindAttribWithVAOStatic(1, colorCoords, 4);
+		vboHandles[0] = new VBOWrapper(bindAttribWithVAOStatic(0, positions, 2), positions, 2);
+		vboHandles[1] = new VBOWrapper(bindAttribWithVAOStatic(1, colorCoords, 4), colorCoords, 4);
 		unbindVAO();
-		return new ModelMesh(vao, vbos, indices.length);
+		
+		ModelMesh model = new ModelMesh(vao, indices.length, vboHandles);
+		ModelResourceManager.getManager().addModel(model);
+		return model;
 	}
 	
 	public ModelMesh build3DColorModel(float[] positions, int[] indices, float[] colorCoords) {
 		int vao = createVAO();
-		int[] vbos = new int[2];
+		VBOWrapper[] vboHandles = new VBOWrapper[2];
 		
 		bindVAO(vao);
 		bindIndicesBuffer(indices);
-		vbos[0] = bindAttribWithVAOStatic(0, positions, 3);
-		vbos[1] = bindAttribWithVAOStatic(1, colorCoords, 4);
+		vboHandles[0] = new VBOWrapper(bindAttribWithVAOStatic(0, positions, 3), positions, 3);
+		vboHandles[1] = new VBOWrapper(bindAttribWithVAOStatic(1, colorCoords, 4), colorCoords, 4);
 		unbindVAO();
-		return new ModelMesh(vao, vbos, indices.length);
+		
+		ModelMesh model = new ModelMesh(vao, indices.length, vboHandles);
+		ModelResourceManager.getManager().addModel(model);
+		return model;
 	}
 	
 	public ModelZone buildZone(float[] positions, float[] colorCoords, float[] normals, float[] texCoords) {
 		int vao = createVAO();
-		int vbos[] = new int[4];
+		VBOWrapper[] vboHandles = new VBOWrapper[4];
+		
 		bindVAO(vao);
-		vbos[0] = bindAttribWithVAODynamic(0, positions, 3);
-		vbos[1] = bindAttribWithVAODynamic(1, colorCoords, 4);
-		vbos[2] = bindAttribWithVAODynamic(2, normals, 3);
-		vbos[3] = bindAttribWithVAODynamic(3, texCoords, 2);
+		vboHandles[0] = new VBOWrapper(bindAttribWithVAODynamic(0, positions, 3), positions, 3);
+		vboHandles[1] = new VBOWrapper(bindAttribWithVAODynamic(1, colorCoords, 4), colorCoords, 4);
+		vboHandles[2] = new VBOWrapper(bindAttribWithVAODynamic(2, normals, 3), normals, 3);
+		vboHandles[3] = new VBOWrapper(bindAttribWithVAODynamic(3, texCoords, 2), texCoords, 2);
 		unbindVAO();
-		return new ModelZone(vao, positions.length / 3, vbos);
+		
+		ModelZone model = new ModelZone(vao, positions.length / 3, vboHandles);
+		ModelResourceManager.getManager().addModel(model);
+		return model;
 	}
 	
 	/**
@@ -85,22 +96,23 @@ public class ModelBuilder {
 	 */
 	public ModelMesh buildModelFromFile(FileResourceLocation objFileLocation) {
 		int vao = createVAO();
-		int vbos[] = new int[2];
-		
 		ModelComponents modelComponents = new ModelComponents(objFileLocation);
 		
 		bindVAO(vao);
+		VBOWrapper[] vboHandles = new VBOWrapper[2];
+		
 //		bindIndicesBuffer(modelComponents.getIndices());
-		vbos[0] = bindAttribWithVAOStatic(0, modelComponents.getPositionsAsFloat(), 3);
+		vboHandles[0] = new VBOWrapper(bindAttribWithVAOStatic(0, modelComponents.getPositionsAsFloat(), 3), modelComponents.getPositionsAsFloat(), 3);
 //		bindAttribWithVAO(1, modelComponents.getTextureUVs(), 2);
-		vbos[1] = bindAttribWithVAOStatic(1, modelComponents.getNormalsAsFloat(), 3);
+		vboHandles[1] = new VBOWrapper(bindAttribWithVAOStatic(1, modelComponents.getNormalsAsFloat(), 3), modelComponents.getNormalsAsFloat(), 3);
 		unbindVAO();
-		return new ModelMesh(vao, vbos, modelComponents.getPositionsAsFloat().length / 3);
+		ModelMesh model = new ModelMesh(vao, modelComponents.getPositionsAsFloat().length / 3, vboHandles);
+		ModelResourceManager.getManager().addModel(model);
+		return model;
 	}
 	
 	private int createVAO() {
 		int vaoID = GL30.glGenVertexArrays();
-		ModelManager.getManager().addVAO(vaoID);
 		return vaoID;
 	}
 	
@@ -116,7 +128,6 @@ public class ModelBuilder {
 	 */
 	private int bindAttribWithVAOStatic(int arrayIndex, float[] bufferData, int dataLengthPerVertex) {
 		int vbo = GL15.glGenBuffers();
-		ModelManager.getManager().addVBO(vbo);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, BufferUtil.toReadableFloatBuffer(bufferData), GL15.GL_STATIC_DRAW);
 		GL20.glVertexAttribPointer(arrayIndex, dataLengthPerVertex, GL11.GL_FLOAT, false, 0, 0);
@@ -127,7 +138,6 @@ public class ModelBuilder {
 	
 	private int bindAttribWithVAODynamic(int arrayIndex, float[] bufferData, int dataLengthPerVertex) {
 		int vbo = GL15.glGenBuffers();
-		ModelManager.getManager().addVBO(vbo);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, BufferUtil.toReadableFloatBuffer(bufferData), GL15.GL_DYNAMIC_DRAW);
 		GL20.glVertexAttribPointer(arrayIndex, dataLengthPerVertex, GL11.GL_FLOAT, false, 0, 0);
@@ -142,7 +152,6 @@ public class ModelBuilder {
 	
 	private void bindIndicesBuffer(int[] indices) {
 		int vboID = GL15.glGenBuffers();
-		ModelManager.getManager().addVBO(vboID);
 		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboID);
 		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, BufferUtil.toReadableIntBuffer(indices), GL15.GL_STATIC_DRAW);
 	}

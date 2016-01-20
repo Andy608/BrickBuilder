@@ -10,6 +10,7 @@ import math.Vector2f;
 import org.lwjgl.opengl.GL11;
 
 import com.bountive.display.Window;
+import com.bountive.graphics.model.util.ModelResourceManager;
 import com.bountive.graphics.view.CameraMatrixManager;
 import com.bountive.setting.util.BooleanSetting;
 import com.bountive.setting.util.ClampedIntegerSetting;
@@ -230,6 +231,8 @@ public final class GameOptions extends AbstractBaseOptions {
 		GameOptions.gameOptions.storeOptionsInFile();
 		fullscreen.setCustomBoolean(b);
 		Window.buildScreen();
+		ModelResourceManager.getManager().rebuildVAOs();
+		
 		BrickBuilder.getInstance().getCurrentWorld().addZonesToWorld();//TODO: THIS IS TEMP
 		ControlOptions.setPaused(ControlOptions.isPaused());
 		CameraMatrixManager.manager.buildProjectionMatrix();

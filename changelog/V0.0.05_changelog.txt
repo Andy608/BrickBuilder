@@ -1,4 +1,4 @@
----------- Brick Builder Alpha V0.0.05 Changelog ----------
+---------- Brick Builder Alpha V0.0.05 Changelog ---------- Release Date: 1/19/16
 
 - Created a whole different brick structure system that does not use the AbstractBrickList class or any of those older ones.
     - The new system uses Materials, Models, and ZoneBricks to keep track of all the bricks in the world.

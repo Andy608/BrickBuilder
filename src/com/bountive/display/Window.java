@@ -6,13 +6,10 @@ import math.Vector2f;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWvidmode;
-import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
 
 import com.bountive.display.callback.CallbackManager;
-import com.bountive.graphics.model.util.ModelBrickList;
-import com.bountive.graphics.model.util.ModelManager;
 import com.bountive.setting.ControlOptions;
 import com.bountive.setting.GameOptions;
 import com.bountive.start.Info;
@@ -98,10 +95,6 @@ public class Window {
 		GLFW.glfwSwapInterval(GameOptions.gameOptions.isVSyncEnabled() ? 1 : 0);
 		GLFW.glfwShowWindow(window.windowID);
 		window.callbackManager = new CallbackManager(window.windowID);
-		
-		GL.createCapabilities();
-		ModelManager.getManager().release();
-		ModelBrickList.loadModels();
 	}
 	
 	public static void saveOptions() {

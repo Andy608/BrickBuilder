@@ -2,6 +2,7 @@ package com.bountive.start;
 
 import org.lwjgl.Sys;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
 import com.bountive.display.Window;
@@ -64,7 +65,7 @@ public final class BrickBuilder {
 	
 	private void loop() {
 		//TEMP. TODO: Move createCapabilities and model initialization to somewhere else.
-//		GL.createCapabilities();									//////
+		GL.createCapabilities();									//////
 //		ModelBrickList.createModels();								//////
 //		renderer = new BrickRenderer();								//////
 //		gridRenderer = new BrickGridRenderer();

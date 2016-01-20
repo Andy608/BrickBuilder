@@ -35,6 +35,7 @@ public class WorldZoneRenderer {
 		shader.bind();
 		shader.loadProjectionMatrix(CameraMatrixManager.manager.getProjectionMatrix());
 		shader.loadViewMatrix(c.getViewMatrix());
+//		GL11.glEnable(GL11.GL_CULL_FACE);
 		
 		for (int i = 0; i < zoneManager.getSize(); i++) {
 			for (int j = 0; j < zoneManager.getSize(); j++) {
@@ -42,7 +43,7 @@ public class WorldZoneRenderer {
 				
 				if (zone == null) continue;
 				
-				ModelZone zoneModel = zoneManager.getModel(i, j);
+				ModelZone zoneModel = zone.getModel();
 				bindZone(zoneModel);
 				
 				transformationMatrix.setIdentity();
@@ -55,6 +56,7 @@ public class WorldZoneRenderer {
 			}
 		}
 		
+//		GL11.glDisable(GL11.GL_CULL_FACE);
 		shader.unbind();
 	}
 	

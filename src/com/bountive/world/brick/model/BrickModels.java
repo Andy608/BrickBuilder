@@ -6,11 +6,13 @@ import com.bountive.world.brick.material.BrickMaterials;
 public class BrickModels {
 
 	public static BrickStandardModel FLAT_1x1;
+	public static BrickStandardModel FULL_1x1;
 	
 	public static void registerBrickModels() {
 		LoggerUtil.logInfo(BrickMaterials.class, "Registering Brick Models...");
 //		BrickMaterialRegistry.registerMaterial(stone);
-		FLAT_1x1 = new BrickFlat1x1Model(0, 1, 1, 1);
+		FLAT_1x1 = new BrickFlat1x1Model(0);
+		FULL_1x1 = new BrickFull1x1Model(1);
 		System.out.println(FLAT_1x1);
 	}
 }

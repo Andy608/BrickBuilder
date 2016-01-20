@@ -8,7 +8,7 @@ public enum EnumBrickColor {
 	GRAY(161, 165, 162, 255),
 	BRIGHT_RED(196, 40, 27,  255),
 	BRIGHT_YELLOW(245, 205, 47,  255),
-	BLACK(0, 0, 0,  1);
+	BLACK(0, 0, 0, 255);
 	
 	public static final float MAX_COLOR = 255f;
 	public final float R, G, B, A;
