@@ -26,20 +26,52 @@ public abstract class BrickStandardModel extends BrickPlaceableModel {
 	
 	public BrickStandardModel(int id, int length, int width, int height) {
 		super(id, length, width, height);
+		
+//		left 					= new BrickModelComponent[BRICK_WIDTH][BRICK_HEIGHT];
 		left 					= new BrickModelComponent(EnumComponentType.LEFT);
 		leftFrontSideBevel 		= new BrickModelComponent(EnumComponentType.LEFT_FRONT_SIDE_BEVEL);
+//		front					= new BrickModelComponent[BRICK_LENGTH][BRICK_HEIGHT];
 		front					= new BrickModelComponent(EnumComponentType.FRONT);
 		rightFrontSideBevel		= new BrickModelComponent(EnumComponentType.RIGHT_FRONT_SIDE_BEVEL);
+//		right					= new BrickModelComponent[BRICK_WIDTH][BRICK_HEIGHT];
 		right					= new BrickModelComponent(EnumComponentType.RIGHT);
 		rightBackSideBevel		= new BrickModelComponent(EnumComponentType.RIGHT_BACK_SIDE_BEVEL);
+//		back					= new BrickModelComponent[BRICK_LENGTH][BRICK_HEIGHT];
 		back					= new BrickModelComponent(EnumComponentType.BACK);
 		leftBackSideBevel		= new BrickModelComponent(EnumComponentType.LEFT_BACK_SIDE_BEVEL);
 		leftTopBevel			= new BrickModelComponent(EnumComponentType.LEFT_TOP_BEVEL);
 		frontTopBevel			= new BrickModelComponent(EnumComponentType.FRONT_TOP_BEVEL);
 		rightTopBevel			= new BrickModelComponent(EnumComponentType.RIGHT_TOP_BEVEL);
 		backTopBevel			= new BrickModelComponent(EnumComponentType.BACK_TOP_BEVEL);
+//		bottom					= new BrickModelComponent[BRICK_LENGTH][BRICK_WIDTH];
+//		top						= new BrickModelComponent[BRICK_LENGTH][BRICK_WIDTH];
 		bottom					= new BrickModelComponent(EnumComponentType.BOTTOM);
-		top						= new BrickModelComponent(EnumComponentType.TOP);
+		top					= new BrickModelComponent(EnumComponentType.TOP);
+		
+//		for (int h = 0; h < BRICK_HEIGHT; h++) {
+//			for (int w = 0; w < BRICK_WIDTH; w++) {
+//				left[w][h] = new BrickModelComponent(EnumComponentType.LEFT);
+//				right[w][h] = new BrickModelComponent(EnumComponentType.RIGHT);
+//				components.add(left[w][h]);
+//				components.add(right[w][h]);
+//			}
+//			
+//			for (int l = 0; l < BRICK_LENGTH; l++) {
+//				front[l][h] = new BrickModelComponent(EnumComponentType.FRONT);
+//				back[l][h] = new BrickModelComponent(EnumComponentType.BACK);
+//				components.add(front[l][h]);
+//				components.add(back[l][h]);
+//			}
+//		}
+//		
+//		for (int w = 0; w < BRICK_WIDTH; w++) {
+//			for (int l = 0; l < BRICK_LENGTH; l++) {
+//				bottom[l][w] = new BrickModelComponent(EnumComponentType.BOTTOM);
+//				top[l][w] = new BrickModelComponent(EnumComponentType.TOP);
+//				components.add(bottom[l][w]);
+//				components.add(top[l][w]);
+//			}
+//		}
 		
 		components.add(left);
 		components.add(leftFrontSideBevel);

@@ -13,6 +13,5 @@ public class BrickModels {
 //		BrickMaterialRegistry.registerMaterial(stone);
 		FLAT_1x1 = new BrickFlat1x1Model(0);
 		FULL_1x1 = new BrickFull1x1Model(1);
-		System.out.println(FLAT_1x1);
 	}
 }

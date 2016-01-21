@@ -23,7 +23,7 @@ void main() {
 	gl_Position = projectionMatrix * viewMatrix * worldPosition;
 	
 	vec4 dramaticPosition = vec4(localPosition.x / 18, localPosition.y / 18, localPosition.z / 18, 1.0);
-	vColor = clamp(mixColors(dramaticPosition, color, 0.0), 0.3, 0.9);
+	vColor = clamp(mixColors(localPosition, color, 0.0), 0.3, 0.9);
 	//vColor = color;
 }
 

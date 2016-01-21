@@ -1,10 +1,10 @@
 package com.bountive.world.brick.model;
 
+import math.Vector3f;
+
 import com.bountive.setting.GameOptions;
 import com.bountive.setting.util.EnumGraphicsLevel;
 import com.bountive.world.brick.component.BrickComponents;
-
-import math.Vector3f;
 
 public class BrickFull1x1Model extends BrickStandardModel {
 
@@ -20,53 +20,48 @@ public class BrickFull1x1Model extends BrickStandardModel {
 		
 		if (GameOptions.gameOptions.getGraphicsLevel() == EnumGraphicsLevel.LOW) {
 			
-			addComponent(left, BrickComponents.LOW_POLY_FULL_SIDE, translationHelper3f, rotationHelper3f);
-			
-			addComponent(leftFrontSideBevel, BrickComponents.LOW_POLY_FULL_SIDE_BEVEL, translationHelper3f, rotationHelper3f);
-			
-			rotationHelper3f.y = 90f;
-			translationHelper3f.x = 1f;
-			addComponent(front, BrickComponents.LOW_POLY_FULL_SIDE, translationHelper3f, rotationHelper3f);
-			
-			rotationHelper3f.y = 90f;
-			translationHelper3f.x = 1f;
-			addComponent(rightFrontSideBevel, BrickComponents.LOW_POLY_FULL_SIDE_BEVEL, translationHelper3f, rotationHelper3f);
-			
-			rotationHelper3f.y = 180f;
-			translationHelper3f.x = 1f;
-			translationHelper3f.z = -1f;
-			addComponent(right, BrickComponents.LOW_POLY_FULL_SIDE, translationHelper3f, rotationHelper3f);
-			
-			rotationHelper3f.y = 180f;
-			translationHelper3f.x = 1f;
-			translationHelper3f.z = -1f;
-			addComponent(rightBackSideBevel, BrickComponents.LOW_POLY_FULL_SIDE_BEVEL, translationHelper3f, rotationHelper3f);
-			
-			rotationHelper3f.y = -90f;
-			translationHelper3f.z = -1f;
-			addComponent(back, BrickComponents.LOW_POLY_FULL_SIDE, translationHelper3f, rotationHelper3f);
-			
-			rotationHelper3f.y = -90f;
-			translationHelper3f.z = -1f;
 			addComponent(leftBackSideBevel, BrickComponents.LOW_POLY_FULL_SIDE_BEVEL, translationHelper3f, rotationHelper3f);
-			
 			addComponent(leftTopBevel, BrickComponents.LOW_POLY_FULL_TOP_BEVEL, translationHelper3f, rotationHelper3f);
 			
+			addComponent(left, BrickComponents.LOW_POLY_FULL_SIDE, translationHelper3f, rotationHelper3f);
+			
 			rotationHelper3f.y = 90f;
+			translationHelper3f.z = 1f;
+			addComponent(front, BrickComponents.LOW_POLY_FULL_SIDE, translationHelper3f, rotationHelper3f);
+			
+			rotationHelper3f.y = 180f;
 			translationHelper3f.x = 1f;
+			translationHelper3f.z = 1f;
+			addComponent(right, BrickComponents.LOW_POLY_FULL_SIDE, translationHelper3f, rotationHelper3f);
+			
+			rotationHelper3f.y = -90f;
+			translationHelper3f.x = 1f;
+			addComponent(back, BrickComponents.LOW_POLY_FULL_SIDE, translationHelper3f, rotationHelper3f);
+			
+			rotationHelper3f.y = 90f;
+			translationHelper3f.z = 1f;
+			addComponent(leftFrontSideBevel, BrickComponents.LOW_POLY_FULL_SIDE_BEVEL, translationHelper3f, rotationHelper3f);
+			rotationHelper3f.y = 90f;
+			translationHelper3f.z = 1f;
 			addComponent(frontTopBevel, BrickComponents.LOW_POLY_FULL_TOP_BEVEL, translationHelper3f, rotationHelper3f);
 			
 			rotationHelper3f.y = 180f;
 			translationHelper3f.x = 1f;
-			translationHelper3f.z = -1f;
+			translationHelper3f.z = 1f;
+			addComponent(rightFrontSideBevel, BrickComponents.LOW_POLY_FULL_SIDE_BEVEL, translationHelper3f, rotationHelper3f);
+			rotationHelper3f.y = 180f;
+			translationHelper3f.x = 1f;
+			translationHelper3f.z = 1f;
 			addComponent(rightTopBevel, BrickComponents.LOW_POLY_FULL_TOP_BEVEL, translationHelper3f, rotationHelper3f);
 			
 			rotationHelper3f.y = -90f;
-			translationHelper3f.z = -1f;
+			translationHelper3f.x = 1f;
+			addComponent(rightBackSideBevel, BrickComponents.LOW_POLY_FULL_SIDE_BEVEL, translationHelper3f, rotationHelper3f);
+			rotationHelper3f.y = -90f;
+			translationHelper3f.x = 1f;
 			addComponent(backTopBevel, BrickComponents.LOW_POLY_FULL_TOP_BEVEL, translationHelper3f, rotationHelper3f);
 			
-			addComponent(bottom, BrickComponents.LOW_POLY_FULL_BOTTOM, translationHelper3f, rotationHelper3f);
-			
+			addComponent(bottom, BrickComponents.LOW_POLY_FLAT_BOTTOM, translationHelper3f, rotationHelper3f);
 			addComponent(top, BrickComponents.LOW_POLY_FULL_TOP, translationHelper3f, rotationHelper3f);
 		}
 		else if (GameOptions.gameOptions.getGraphicsLevel() == EnumGraphicsLevel.MEDIUM) {

@@ -23,23 +23,23 @@ public class World {
 		addZonesToWorld();
 	}
 	
-	Zone z1 = new Zone(new Vector3f(Zone.ZONE_WIDTH, 0, 0));
+//	Zone z1 = new Zone(new Vector3f(Zone.ZONE_WIDTH, 0, 0));
 	Zone z2 = new Zone(new Vector3f());
-	Zone z3 = new Zone(new Vector3f(Zone.ZONE_WIDTH * 2, 0, 0), new Vector3f(0, 70, 0));
+//	Zone z3 = new Zone(new Vector3f(Zone.ZONE_WIDTH * 2, 0, 0), new Vector3f(0, 70, 0));
 	
 	//TEMP
 	public void addZonesToWorld() {
 		LoggerUtil.logInfo(this.getClass(), "Attempting to create zone...");
 		WorldZoneManager.counter = 0;	//TODO:TEMP
 		System.out.println("ADDING ZONES");
-		zoneManager.addZone(z1);
+//		zoneManager.addZone(z1);
 		zoneManager.addZone(z2);
-		zoneManager.addZone(z3);
+//		zoneManager.addZone(z3);
 	}
 	
 	public void update(double deltaTime) {
 		//TODO: UPDATE ZONE ON BLOCK PLACED.
-		z3.rotation.y += (float)(deltaTime * 20f);
+//		z3.rotation.y += (float)(deltaTime * 20f);
 	}
 	
 	public void render(double lerp) {

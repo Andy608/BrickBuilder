@@ -2,7 +2,6 @@ package com.bountive.world.zone;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import math.Matrix4f;
 import math.Vector3f;
@@ -20,13 +19,12 @@ import com.bountive.world.brick.model.BrickStandardModel;
 import com.bountive.world.zone.ZoneBrick.EnumBrickSide;
 
 public class Zone {
-
 	public static final int ZONE_WIDTH = 18;
 	public static final int ZONE_HEIGHT = 45;
 	public static final int ZONE_ARRAY_LENGTH = ZONE_WIDTH * ZONE_WIDTH * ZONE_HEIGHT;
 	public static final float ZONEBRICK_HEIGHT = 0.4f;
 	
-	private static Random rand = new Random();
+//	private static final Random rand = new Random();
 	
 	private ZoneBrick[] zoneBricks;
 	
@@ -55,55 +53,37 @@ public class Zone {
 		this(pos, new Vector3f());
 	}
 	
-//	//JUST FOR FUN
-//	public Zone(Vector3f pos, Vector3f rot, boolean randomize) {
-//		position = pos;
-//		ROTATION = rot;
-//		zoneBricks = new ZoneBrick[ZONE_ARRAY_LENGTH];
-//		
-//		Random rand = new Random();
-//		for (int i = 0; i < Zone.ZONE_ARRAY_LENGTH; i++) {
-//			if (rand.nextInt(4) == 0)
-//				zoneBricks[i] = ZoneBrick.stoneBrick;
-//		}
-//	}
-	
 	public Zone(Vector3f pos, Vector3f rot) {
 		position = pos;
 		rotation = rot;
 		zoneBricks = new ZoneBrick[ZONE_ARRAY_LENGTH];
 		isOccupied = new boolean[ZONE_ARRAY_LENGTH];
 		
-		for (int x = 8; x < Zone.ZONE_WIDTH - 2; x++) {
-			for (int z = 8; z < Zone.ZONE_WIDTH - 2; z++) {
-				for (int y = 8; y < Zone.ZONE_HEIGHT; y++) {
-					
-					int random = rand.nextInt(2);
-					ZoneBrick brick = random == 0 ? ZoneBrick.flatStoneBrick : ZoneBrick.fullStoneBrick;
-					
-					random = rand.nextInt(8);
-					
-					if (random != 0) continue;
-					
-					if (!isZoneOccupied(brick, x, y, z)) {
-						occupyZone(brick, x, y, z);
-					}
-				}
-			}
-		}
+//		for (int x = 0; x < Zone.ZONE_WIDTH / 2; x++) {
+//			for (int z = 0; z < Zone.ZONE_WIDTH / 2; z++) {
+//				for (int y = 0; y < Zone.ZONE_HEIGHT; y++) {
+//					
+//					int random = rand.nextInt(2);
+//					ZoneBrick brick = random == 0 ? ZoneBrick.flatStoneBrick : ZoneBrick.fullStoneBrick;
+//					
+////					random = rand.nextInt(8);
+//					
+////					if (random != 0) continue;
+//					
+//					if (!isZoneOccupied(brick, x, y, z)) {
+//						occupyZone(brick, x, y, z);
+//					}
+//				}
+//			}
+//		}
 		
+		occupyZone(ZoneBrick.fullStoneBrick, 0, 0, 0);
+		occupyZone(ZoneBrick.fullStoneBrick, 2, 0, 0);
 		occupyZone(ZoneBrick.flatStoneBrick, 1, 0, 0);
 		occupyZone(ZoneBrick.flatStoneBrick, 1, 1, 0);
 		occupyZone(ZoneBrick.flatStoneBrick, 1, 2, 0);
-		occupyZone(ZoneBrick.flatStoneBrick, 1, 2, 2);
-		occupyZone(ZoneBrick.flatStoneBrick, 0, 1, 1);
-		occupyZone(ZoneBrick.flatStoneBrick, 2, 3, 1);
-		occupyZone(ZoneBrick.fullStoneBrick, 1, 0, 1);
-		
-		occupyZone(ZoneBrick.fullStoneBrick, 8, 0, 1);
-		occupyZone(ZoneBrick.fullStoneBrick, 9, 0, 1);
-		occupyZone(ZoneBrick.fullStoneBrick, 10, 0, 1);
-		occupyZone(ZoneBrick.flatStoneBrick, 10, 3, 1);
+		occupyZone(ZoneBrick.flatStoneBrick, 0, 3, 0);
+		occupyZone(ZoneBrick.fullStoneBrick, 1, 3, 0);
 		
 		positions = new ArrayList<>();
 		colors = new ArrayList<>();
@@ -119,67 +99,9 @@ public class Zone {
 		
 		startTime = System.nanoTime();
 		
-//		for (int x = 0; x < Zone.ZONE_WIDTH; x++) {
-//			for (int z = 0; z < Zone.ZONE_WIDTH; z++) {
-//				for (int y = 0; y < Zone.ZONE_HEIGHT; y++) {
-//					
-//					int i = getIndexFromZoneCoordinate(x, y, z);
-//					if (i % (Zone.ZONE_WIDTH * Zone.ZONE_WIDTH) == 0 || i == Zone.ZONE_ARRAY_LENGTH - 1) {
-//						percentage = (float)Math.ceil(((float)i / Zone.ZONE_ARRAY_LENGTH) * 100);
-//						System.out.println("LOADING... " + percentage + "%");
-//					}
-//					
-//					ZoneBrick brick = getZoneBrick(x, y, z);
-//					if (brick == null) continue;
-////					
-//					typesInUse = new EnumComponentType[brick.getModel().getComponents().size()];
-//					iterator = 0;
-//					
-//					BrickStandardModel model = brick.getModel();
-//					
-//					//LEFT SIDE
-//					if (/*(x == 0 && (leftZone == null || leftZone.getZoneBrick(Zone.ZONE_WIDTH - 1, y, z) == null)) || */
-//							(x == 0) || (x > 0 && getZoneBrick(x - 1, y, z) == null)) {
-//						addComponentsToZone(brick, x, y, z, model.left, model.leftFrontSideBevel, model.leftBackSideBevel, model.leftTopBevel, model.backTopBevel, model.frontTopBevel, model.bottom);
-//					}
-//					
-//					//BACK SIDE
-//					if (/*((z == 0) && (backZone == null || backZone.getZoneBrick(Zone.ZONE_WIDTH - 1, y, z) == null)) || */
-//							(z == 0) || (z > 0 && getZoneBrick(x, y, z - 1) == null)) {
-//						addComponentsToZone(brick, x, y, z, model.back, model.leftBackSideBevel, model.rightBackSideBevel, model.backTopBevel, model.rightTopBevel, model.leftTopBevel, model.bottom);
-//					}
-//					
-//					//RIGHT SIDE
-//					if (/*(x == (Zone.ZONE_WIDTH - 1) && (rightZone == null || rightZone.getZoneBrick(x, y, 0) == null)) || */
-//							(x == (Zone.ZONE_WIDTH - 1)) || (x < Zone.ZONE_WIDTH - 1 && getZoneBrick(x + 1, y, z) == null)) {
-//						addComponentsToZone(brick, x, y, z, model.right, model.rightFrontSideBevel, model.rightBackSideBevel, model.rightTopBevel, model.frontTopBevel, model.backTopBevel, model.bottom);
-//					}
-//					
-//					//FRONT SIDE
-//					if (/*(z == (Zone.ZONE_WIDTH - 1) && (frontZone == null || frontZone.getZoneBrick(0, y, z) == null)) || */
-//							(z == (Zone.ZONE_WIDTH - 1)) || (z < Zone.ZONE_WIDTH - 1 && getZoneBrick(x, y, z + 1) == null)) {
-//						addComponentsToZone(brick, x, y, z, model.front, model.leftFrontSideBevel, model.rightFrontSideBevel, model.frontTopBevel, model.leftTopBevel, model.rightTopBevel, model.bottom);
-//					}
-//					
-//					//BOTTOM SIDE
-//					if (/*((y == 0) && (bottomZone == null || bottomZone.getBrickModel(x, Zone.ZONE_HEIGHT - 1, z) == null)) || */
-//							(y == 0) || (y > 0 && getZoneBrick(x, y - 1, z) == null)) {
-//						addComponentsToZone(brick, x, y, z, model.bottom, model.leftFrontSideBevel, model.rightFrontSideBevel, model.rightBackSideBevel, model.leftBackSideBevel);
-//					}
-//					
-//					//TOP SIDE
-//					if (/*(y == (Zone.ZONE_HEIGHT - 1) && (topZone == null || topZone.getZoneBrick(x, 0, z) == null)) || */
-//							(y == (Zone.ZONE_HEIGHT - 1)) || (y < Zone.ZONE_HEIGHT - 1 && getZoneBrick(x, y + 1, z) == null)) {
-//						addComponentsToZone(brick, x, y, z, model.top, model.leftTopBevel, model.frontTopBevel, model.rightTopBevel, model.backTopBevel, 
-//								model.leftFrontSideBevel, model.rightFrontSideBevel, model.rightBackSideBevel, model.leftBackSideBevel);
-//					}
-//				}
-//			}
-//		}
-		
-		for (int x = 0; x < Zone.ZONE_WIDTH; x++) {
+		for (int y = 0; y < Zone.ZONE_HEIGHT; y++) {
 			for (int z = 0; z < Zone.ZONE_WIDTH; z++) {
-				for (int y = 0; y < Zone.ZONE_HEIGHT; y++) {
+				for (int x = 0; x < Zone.ZONE_WIDTH; x++) {
 					
 					int i = getIndexFromZoneCoordinate(x, y, z);
 					if (i % (Zone.ZONE_WIDTH * Zone.ZONE_WIDTH) == 0 || i == Zone.ZONE_ARRAY_LENGTH - 1) {
@@ -194,6 +116,9 @@ public class Zone {
 					iterator = 0;
 					
 					BrickStandardModel model = brick.getModel();
+					
+					//CHECK IF NEED TO RENDER AT ALL
+//					if (!shouldTestRender(model, x, y, z)) continue;
 					
 					//LEFT SIDE
 					if (/*(x == 0 && (leftZone == null || leftZone.getZoneBrick(Zone.ZONE_WIDTH - 1, y, z) == null)) || */
@@ -286,7 +211,7 @@ public class Zone {
 		}
 	}
 	
-	private boolean renderSide(ZoneBrick brick, int x, int y, int z, EnumBrickSide flatSide) {
+	private boolean renderSide(ZoneBrick brick, int x, int y, int z, EnumBrickSide side) {
 		BrickModel model = brick.getModel();
 		
 		int length = model.BRICK_LENGTH;
@@ -294,7 +219,7 @@ public class Zone {
 		int height = model.BRICK_HEIGHT;
 		
 		
-		switch (flatSide) {
+		switch (side) {
 		case LEFT: case RIGHT: length = 1; break;
 		case BACK: case FRONT: width = 1; break;
 		case BOTTOM: case TOP: height = 1; break;
@@ -305,7 +230,7 @@ public class Zone {
 				for (int heightIndex = 0; heightIndex < height; heightIndex++) {
 					int index = getIndexFromZoneCoordinate(lengthIndex + x, heightIndex + y, widthIndex + z);
 					
-					if (index > isOccupied.length || (index < isOccupied.length && !isOccupied[index])) {
+					if (index > isOccupied.length || (index < isOccupied.length && (shouldRenderSide(brick, x, y, z, side)))) {
 						return true;
 					}
 				}
@@ -313,6 +238,73 @@ public class Zone {
 		}
 		return false;
 	}
+	
+	private boolean shouldRenderSide(ZoneBrick brick, int x, int y, int z, EnumBrickSide side) {
+		BrickModel model = brick.getModel();
+		
+		ZoneBrick otherBrick = getZoneBrick(x, y, z);
+		
+		if (otherBrick != null) {
+			if (otherBrick == brick) return false;
+			BrickModel otherModel = otherBrick.getModel();
+			
+			switch (side) {
+			case LEFT: case RIGHT: {
+				if (otherModel.BRICK_WIDTH > model.BRICK_WIDTH || otherModel.BRICK_HEIGHT > model.BRICK_HEIGHT) return false;
+				break;
+			}
+			case BACK: case FRONT: {
+				if (otherModel.BRICK_LENGTH > model.BRICK_LENGTH || otherModel.BRICK_HEIGHT > model.BRICK_HEIGHT) return false;
+				break;
+			}
+			default: {
+				return false;
+			}
+			}
+		}
+		else {
+			int index = getIndexFromZoneCoordinate(x, y, z);
+			if (isOccupied[index]) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	//TODO: REWRITE THIS METHOD AND IMPLEMENT IT.
+	/*private boolean shouldTestRender(BrickModel model, int xLoc, int yLoc, int zLoc) {
+		
+		int startingX = xLoc - 1;
+		int startingY = yLoc - 1;
+		int startingZ = zLoc - 1;
+		
+		int endingX = xLoc + model.BRICK_LENGTH + 1;
+		int endingY = yLoc + model.BRICK_HEIGHT + 1;
+		int endingZ = zLoc + model.BRICK_WIDTH + 1;
+		
+		if (!(isIndexValid(startingX, startingY, startingZ) && isIndexValid(endingX, endingY, endingZ))) return true;
+		
+//		for (int y = startingY; y < endingY; y++) {
+//			for (int z = startingZ; z < endingZ; z++) {
+//				for (int x = startingX; x < endingX; x++) {
+//					int index = getIndexFromZoneCoordinate(x, y, z);
+//					
+//					if (!isOccupied[index]) return true;
+//				}
+//			}
+//		}
+		return false;
+	}*/
+	
+	/*private boolean isIndexValid(int x, int y, int z) {
+		if (x < 0 || y < 0 || z < 0) return false;
+		int index = getIndexFromZoneCoordinate(x, y, z);
+		return (index >= 0 && (index < isOccupied.length));
+	}*/
+
+	/*private boolean isIndexValid(int index) {
+		return (index >= 0 && index < isOccupied.length);
+	}*/
 	
 	public boolean isZoneOccupied(ZoneBrick brick, int startingX, int startingY, int startingZ) {
 		if (brick == null) return false;

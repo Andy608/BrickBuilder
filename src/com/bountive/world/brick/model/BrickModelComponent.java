@@ -93,4 +93,9 @@ public class BrickModelComponent {
 	public List<Float> getTexCoords() {
 		return texCoords;
 	}
+	
+	@Override
+	public String toString() {
+		return "Component Type: " + componentType;
+	}
 }

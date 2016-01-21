@@ -31,7 +31,9 @@ public class BrickComponents {
 	//LOW POLY BRICK MODELS
 	public static ModelComponents LOW_POLY_FLAT_BOTTOM;
 	public static ModelComponents LOW_POLY_FLAT_TOP;
-	public static ModelComponents LOW_POLY_FLAT_SIDE;
+	
+	public static ModelComponents LOW_POLY_FLAT_SIDE_TYPE_2;
+	
 	public static ModelComponents LOW_POLY_FLAT_TOP_BEVEL;
 	public static ModelComponents LOW_POLY_FLAT_SIDE_BEVEL;
 	
@@ -46,9 +48,13 @@ public class BrickComponents {
 		
 		LOW_POLY_FLAT_BOTTOM = new ModelComponents(new FileResourceLocation(LOW_POLY_BOTTOM_DIR, "flat_bottom_type_1", EnumFileExtension.OBJ));
 		LOW_POLY_FLAT_TOP = new ModelComponents(new FileResourceLocation(LOW_POLY_TOP_DIR, "flat_top_type_0", EnumFileExtension.OBJ));
-		LOW_POLY_FLAT_SIDE = new ModelComponents(new FileResourceLocation(LOW_POLY_SIDE_DIR, "flat_side_type_2", EnumFileExtension.OBJ));
+		
+		LOW_POLY_FLAT_SIDE_TYPE_2 = new ModelComponents(new FileResourceLocation(LOW_POLY_SIDE_DIR, "flat_side_type_2", EnumFileExtension.OBJ));
+		
 		LOW_POLY_FLAT_TOP_BEVEL = new ModelComponents(new FileResourceLocation(LOW_POLY_TOP_BEVEL_DIR, "flat_top_bevel_type_0", EnumFileExtension.OBJ));
 		LOW_POLY_FLAT_SIDE_BEVEL = new ModelComponents(new FileResourceLocation(LOW_POLY_SIDE_BEVEL_DIR, "flat_side_bevel_type_0", EnumFileExtension.OBJ));
+		
+		//////////////
 		
 		LOW_POLY_FULL_BOTTOM = new ModelComponents(new FileResourceLocation(LOW_POLY_BOTTOM_DIR, "full_bottom_type_1", EnumFileExtension.OBJ));
 		LOW_POLY_FULL_TOP = new ModelComponents(new FileResourceLocation(LOW_POLY_TOP_DIR, "full_top_type_0", EnumFileExtension.OBJ));
