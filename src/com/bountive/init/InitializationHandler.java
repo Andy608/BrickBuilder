@@ -22,7 +22,8 @@ public class InitializationHandler {
 		BrickMaterials.registerBrickMaterials();
 		////////////////////////////
 		
-		Window.createWindow();
+		Window.initWindowHints();
+		Window.buildScreen();
 		
 		//TODO:Initialize this when loading up the world.
 		CameraMatrixManager.init();

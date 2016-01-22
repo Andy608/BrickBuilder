@@ -5,6 +5,7 @@
 - Added in back face culling when rendering zones. *Temp disabled this for debugging purposes.
 - Added support for multiple model types to render together in a zone!
 - Added new full 1x1 brick model.
+- Changed origin of models to work with the right-handed coordinate system and allow for proper rotation.
 
 TODO:
 - Test zone system with different brick model widths and lengths (heights work!).
